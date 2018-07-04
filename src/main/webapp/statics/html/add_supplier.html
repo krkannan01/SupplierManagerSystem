@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8" />
+	<title>添加供应商信息 - 供应商管理系统</title>
+
+	<meta name="description" content="overview &amp; stats" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+	<!-- bootstrap & fontawesome -->
+	<link rel="stylesheet" href="../assets/css/bootstrap.css" />
+	<link rel="stylesheet" href="../components/font-awesome/css/font-awesome.min.css" />
+
+	<!-- page specific plugin styles -->
+	<link rel="stylesheet" href="../components/_mod/jquery-ui/jquery-ui.css" />
+	<link rel="stylesheet" href="../components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" />
+	<link rel="stylesheet" href="../components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" />
+	<link rel="stylesheet" href="../components/_mod/jqgrid/ui.jqgrid.css" />
+	<link rel="stylesheet" href="../components/_mod/jquery-ui.custom/jquery-ui.custom.css" />
+	<link rel="stylesheet" href="../components/chosen/chosen.css" />
+
+	<!-- text fonts -->
+	<link rel="stylesheet" href="../assets/css/ace-fonts.css" />
+
+	<!-- ace styles -->
+	<link rel="stylesheet" href="../assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+	<!--[if lte IE 9]>
+	<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
+	<![endif]-->
+	<link rel="stylesheet" href="../assets/css/ace-skins.css" />
+	<link rel="stylesheet" href="../assets/css/ace-rtl.css" />
+
+	<!--[if lte IE 9]>
+	<link rel="stylesheet" href="../assets/css/ace-ie.css" />
+	<![endif]-->
+
+	<style type="text/css">
+		.cooperation-box {
+			border: 1px solid #F9CF4F;
+			width: 100%;
+			height: 240px;
+			margin: 10px auto;
+		}
+		.center {
+			text-align: center;
+			font-size: 24px;
+			margin-top: 12px;
+		}
+		.none {
+			display: none;
+		}
+	</style>
+
+	<!-- ace settings handler -->
+	<script src="../assets/js/ace-extra.js"></script>
+
+	<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+	<!--[if lte IE 8]>
+	<script src="../components/html5shiv/dist/html5shiv.min.js"></script>
+	<script src="../components/respond/dest/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="no-skin">
+<!-- #section:basics/navbar.layout -->
+<!-- 网页上部信息 -->
+<div id="navbar" class="navbar navbar-default          ace-save-state">
+	<div class="navbar-container ace-save-state" id="navbar-container">
+
+		<!-- #section:basics/sidebar.mobile.toggle -->
+		<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+			<span class="sr-only"></span>
+
+			<span class="icon-bar"></span>
+
+			<span class="icon-bar"></span>
+
+			<span class="icon-bar"></span>
+		</button>
+
+		<!-- /section:basics/sidebar.mobile.toggle -->
+		<div class="navbar-header pull-left">
+			<!-- #section:basics/navbar.layout.brand -->
+			<a href="#" class="navbar-brand">
+				<small>
+					<i class="fa fa-leaf"></i>
+					Supplier ManagerSystem
+				</small>
+			</a>
+
+			<!-- /section:basics/navbar.layout.brand -->
+
+			<!-- #section:basics/navbar.toggle -->
+
+			<!-- /section:basics/navbar.toggle -->
+		</div>
+
+		<!-- #section:basics/navbar.dropdown -->
+		<div class="navbar-buttons navbar-header pull-right" role="navigation">
+			<ul class="nav ace-nav">
+
+				<!-- #section:basics/navbar.user_menu -->
+				<li class="light-blue dropdown-modal">
+					<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+						<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>欢迎,</small>
+									管理员
+								</span>
+
+						<i class="ace-icon fa fa-caret-down"></i>
+					</a>
+
+					<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+						<li>
+							<a href="#">
+								<i class="ace-icon fa fa-cog"></i>
+								设置
+							</a>
+						</li>
+
+						<li>
+							<a href="profile.html">
+								<i class="ace-icon fa fa-user"></i>
+								个人信息
+							</a>
+						</li>
+
+						<li class="divider"></li>
+
+						<li>
+							<a href="#">
+								<i class="ace-icon fa fa-power-off"></i>
+								注销
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- /section:basics/navbar.user_menu -->
+			</ul>
+		</div>
+
+	</div><!-- /.navbar-container -->
+</div>
+
+
+<!-- /section:basics/navbar.layout -->
+<div class="main-container ace-save-state" id="main-container">
+	<script type="text/javascript">
+		try{ace.settings.loadState('main-container')}catch(e){}
+	</script>
+
+	<!-- #section:basics/sidebar -->
+	<div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+		<script type="text/javascript">
+			try{ace.settings.loadState('sidebar')}catch(e){}
+		</script>
+
+		<ul class="nav nav-list">
+			<li class="open">
+				<a href="#" class="dropdown-toggle">
+					<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text"> 
+								供应商信息管理 
+							</span>
+					<b class="arrow fa fa-angle-down"></b>
+				</a>
+
+				<b class="arrow"></b>
+
+				<ul class="submenu">
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-creat-right"></i>
+							查询供应商信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="active">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-creat-right"></i>
+							新增供应商信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-creat-right"></i>
+							设置供应商分组
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				</ul>
+			</li>
+
+			<li class="">
+				<a href="#" class="dropdown-toggle">
+					<i class="menu-icon fa fa-list"></i>
+							<span class="menu-text">
+								材料信息管理
+							</span>
+					<b class="arrow fa fa-angle-down"></b>
+				</a>
+
+				<b class="arrow"></b>
+
+				<ul class="submenu">
+					<li class="">
+						<a href="#">
+							<i class="menu-icon fa fa-caret-right"></i>
+							查询材料信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#">
+							<i class="menu-icon fa fa-caret-right"></i>
+							新增材料信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="#">
+							<i class="menu-icon fa fa-caret-right"></i>
+							设置材料分组
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- /.nav-list -->
+
+		<!-- #section:basics/sidebar.layout.minimize -->
+		<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+			<i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+		</div>
+
+		<!-- /section:basics/sidebar.layout.minimize -->
+	</div>
+
+	<!-- /section:basics/sidebar -->
+	<div class="main-content">
+		<div class="main-content-inner">
+
+			<!-- /section:basics/content.breadcrumbs -->
+			<div class="page-content">
+
+				<!-- /section:settings.box -->
+				<div class="page-header">
+					<h1>
+						供应商信息管理
+						<small>
+							<i class="ace-icon fa fa-angle-double-right"></i>
+							新增供应商信息
+						</small>
+					</h1>
+				</div><!-- /.page-header -->
+
+				<div class="row">
+					<div class="col-xs-12">
+						<!-- PAGE CONTENT BEGINS -->
+						<div class="widget-box">
+							<div class="widget-header widget-header-blue widget-header-flat">
+								<h4 class="widget-title lighter"> 添加供应商信息 </h4>
+
+							</div>
+
+							<div class="widget-body">
+								<div class="widget-main">
+									<!-- #section:plugins/fuelux.wizard -->
+									<div id="fuelux-wizard-container">
+										<div>
+											<!-- #section:plugins/fuelux.wizard.steps -->
+											<ul class="steps">
+												<li data-step="1" class="active">
+													<span class="step">1</span>
+													<span class="title">填写基本信息</span>
+												</li>
+
+												<li data-step="2">
+													<span class="step">2</span>
+													<span class="title">添加联系人信息</span>
+												</li>
+
+												<li data-step="3">
+													<span class="step">3</span>
+													<span class="title">添加合作信息</span>
+												</li>
+
+												<li data-step="4">
+													<span class="step">4</span>
+													<span class="title">添加其他信息</span>
+												</li>
+
+												<li data-step="5">
+													<span class="step">5</span>
+													<span class="title">提交</span>
+												</li>
+											</ul>
+
+											<!-- /section:plugins/fuelux.wizard.steps -->
+										</div>
+
+										<hr />
+
+										<!-- #section:plugins/fuelux.wizard.container -->
+										<div class="step-content pos-rel">
+											<div class="step-pane active" data-step="1">
+												<h3 class="lighter block green" style="margin-top: 0;">输入企业信息</h3>
+												<hr />
+
+												<form class="form-horizontal" id="supplier-form">
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="uCCcode" class="col-sm-4 control-label no-padding-right">统一社会信用代码：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input type="text" id="uCCcode" class="width-100" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="fullName" class="col-sm-3 control-label no-padding-right">企业名称：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input type="text" id="fullName" class="width-100" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="type" class="col-sm-4 control-label no-padding-right">企业类型：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input type="text" id="type" class="width-100" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="legalRepresentative" class="col-sm-3 control-label no-padding-right">法定代表人：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input type="text" id="legalRepresentative" class="width-100" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="website" class="col-sm-4 control-label no-padding-right">公司网站：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="website" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="simpleName" class="col-sm-3 control-label no-padding-right">企业简称：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="simpleName" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="foundDate" class="col-sm-4 control-label no-padding-right">成立日期：</label>
+
+															<div class="col-sm-7">
+																<div class="input-group">
+																			<span class="input-group-addon">
+																				<i class="fa fa-calendar bigger-110" title="日期框"></i>
+																			</span>
+																			<span class="block input-icon input-icon-right">
+																				<input class="form-control date-picker" id="foundDate" type="text" data-date-format="yyyy-mm-dd" />
+																				<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																			</span>
+																</div>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="registeredCapital" class="col-sm-3 control-label no-padding-right">注册资本：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="registeredCapital" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="registerDepartment" class="col-sm-4 control-label no-padding-right">登记机关：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input class="width-100" id="registerDepartment" type="text" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="approvalDate" class="col-sm-3 control-label no-padding-right">核准日期：</label>
+
+															<div class="col-sm-7">
+																<div class="input-group">
+																			<span class="input-group-addon">
+																				<i class="fa fa-calendar bigger-110" title="日期框"></i>
+																			</span>
+																			<span class="block input-icon input-icon-right">
+																				<input class="form-control date-picker" id="approvalDate" type="text" data-date-format="yyyy-mm-dd" />
+																				<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																			</span>
+																</div>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="registerState" class="col-sm-4 control-label no-padding-right">登记状态：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input class="width-100" id="registerState" type="text" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="mainProduct" class="col-sm-3 control-label no-padding-right">主营产品：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input class="width-100" id="mainProduct" type="text" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="businessDeadlineGo" class="col-sm-4 control-label no-padding-right">营业期限自：</label>
+
+															<div class="col-sm-7">
+																<input class="width-100" id="businessDeadlineGo" type="text" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="businessDeadlineTo" class="col-sm-3 control-label no-padding-right">营业期限至：</label>
+
+															<div class="col-sm-7">
+																<input class="width-100" id="businessDeadlineTo" type="text" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-12">
+
+														<div class="form-group has-warning">
+															<label for="tradeGroup" class="col-sm-2 control-label no-padding-right">所属分组：</label>
+
+															<div class="col-sm-4">
+																<select class="chosen-select form-control" id="tradeGroup">
+																	<option value="0">请选择</option>
+																	<option value="1">1</option>
+																</select>
+															</div>
+															<div class="help-block col-sm-reset inline">
+																<i class="ace-icon fa fa-info-circle bigger-130" title="必填项"></i>
+															</div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-12">
+														<div class="form-group has-warning">
+															<label for="address" class="col-sm-2 control-label no-padding-right">住所：</label>
+
+															<div class="col-sm-9">
+																		<span class="block input-icon input-icon-right">
+																			<input class="width-100" id="address" type="text" />
+																			<i class="ace-icon fa fa-info-circle"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-12">
+														<div class="form-group has-warning">
+															<label for="operateRange" class="col-sm-2 control-label no-padding-right">经营范围：</label>
+
+															<div class="col-sm-9">
+																		<span class="block input-icon input-icon-right">
+																			<textarea class="form-control limited" id="operateRange" maxlength="500"></textarea>
+																			<i class="ace-icon fa fa-info-circle"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-12">
+														<div class="form-group has-success">
+															<label for="exceptionInfo" class="col-sm-2 control-label no-padding-right">经营异常信息：</label>
+
+															<div class="col-sm-9">
+																<input class="width-100" id="exceptionInfo" type="text" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-12">
+														<div class="form-group has-success">
+															<label for="dangerInfo" class="col-sm-2 control-label no-padding-right">严重违法失信信息：</label>
+
+															<div class="col-sm-9">
+																<input class="width-100" id="dangerInfo" type="text" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+												</form>
+
+												<div class="col-sm-12 hr hr12"></div>
+
+											</div>
+
+											<div class="step-pane" data-step="2">
+												<h3 class="lighter block green" style="margin-top: 0;">输入企业联系人信息</h3>
+												<hr />
+
+												<form class="form-horizontal" id="contact-form">
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-warning">
+															<label for="contactName" class="col-sm-4 control-label no-padding-right">联系人名称：</label>
+
+															<div class="col-sm-7">
+																		<span class="block input-icon input-icon-right">
+																			<input type="text" id="contactName" class="width-100" />
+																			<i class="ace-icon fa fa-info-circle" title="必填项"></i>
+																		</span>
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="contactAddress" class="col-sm-3 control-label no-padding-right">联系人地址：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="contactAddress" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="phoneNumberOne" class="col-sm-4 control-label no-padding-right">联系方式1：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="phoneNumberOne" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+
+													<div class="col-sm-6 col-xs-12">
+														<div class="form-group has-success">
+															<label for="phoneNumberTwo" class="col-sm-3 control-label no-padding-right">联系方式2：</label>
+
+															<div class="col-sm-7">
+																<input type="text" id="phoneNumberTwo" class="width-100" />
+															</div>
+															<div class="help-block col-sm-reset inline"></div>
+														</div>
+													</div>
+												</form>
+
+												<div class="col-sm-12 hr hr12"></div>
+
+											</div>
+
+											<div class="step-pane" data-step="3">
+												<h3 class="lighter block green" style="margin-top: 0;">输入合作情况信息</h3>
+												<hr />
+
+
+
+												<div class="row">
+													<a href="javascript:void(0);" id="addBoxBtn" class="col-sm-12 btn btn-default btn-success btn-app radius-4" style="width: 96%;margin-left: 16px;">
+														<i class="ace-icon fa fa-plus bigger=300"></i>更多
+													</a>
+												</div>
+
+												<div class="row hr hr12"></div>
+											</div>
+
+											<div class="step-pane" data-step="4">
+												<h3 class="lighter block green" style="margin-top: 0;">补充其它信息</h3>
+												<hr />
+
+												<form class="form-horizontal" id="other-form">
+
+												</form>
+
+												<div class="col-sm-12 hr hr12"></div>
+											</div>
+
+											<div class="step-pane" data-step="5">
+												<div class="row success none" style="border: 1px dashed green; width: 80%; height: 160px; margin: 0 auto;">
+													<div class="col-sm-12"><h1 style="margin: 0;"><i class="fa fa-check-circle bigger-300 green" style="margin-left: 45%;margin-top: 12px;"></i></h1></div>
+													<div class="col-sm-12 center">信息已成功提交...</div>
+												</div>
+												<div class="row orange" style="border: 1px dashed orange; width: 80%; height: 160px; margin: 0 auto;">
+													<div class="col-sm-12"><h1 style="margin: 0;"><i class="ace-icon fa fa-spinner fa-spin bigger-200 orange" style="margin-left: 45%;margin-top: 24px;"></i></h1></div>
+													<div class="col-sm-12 center">信息正在提交中,请稍候...</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- /section:plugins/fuelux.wizard.container -->
+									</div>
+
+									<div class="wizard-actions">
+										<!-- #section:plugins/fuelux.wizard.buttons -->
+										<button class="btn btn-warning btn-prev btn-round btn-white">
+											<i class="ace-icon fa fa-arrow-left"></i>
+											上一步
+										</button>
+
+										<button class="btn btn-success btn-next btn-round btn-white" data-last="确 定 ">
+											下一步
+											<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+										</button>
+
+										<!-- /section:plugins/fuelux.wizard.buttons -->
+									</div>
+
+									<!-- /section:plugins/fuelux.wizard -->
+								</div><!-- /.widget-main -->
+							</div><!-- /.widget-body -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.page-content -->
+		</div>
+	</div><!-- /.main-content -->
+
+	<div class="footer">
+		<div class="footer-inner">
+			<!-- #section:basics/footer -->
+			<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Supplier</span>
+							ManagerSystem &copy; sandcitys
+						</span>
+
+				&nbsp; &nbsp;
+						<span class="action-buttons">
+							<a href="#">
+								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+							</a>
+						</span>
+			</div>
+
+			<!-- /section:basics/footer -->
+		</div>
+	</div>
+
+	<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+		<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+	</a>
+
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="../components/jquery/dist/jquery.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="../components/jquery.1x/dist/jquery.js"></script>
+<![endif]-->
+<script type="text/javascript">
+	if('ontouchstart' in document.documentElement) document.write("<script src='../components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
+</script>
+<script src="../components/bootstrap/dist/js/bootstrap.js"></script>
+
+<!--[if lte IE 8]>
+<script src="../components/ExplorerCanvas/excanvas.js"></script>
+<![endif]-->
+<!-- page specific plugin scripts -->
+<script src="../components/fuelux/js/wizard.js"></script>
+<script src="../components/jquery-validation/dist/jquery.validate.js"></script>
+<script src="../components/jquery-validation/dist/additional-methods.js"></script>
+<script src="../components/bootbox.js/bootbox.js"></script>
+<script src="../components/jquery.maskedinput/dist/jquery.maskedinput.js"></script>
+<script src="../components/select2/dist/js/select2.js"></script>
+<script src="../components/chosen/chosen.jquery.js"></script>
+
+<!-- ace scripts -->
+<script src="../assets/js/src/elements.scroller.js"></script>
+<script src="../components/bootstrap-datepicker/dist/js/bootstrap-datepicker-CN.js"></script>
+<script src="../components/moment/moment-CN.js"></script>
+<script src="../components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>
+<script src="../assets/js/src/elements.fileinput.js"></script>
+<script src="../assets/js/src/elements.typeahead.js"></script>
+<script src="../assets/js/src/elements.wysiwyg.js"></script>
+<script src="../assets/js/src/elements.spinner.js"></script>
+<script src="../assets/js/src/elements.treeview.js"></script>
+<script src="../assets/js/src/elements.wizard.js"></script>
+<script src="../assets/js/src/elements.aside.js"></script>
+<script src="../assets/js/src/ace.js"></script>
+<script src="../assets/js/src/ace.basics.js"></script>
+<script src="../assets/js/src/ace.scrolltop.js"></script>
+<script src="../assets/js/src/ace.ajax-content.js"></script>
+<script src="../assets/js/src/ace.touch-drag.js"></script>
+<script src="../assets/js/src/ace.sidebar.js"></script>
+<script src="../assets/js/src/ace.sidebar-scroll-1.js"></script>
+<script src="../assets/js/src/ace.submenu-hover.js"></script>
+<script src="../assets/js/src/ace.widget-box.js"></script>
+<script src="../assets/js/src/ace.settings.js"></script>
+<script src="../assets/js/src/ace.settings-rtl.js"></script>
+<script src="../assets/js/src/ace.settings-skin.js"></script>
+<script src="../assets/js/src/ace.widget-on-reload.js"></script>
+<script src="../assets/js/src/ace.searchbox-autocomplete.js"></script>
+
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+
+	jQuery(function($) {
+		if(!ace.vars['touch']) {
+			$('.chosen-single').chosen({allow_single_deselect:true});
+		}
+
+		/*下一步按钮*/
+		var next = $(".wizard-actions > .btn-next");
+
+		/*渲染步骤条*/
+		$('#fuelux-wizard-container')
+			/*初始化步骤条样式*/
+				.ace_wizard()
+			/*步骤条改变事件 arg0:自身 arg1:当前步骤*/
+				.on('changed.fu.wizard', function(self, step) {
+					/*如果是第5步：提交*/
+					if (step.step == 5) {
+						/*如果数据没有提交过,则进行提交操作*/
+						if ($(".step-content > .step-pane[data-step='5'] > .orange.none")) {
+							/*禁用下一步按钮*/
+							next.attr("disabled", "false");
+							/*第一步：获取基本信息*/
+							var enterprise_data = {};
+							enterprise_data.uCCcode = $("#uCCcode").val();
+							enterprise_data.fullName = $("#fullName").val();
+							enterprise_data.type = $("#type").val();
+							enterprise_data.legalRepresentative = $("#legalRepresentative").val();
+							enterprise_data.website = $("#website").val();
+							enterprise_data.simpleName = $("#simpleName").val();
+							enterprise_data.foundDate = $("#foundDate").val();
+							enterprise_data.registeredCapital = $("#registeredCapital").val();
+							enterprise_data.registerDepartment = $("#registerDepartment").val();
+							enterprise_data.approvalDate = $("#approvalDate").val();
+							enterprise_data.registerState = $("#registerState").val();
+							enterprise_data.mainProduct = $("#mainProduct").val();
+							enterprise_data.businessDeadlineGo = $("#businessDeadlineGo").val();
+							enterprise_data.businessDeadlineTo = $("#businessDeadlineTo").val();
+							enterprise_data.address = $("#address").val();
+							enterprise_data.operateRange = $("#operateRange").val();
+							enterprise_data.exceptionInfo = $("#exceptionInfo").val();
+							enterprise_data.dangerInfo = $("#dangerInfo").val();
+
+							/*第二步：获取联系人信息 并添加到企业信息*/
+							var contact_data = {};
+							contact_data.name = $("#contactName").val();
+							contact_data.contactAddress = $("#contactAddress").val();
+							contact_data.phoneNumberOne = $("#phoneNumberOne").val();
+							contact_data.phoneNumberTwo = $("#phoneNumberTwo").val();
+
+							enterprise_data.contactId = contact_data;
+
+							/*第三步：获取合作情况信息 并添加到企业信息*/
+							enterprise_data.cooperation = [];
+							var cooperation_data = null;
+							$(".cooperation-box").each(function(index) {
+								cooperation_data = {};
+								cooperation_data.projectName = $("#projectName"+index).val();
+								cooperation_data.productName = $("#productName"+index).val();
+								cooperation_data.contactId = {};
+								cooperation_data.contactId.name = $("#coopContactName"+index).val();
+								cooperation_data.contactId.address = $("#coopContactAddress"+index).val();
+								cooperation_data.contactId.coopPhoneNumberOne = $("#coopPhoneNumberOne"+index).val();
+								cooperation_data.contactId.coopPhoneNumberTwo = $("#coopPhoneNumberTwo"+index).val();
+								enterprise_data.cooperation.push(cooperation_data);
+							});
+
+							/*第四步：获取其他信息*/
+							enterprise_data.userDefinedFieldOne = $("#userDefinedFieldOne").val();
+							enterprise_data.userDefinedFieldTwo = $("#userDefinedFieldTwo").val();
+							enterprise_data.userDefinedFieldThree = $("#userDefinedFieldThree").val();
+							enterprise_data.userDefinedFieldFour = $("#userDefinedFieldFour").val();
+							enterprise_data.userDefinedFieldFive = $("#userDefinedFieldFive").val();
+
+							/*第五步：发送请求*/
+							$.post("/enterprise/insert", "", function(data) {
+								//TODO 发送请求
+								next.removeAttr("disabled");
+							}, "text");
+						}
+					}
+				})
+			/*步骤条确定事件*/
+				.on('finished.fu.wizard', function(e) {
+					/*点击完成后刷新页面*/
+					location.reload();
+				});
+
+		/*页面加载前,使用ajax加载下拉框数据*/
+		$.post("", , function(data) {
+			//TODO 发送请求
+		}, "");
+
+		/*实现第一页的表单验证功能 企业基本信息验证*/
+		$("#uCCcode,#fullName,#type,#legalRepresentative,#foundDate,#registerDepartment,#approvalDate,#registerState,#mainProduct,#address,#operateRange").bind({
+			"blur": function() {
+				/*思路：给需要验证的元素绑定失去焦点事件
+				 如果当前元素的值不为空，则设置该元素的样式为has-success,图标为√
+				 然后，查找has-warning类元素，没有则设置下一步的状态为启动*/
+				var $this = $(this);
+				if ($this.val()) {
+					$this.closest(".form-group").removeClass("has-warning").addClass("has-success");
+					$this.next().removeClass("fa-info-circle").addClass("fa-check-circle").get(0).setAttribute("title","通过验证");
+				} else {
+					$this.closest(".form-group").removeClass("has-success").addClass("has-warning");
+					$this.next().removeClass("fa-check-circle").addClass("fa-info-circle").get(0).setAttribute("title","必填项");
+				}
+				if ($("#supplier-form .has-warning").length < 1) {
+					next.removeAttr("disabled");
+				} else {
+					next.attr("disabled", "false");
+				}
+			},
+			"focus": function() {
+				next.attr("disabled", "false");
+			}
+		});
+		/*半路杀出个下拉框,只能区别对待了*/
+		$("#tradeGroup").bind({
+			"blur": function() {
+				var $this = $(this);
+				if ($this.val() > 0) {
+					$this.closest(".form-group").removeClass("has-warning").addClass("has-success");
+					$this.parent().next().find("i").removeClass("fa-info-circle").addClass("fa-check-circle").get(0).setAttribute("title","通过验证");
+				} else {
+					$this.closest(".form-group").removeClass("has-success").addClass("has-warning");
+					$this.parent().next().find("i").removeClass("fa-check-circle").addClass("fa-info-circle").get(0).setAttribute("title","必填项");
+				}
+				if ($("#supplier-form .has-warning").length < 1) {
+					next.removeAttr("disabled");
+				} else {
+					next.attr("disabled", "false");
+				}
+			},
+			"focus": function() {
+				next.attr("disabled", "false");
+			}
+		});
+
+		/*初始化时禁用next按钮*/
+		$("#uCCcode").focus();
+
+		/*实现第二页的表单验证功能 企业联系人信息验证*/
+		$("#contactName").bind({
+			"blur": function() {
+				var $this = $(this);
+				if ($this.val()) {
+					$this.closest(".form-group").removeClass("has-warning").addClass("has-success");
+					$this.next().removeClass("fa-info-circle").addClass("fa-check-circle").get(0).setAttribute("title","通过验证");
+				} else {
+					$this.closest(".form-group").removeClass("has-success").addClass("has-warning");
+					$this.next().removeClass("fa-check-circle").addClass("fa-info-circle").get(0).setAttribute("title","必填项");
+				}
+				if ($("#contact-form .has-warning").length < 1) {
+					next.removeAttr("disabled");
+				} else {
+					next.attr("disabled", "false");
+				}
+			},
+			"focus": function() {
+				next.attr("disabled", "false");
+			}
+		});
+
+		/*动态添加内容，实现点击添加更多联系人的功能*/
+		var boxIndex = 0;//盒子的下标，原始的为一，每次添加一个之前就+1
+		$("#addBoxBtn").click(function() {
+			boxIndex++;
+			var boxHtml = "<div class='row cooperation-box'>" +
+					"<div class='row' style='margin-left: 40%; margin-bottom: 10px;'>" +
+					"<h3 class='green'>合作情况信息"+ boxIndex +"</h3>" +
+					"</div>" +
+					"<form class='form-horizontal' id='cooperation-form-"+ boxIndex +"'>" +
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='projectName"+ boxIndex +"' class='col-sm-4 control-label no-padding-right'>项目名称：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='projectName"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='productName"+ boxIndex +"' class='col-sm-3 control-label no-padding-right'>产品名称：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='productName"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='coopContactName"+ boxIndex +"' class='col-sm-4 control-label no-padding-right'>联系人姓名：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='coopContactName"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='coopAddress"+ boxIndex +"' class='col-sm-3 control-label no-padding-right'>联系人地址：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='coopAddress"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='coopPhoneNumberOne"+ boxIndex +"' class='col-sm-4 control-label no-padding-right'>联系方式1：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='coopPhoneNumberOne"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+					"<div class='col-sm-6 col-xs-12'>" +
+					"<div class='form-group has-success'>" +
+					"<label for='coopPhoneNumberTwo"+ boxIndex +"' class='col-sm-3 control-label no-padding-right'>联系方式2：</label>" +
+
+					"<div class='col-sm-7'>" +
+					"<span class='block'>" +
+					"<input type='text' id='coopPhoneNumberTwo"+ boxIndex +"' class='width-100' />" +
+					"</span>" +
+					"</div>" +
+					"<div class='help-block col-sm-reset inline'></div>" +
+					"</div>" +
+					"</div>" +
+
+					"</form>";
+			$(this).parent().before(boxHtml);
+		});
+		/*初始化时生成一次*/
+		$("#addBoxBtn").click();
+
+		/*获取预定义的字段名称数据*/
+		$.getJSON("../json/defined_field.json", function(data) {
+			/*初始化时生成其他信息表单*/
+			$("#other-form").html("<div class='col-sm-6 col-xs-12'>" +
+			"<div class='form-group has-success'>" +
+			"<label for='userDefinedFieldOne' class='col-sm-4 control-label no-padding-right'>"+ data.userDefinedFieldOne +"：</label>" +
+
+			"<div class='col-sm-7'>" +
+			"<input type='text' id='userDefinedFieldOne' class='width-100' />" +
+			"</div>" +
+			"<div class='help-block col-sm-reset inline'></div>" +
+			"</div>" +
+			"</div>" +
+
+			"<div class='col-sm-6 col-xs-12'>" +
+			"<div class='form-group has-success'>" +
+			"<label for='userDefinedFieldTwo' class='col-sm-3 control-label no-padding-right'>"+data.userDefinedFieldTwo+"：</label>" +
+
+			"<div class='col-sm-7'>" +
+			"<input type='text' id='userDefinedFieldTwo' class='width-100' />" +
+			"</div>" +
+			"<div class='help-block col-sm-reset inline'></div>" +
+			"</div>" +
+			"</div>" +
+
+
+			"<div class='col-sm-6 col-xs-12'>" +
+			"<div class='form-group has-success'>" +
+			"<label for='userDefinedFieldThree' class='col-sm-4 control-label no-padding-right'>"+data.userDefinedFieldThree+"：</label>" +
+
+			"<div class='col-sm-7'>" +
+			"<input type='text' id='userDefinedFieldThree' class='width-100' />" +
+			"</div>" +
+			"<div class='help-block col-sm-reset inline'></div>" +
+			"</div>" +
+			"</div>" +
+
+			"<div class='col-sm-6 col-xs-12'>" +
+			"<div class='form-group has-success'>" +
+			"<label for='userDefinedFieldFour' class='col-sm-3 control-label no-padding-right'>"+data.userDefinedFieldFour+"：</label>" +
+
+			"<div class='col-sm-7'>" +
+			"<input type='text' id='userDefinedFieldFour' class='width-100' />" +
+			"</div>" +
+			"<div class='help-block col-sm-reset inline'></div>" +
+			"</div>" +
+			"</div>" +
+
+
+			"<div class='col-sm-6 col-xs-12'>" +
+			"<div class='form-group has-success'>" +
+			"<label for='userDefinedFieldFive' class='col-sm-4 control-label no-padding-right'>"+data.userDefinedFieldFive+"：</label>" +
+
+			"<div class='col-sm-7'>" +
+			"<div class='input-group'>" +
+			"<input id='userDefinedFieldFive' type='text' class='form-control' />" +
+			"<span class='input-group-addon'>" +
+			"<i class='fa fa-clock-o bigger-110' title='日期时间框'></i>" +
+			"</span>" +
+			"</div>" +
+			"</div>" +
+			"<div class='help-block col-sm-reset inline'></div>" +
+			"</div>" +
+			"</div>");
+
+			/*渲染提起时间框 必须在html文档加载完成后渲染*/
+			if (!ace.vars['old_ie']) {
+				$('#userDefinedFieldFive').datetimepicker({
+					format: 'YYYY/MM/DD h:mm:ss A',//use this option to display seconds
+					icons: {
+						time: 'fa fa-clock-o',
+						date: 'fa fa-calendar',
+						up: 'fa fa-chevron-up',
+						down: 'fa fa-chevron-down',
+						previous: 'fa fa-chevron-left',
+						next: 'fa fa-chevron-right',
+						today: 'fa fa-arrows ',
+						clear: 'fa fa-trash',
+						close: 'fa fa-times'
+					}
+				}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+			}
+		});
+
+		/*渲染日期选择框*/
+		if(!ace.vars['old_ie']) {
+			$('#foundDate').datepicker().next().on(ace.click_event, function(){
+				$(this).prev().focus();
+			});
+			$('#approvalDate').datepicker().next().on(ace.click_event, function(){
+				$(this).prev().focus();
+			});
+
+		}
+
+	});
+</script>
+
+<!-- the following scripts are used in demo only for onpage help and you don't need them -->
+<link rel="stylesheet" href="../assets/css/ace.onpage-help.css" />
+<link rel="stylesheet" href="../docs/assets/js/themes/sunburst.css" />
+
+<script type="text/javascript"> ace.vars['base'] = '..'; </script>
+<script src="../assets/js/src/elements.onpage-help.js"></script>
+<script src="../assets/js/src/ace.onpage-help.js"></script>
+<script src="../docs/assets/js/rainbow.js"></script>
+<script src="../docs/assets/js/language/generic.js"></script>
+<script src="../docs/assets/js/language/html.js"></script>
+<script src="../docs/assets/js/language/css.js"></script>
+<script src="../docs/assets/js/language/javascript.js"></script>
+</body>
+</html>
+
+

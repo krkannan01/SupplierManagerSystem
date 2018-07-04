@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xt.sms.dao.ICooperationDao" >
+  <select id="selectContactIdById" parameterType="integer" resultType="integer">
+    SELECT `contact_id` FROM `table_cooperation` WHERE `id` = #{id}
+  </select>
+
+  <select id="selectIdByEnterpriseId" parameterType="integer" resultType="integer">
+    SELECT `id` FROM `table_cooperation` WHERE `enterprise_id` = #{id}
+  </select>
+
+  <insert id="insertCooperation" parameterType="Cooperation">
+    INSERT INTO `table_cooperation` (`project_name`,`product_name`,`contact_id`,`enterprise_id`)
+    VALUES (#{projectName},#{productName},#{contactId.id},#{enterpriseId})
+  </insert>
+
+  <update id="updateCooperation" parameterType="Cooperation">
+    UPDATE `table_cooperation`
+    <set>
+      `id` = #{id},
+      <if test="projectName != null and projectName != ''">`project_name` = #{projectName},</if>
+      <if test="productName != null and productName != ''">`product_name` = #{productName},</if>
+    </set>
+    WHERE `id` = #{id}
+  </update>
+
+  <delete id="deleteCooperation" parameterType="integer">
+    DELETE FROM `table_cooperation` WHERE `id` = #{id}
+  </delete>
+
+</mapper>

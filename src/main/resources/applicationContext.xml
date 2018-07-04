@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<!-- 读取数据库配置文件,验证码配置文件 -->
+	<context:property-placeholder location="classpath:database.properties,classpath:checkcode.properties,classpath:redis.properties"/>
+
+	<!-- 配置CheckCodeUtil -->
+	<bean id="checkCodeUtil" class="cn.xt.sms.util.CheckCodeUtil" scope="singleton">
+		<property name="width" value="${chk.width}" />
+		<property name="height" value="${chk.height}" />
+		<property name="codeLength" value="${chk.codeLength}" />
+		<property name="charArray" value="${chk.charArray}" />
+	</bean>
+
+	<!-- 配置redis -->
+	<!-- 配置连接池的配置对象-->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig" scope="singleton">
+		<!--设置池中最大连接数-->
+		<property name="maxTotal" value="${redis.maxTotal}"/>
+		<!--设置空闲时池中保有的最大连接数-->
+		<property name="maxIdle" value="${redis.maxIdle}"/>
+	</bean>
+	<!-- 配置连接池对象 -->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool" scope="singleton">
+		<!--连接池配置对象属性-->
+		<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+		<!--服务器IP-->
+		<constructor-arg name="host" value="${redis.host}"/>
+		<!--服务器端口-->
+		<constructor-arg name="port" value="${redis.port}"/>
+	</bean>
+
+	<!-- 获取数据源(使用dbcp连接池) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" scope="singleton">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="testOnBorrow" value="${jdbc.testOnBorrow}" />
+		<property name="validationQuery" value="${jdbc.validationQuery}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}" />
+	</bean>
+
+	<!-- 目的 就是要扫描业务层和数据层的接口实现类 并且产生对象和注入依赖关系 -->
+	<context:component-scan base-package="cn.xt.sms.service"/>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean>
+	<!--MapperScannerConfigurer 这个类会扫描basePackage这个包里面的接口实现类和映射文件-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.xt.sms.dao"></property>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 配置基于注解的声明式事务，默认使用注解来管理事务行为 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

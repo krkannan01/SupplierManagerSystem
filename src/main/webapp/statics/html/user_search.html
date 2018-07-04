@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8" />
+	<title>Tables - Ace Admin</title>
+
+	<meta name="description" content="Static &amp; Dynamic Tables" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+	<!-- bootstrap & fontawesome -->
+	<link rel="stylesheet" href="../assets/css/bootstrap.css" />
+	<link rel="stylesheet" href="../components/font-awesome/css/font-awesome.min.css" />
+
+	<!-- page specific plugin styles -->
+
+	<!-- text fonts -->
+	<link rel="stylesheet" href="../assets/css/ace-fonts.css" />
+
+	<!-- ace styles -->
+	<link rel="stylesheet" href="../assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+	<!--[if lte IE 9]>
+	<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
+	<![endif]-->
+	<link rel="stylesheet" href="../assets/css/ace-skins.css" />
+	<link rel="stylesheet" href="../assets/css/ace-rtl.css" />
+
+	<!--[if lte IE 9]>
+	<link rel="stylesheet" href="../assets/css/ace-ie.css" />
+	<![endif]-->
+
+	<!-- inline styles related to this page -->
+
+	<!-- ace settings handler -->
+	<script src="../assets/js/ace-extra.js"></script>
+
+	<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+	<!--[if lte IE 8]>
+	<script src="../components/html5shiv/dist/html5shiv.min.js"></script>
+	<script src="../components/respond/dest/respond.min.js"></script>
+	<![endif]-->
+</head>
+
+<body class="no-skin">
+<!-- #section:basics/navbar.layout -->
+<div id="navbar" class="navbar navbar-default          ace-save-state">
+	<div class="navbar-container ace-save-state" id="navbar-container">
+		<!-- #section:basics/sidebar.mobile.toggle -->
+		<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+			<span class="sr-only">Toggle sidebar</span>
+
+			<span class="icon-bar"></span>
+
+			<span class="icon-bar"></span>
+
+			<span class="icon-bar"></span>
+		</button>
+
+		<!-- /section:basics/sidebar.mobile.toggle -->
+		<div class="navbar-header pull-left">
+			<!-- #section:basics/navbar.layout.brand -->
+			<a href="#" class="navbar-brand">
+				<small>
+					<i class="fa fa-leaf"></i>
+					Supplier ManagerSystem
+				</small>
+			</a>
+
+			<!-- /section:basics/navbar.layout.brand -->
+
+			<!-- #section:basics/navbar.toggle -->
+
+			<!-- /section:basics/navbar.toggle -->
+		</div>
+
+		<!-- #section:basics/navbar.dropdown -->
+		<div class="navbar-buttons navbar-header pull-right" role="navigation">
+			<ul class="nav ace-nav">
+
+				<!-- #section:basics/navbar.user_menu -->
+				<li class="light-blue dropdown-modal">
+					<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+						<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>欢迎,</small>
+									管理员
+								</span>
+
+						<i class="ace-icon fa fa-caret-down"></i>
+					</a>
+
+					<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+						<li>
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-cog"></i>
+								设置
+							</a>
+						</li>
+
+						<li>
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-user"></i>
+								个人信息
+							</a>
+						</li>
+
+						<li class="divider"></li>
+
+						<li>
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-power-off"></i>
+								注销
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- /section:basics/navbar.user_menu -->
+			</ul>
+		</div>
+
+		<!-- /section:basics/navbar.dropdown -->
+	</div><!-- /.navbar-container -->
+</div>
+
+<!-- /section:basics/navbar.layout -->
+<div class="main-container ace-save-state" id="main-container">
+	<script type="text/javascript">
+		try{ace.settings.loadState('main-container')}catch(e){}
+	</script>
+
+	<!-- #section:basics/sidebar -->
+	<div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+		<script type="text/javascript">
+			try{ace.settings.loadState('sidebar')}catch(e){}
+		</script>
+
+		<ul class="nav nav-list">
+			<li class="">
+				<a href="javascript: void(0);" class="dropdown-toggle">
+					<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text">
+								供应商信息管理
+							</span>
+					<b class="arrow fa fa-angle-down"></b>
+				</a>
+
+				<b class="arrow"></b>
+
+				<ul class="submenu">
+					<li class="">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							查询供应商信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							新增供应商信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							设置供应商分组
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				</ul>
+			</li>
+
+			<li class="">
+				<a href="javascript: void(0);" class="dropdown-toggle">
+					<i class="menu-icon fa fa-list"></i>
+							<span class="menu-text">
+								材料信息管理
+							</span>
+					<b class="arrow fa fa-angle-down"></b>
+				</a>
+
+				<b class="arrow"></b>
+
+				<ul class="submenu">
+					<li class="">
+						<a href="javascript: void(0);" class="dropdown-toggle">
+							<i class="menu-icon fa fa-caret-right"></i>
+							查询材料信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);" class="dropdown-toggle">
+							<i class="menu-icon fa fa-caret-right"></i>
+							新增材料信息
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);" class="dropdown-toggle">
+							<i class="menu-icon fa fa-caret-right"></i>
+							设置材料分组
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				</ul>
+			</li>
+
+			<li class="">
+				<a href="javascript: void(0);" class="dropdown-toggle">
+					<i class="menu-icon fa fa-cog"></i>
+							<span class="menu-text">
+								系统管理
+							</span>
+					<b class="arrow fa fa-angle-down"></b>
+				</a>
+
+				<b class="arrow"></b>
+
+				<ul class="submenu">
+					<li class="active">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							用户权限管理
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							其他
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+
+					<li class="">
+						<a href="javascript: void(0);">
+							<i class="menu-icon fa fa-caret-right"></i>
+							其他
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- /.nav-list -->
+
+		<!-- #section:basics/sidebar.layout.minimize -->
+		<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+			<i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+		</div>
+
+		<!-- /section:basics/sidebar.layout.minimize -->
+	</div>
+
+	<!-- /section:basics/sidebar -->
+	<div class="main-content">
+		<div class="main-content-inner">
+
+			<!-- /section:basics/content.breadcrumbs -->
+			<div class="page-content">
+
+				<!-- /section:settings.box -->
+				<div class="page-header">
+					<h1>
+						系统管理
+						<small>
+							<i class="ace-icon fa fa-angle-double-right"></i>
+							用户权限管理
+						</small>
+					</h1>
+				</div><!-- /.page-header -->
+
+				<div class="row">
+					<div class="col-xs-12">
+						<!-- PAGE CONTENT BEGINS -->
+						<div class="row">
+							<div class="col-xs-12">
+								<table id="simple-table" class="table  table-bordered table-hover">
+									<thead>
+									<tr>
+										<th class="center" style="width: 8%;">
+											<label class="pos-rel">
+												<input type="checkbox" class="ace" />
+												<span class="lbl"></span>
+											</label>
+										</th>
+										<th class="detail-col" style="width: 8%;">查看详情</th>
+										<th style="width: 15%;">用户名</th>
+										<th style="width: 15%;">用户级别</th>
+										<th class="hidden-480" style="width: 15%;">最后在线</th>
+
+										<th class="hidden-480" style="width: 15%;">状态</th>
+
+										<th style="width: 15%;">操作</th>
+									</tr>
+									</thead>
+
+									<tbody>
+									<tr>
+										<td class="center">
+											<label class="pos-rel">
+												<input type="checkbox" class="ace" />
+												<span class="lbl"></span>
+											</label>
+										</td>
+
+										<td class="center">
+											<div class="action-buttons">
+												<a href="#" class="green bigger-140 show-details-btn" title="查看详情">
+													<i class="ace-icon fa fa-angle-double-down"></i>
+													<span class="sr-only">详情</span>
+												</a>
+											</div>
+										</td>
+
+										<td>xietao</td>
+										<td>普通用户</td>
+										<td class="hidden-480">3小时前</td>
+
+										<td class="hidden-480">
+											<span class="label label-sm label-warning">启用中</span>
+										</td>
+
+										<td>
+											<div class="hidden-sm hidden-xs btn-group">
+												<button class="btn btn-xs btn-warning">
+													<i class="ace-icon fa fa-trash-o bigger-120"></i>
+												</button>
+											</div>
+										</td>
+									</tr>
+
+									<tr class="detail-row">
+										<td colspan="7">
+											<div class="table-detail">
+												<div class="row">
+													<div class="col-xs-12 col-sm-2">
+														<div class="text-center">
+															<img height="150" class="thumbnail inline no-margin-bottom" alt="Domain Owner's Avatar" src="../assets/avatars/profile-pic.jpg" />
+															<br />
+															<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+																<div class="inline position-relative">
+																	<a class="user-title-label" href="#">
+																		<i class="ace-icon fa fa-circle light-green"></i>
+																		&nbsp;
+																		<span class="white">Alex M. Doe</span>
+																	</a>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-xs-12 col-sm-5">
+														<div class="space visible-xs"></div>
+
+														<div class="profile-user-info profile-user-info-striped">
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 生日 </div>
+
+																<div class="profile-info-value">
+																	<span>03-04</span>
+																</div>
+															</div>
+
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 位置 </div>
+
+																<div class="profile-info-value">
+																	<i class="fa fa-map-marker light-orange bigger-110"></i>
+																	<span>荷兰, 阿姆斯特丹</span>
+																</div>
+															</div>
+
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 年龄 </div>
+
+																<div class="profile-info-value">
+																	<span>38</span>
+																</div>
+															</div>
+
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 创建时间 </div>
+
+																<div class="profile-info-value">
+																	<span>2010/06/20</span>
+																</div>
+															</div>
+
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 上次在线 </div>
+
+																<div class="profile-info-value">
+																	<span>12:34:00</span>
+																</div>
+															</div>
+
+															<div class="profile-info-row">
+																<div class="profile-info-name"> 关于我 </div>
+
+																<div class="profile-info-value">
+																	<span>Bio</span>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-xs-12 col-sm-5">
+														<div class="space visible-xs"></div>
+														<div class="widget-box widget-color-blue2">
+															<div class="widget-header">
+																<h4 class="widget-title lighter smaller">权限分配</h4>
+															</div>
+
+															<div class="widget-body">
+																<div class="widget-main padding-8">
+																	<ul id="tree1"></ul>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+
+									</tbody>
+								</table>
+							</div><!-- /.span -->
+						</div><!-- /.row -->
+
+						<div class="hr hr-18 dotted hr-double"></div>
+
+						<!-- PAGE CONTENT ENDS -->
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.page-content -->
+		</div>
+	</div><!-- /.main-content -->
+
+	<div class="footer">
+		<div class="footer-inner">
+			<!-- #section:basics/footer -->
+			<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Ace</span>
+							Application &copy; 2013-2014
+						</span>
+
+				&nbsp; &nbsp;
+						<span class="action-buttons">
+							<a href="#">
+								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+							</a>
+						</span>
+			</div>
+
+			<!-- /section:basics/footer -->
+		</div>
+	</div>
+
+	<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+		<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+	</a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="../components/jquery/dist/jquery.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="../components/jquery.1x/dist/jquery.js"></script>
+<![endif]-->
+<script type="text/javascript">
+	if('ontouchstart' in document.documentElement) document.write("<script src='../components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
+</script>
+<script src="../components/bootstrap/dist/js/bootstrap.js"></script>
+
+<!-- page specific plugin scripts -->
+<script src="../components/datatables/media/js/jquery.dataTables.js"></script>
+<script src="../components/_mod/datatables/jquery.dataTables.bootstrap.js"></script>
+<script src="../components/datatables.net-buttons/js/dataTables.buttons.js"></script>
+<script src="../components/datatables.net-buttons/js/buttons.flash.js"></script>
+<script src="../components/datatables.net-buttons/js/buttons.html5.js"></script>
+<script src="../components/datatables.net-buttons/js/buttons.print.js"></script>
+<script src="../components/datatables.net-buttons/js/buttons.colVis.js"></script>
+<script src="../components/datatables.net-select/js/dataTables.select.js"></script>
+<script src="../components/_mod/fuelux/tree.js"></script>
+
+<!-- ace scripts -->
+<script src="../assets/js/src/elements.scroller.js"></script>
+<script src="../assets/js/src/elements.colorpicker.js"></script>
+<script src="../assets/js/src/elements.fileinput.js"></script>
+<script src="../assets/js/src/elements.typeahead.js"></script>
+<script src="../assets/js/src/elements.wysiwyg.js"></script>
+<script src="../assets/js/src/elements.spinner.js"></script>
+<script src="../assets/js/src/elements.treeview.js"></script>
+<script src="../assets/js/src/elements.wizard.js"></script>
+<script src="../assets/js/src/elements.aside.js"></script>
+<script src="../assets/js/src/ace.js"></script>
+<script src="../assets/js/src/ace.basics.js"></script>
+<script src="../assets/js/src/ace.scrolltop.js"></script>
+<script src="../assets/js/src/ace.ajax-content.js"></script>
+<script src="../assets/js/src/ace.touch-drag.js"></script>
+<script src="../assets/js/src/ace.sidebar.js"></script>
+<script src="../assets/js/src/ace.sidebar-scroll-1.js"></script>
+<script src="../assets/js/src/ace.submenu-hover.js"></script>
+<script src="../assets/js/src/ace.widget-box.js"></script>
+<script src="../assets/js/src/ace.settings.js"></script>
+<script src="../assets/js/src/ace.settings-rtl.js"></script>
+<script src="../assets/js/src/ace.settings-skin.js"></script>
+<script src="../assets/js/src/ace.widget-on-reload.js"></script>
+<script src="../assets/js/src/ace.searchbox-autocomplete.js"></script>
+
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+	jQuery(function($) {
+
+		//And for the first simple table, which doesn't have TableTools or dataTables
+		//select/deselect all rows according to table header checkbox
+		var active_class = 'active';
+		$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
+			var th_checked = this.checked;//checkbox inside "TH" table header
+
+			$(this).closest('table').find('tbody > tr').each(function(){
+				var row = this;
+				if(th_checked) $(row).addClass(active_class).find('input[type=checkbox]').eq(0).prop('checked', true);
+				else $(row).removeClass(active_class).find('input[type=checkbox]').eq(0).prop('checked', false);
+			});
+		});
+
+		//select/deselect a row when the checkbox is checked/unchecked
+		$('#simple-table').on('click', 'td input[type=checkbox]' , function(){
+			var $row = $(this).closest('tr');
+			if($row.is('.detail-row ')) return;
+			if(this.checked) $row.addClass(active_class);
+			else $row.removeClass(active_class);
+		});
+
+
+		/***************/
+		$('.show-details-btn').on('click', function(e) {
+			e.preventDefault();
+			$(this).closest('tr').next().toggleClass('open');
+			$(this).find(ace.vars['.icon']).toggleClass('fa-angle-double-down').toggleClass('fa-angle-double-up');
+		});
+		/***************/
+
+
+		var sampleData = initiateDemoData();//see below
+
+
+		$('#tree1').ace_tree({
+			dataSource: sampleData['dataSource1'],
+			multiSelect: true,
+			cacheItems: true,
+			'open-icon' : 'ace-icon tree-minus',
+			'close-icon' : 'ace-icon tree-plus',
+			'itemSelect' : true,
+			'folderSelect': false,
+			'selected-icon' : 'ace-icon fa fa-check',
+			'unselected-icon' : 'ace-icon fa fa-times',
+			loadingHTML : '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>'
+		});
+
+
+		function initiateDemoData(){
+			var tree_data = {
+				'A' : {text: '供应商管理', type: 'folder'},
+				'B' : {text: '供应商分组管理', type: 'folder'},
+			}
+			tree_data['A']['additionalParameters'] = {
+				'children' : {
+					'A1' : {text: '新增供应商', type: 'item'},
+					'A2' : {text: '删除供应商', type: 'item'},
+					'A3' : {text: '修改供应商', type: 'item'},
+					'A4' : {text: '查询供应商', type: 'item'}
+				}
+			}
+			tree_data['B']['additionalParameters'] = {
+				'children' : {
+					'B1' : {text: '新增供应商分组', type: 'item'},
+					'B2' : {text: '删除供应商分组', type: 'item'},
+					'B3' : {text: '修改供应商分组', type: 'item'},
+					'B4' : {text: '查询供应商分组', type: 'item'}
+				}
+			}
+
+			var dataSource1 = function(options, callback){
+				var $data = null
+				if(!("text" in options) && !("type" in options)){
+					$data = tree_data;//the root tree
+					callback({ data: $data });
+					return;
+				}
+				else if("type" in options && options.type == "folder") {
+					if("additionalParameters" in options && "children" in options.additionalParameters)
+						$data = options.additionalParameters.children || {};
+					else $data = {}//no data
+				}
+
+				if($data != null)//this setTimeout is only for mimicking some random delay
+					setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+
+				//we have used static data here
+				//but you can retrieve your data dynamically from a server using ajax call
+				//checkout examples/treeview.html and examples/treeview.js for more info
+			}
+
+
+
+			return {'dataSource1': dataSource1}
+		}
+
+	})
+</script>
+
+<!-- the following scripts are used in demo only for onpage help and you don't need them -->
+<link rel="stylesheet" href="../assets/css/ace.onpage-help.css" />
+<link rel="stylesheet" href="../docs/assets/js/themes/sunburst.css" />
+
+<script type="text/javascript"> ace.vars['base'] = '..'; </script>
+<script src="../assets/js/src/elements.onpage-help.js"></script>
+<script src="../assets/js/src/ace.onpage-help.js"></script>
+<script src="../docs/assets/js/rainbow.js"></script>
+<script src="../docs/assets/js/language/generic.js"></script>
+<script src="../docs/assets/js/language/html.js"></script>
+<script src="../docs/assets/js/language/css.js"></script>
+<script src="../docs/assets/js/language/javascript.js"></script>
+</body>
+</html>

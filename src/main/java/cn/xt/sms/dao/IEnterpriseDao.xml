@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xt.sms.dao.IEnterpriseDao" >
+
+  <resultMap id="EnterpriseMap" type="Enterprise">
+    <id property="id" column="te_id"/>
+    <result property="identify" column="te_identify"/>
+    <result property="fullName" column="te_full_name"/>
+    <result property="simpleName" column="te_simple_name"/>
+    <result property="UCCcode" column="te_UCCcode"/>
+    <result property="legalRepresentative" column="te_legal_representative"/>
+    <result property="website" column="te_website"/>
+    <result property="mainProduct" column="te_main_product"/>
+    <result property="foundDate" column="te_found_date"/>
+    <result property="type" column="te_type"/>
+    <result property="registeredCapital" column="te_registered_capital"/>
+    <result property="businessDeadlineGo" column="te_business_deadline_go"/>
+    <result property="businessDeadlineTo" column="te_business_deadline_to"/>
+    <result property="registerDepartment" column="te_register_department"/>
+    <result property="approvalDate" column="te_approval_date"/>
+    <result property="registerState" column="te_register_state"/>
+    <result property="address" column="te_address"/>
+    <result property="operateRange" column="te_operate_range"/>
+    <result property="exceptionInfo" column="te_exception_info"/>
+    <result property="dangerInfo" column="te_danger_info"/>
+    <result property="comment" column="te_comment"/>
+    <result property="userDefinedFieldOne" column="te_user_defined_field_one"/>
+    <result property="userDefinedFieldTwo" column="te_user_defined_field_two"/>
+    <result property="userDefinedFieldThree" column="te_user_defined_field_three"/>
+    <result property="userDefinedFieldFour" column="te_user_defined_field_four"/>
+    <result property="userDefinedFieldFive" column="te_user_defined_field_five"/>
+    <result property="enterDate" column="te_enter_date"/>
+    <result property="level" column="te_level"/>
+    <association property="contactId" javaType="Contact">
+      <id property="id" column="tc_id"/>
+      <result property="nameMaster" column="tc_name_master"/>
+      <result property="nameSlave" column="tc_name_slave"/>
+      <result property="phoneNumberMaster" column="tc_phone_number_master"/>
+      <result property="phoneNumberSlave" column="tc_phone_number_slave"/>
+      <result property="comment" column="tc_comment"/>
+    </association>
+    <association property="tradeGroupId" javaType="TradeGroup">
+      <id property="id" column="ttg_id"/>
+      <result property="name" column="ttg_name"/>
+    </association>
+    <collection property="cooperationList" ofType="Cooperation">
+      <id property="id" column="tco_id"/>
+      <result property="projectName" column="tco_project_name"/>
+      <result property="productName" column="tco_product_name"/>
+      <association property="contactId" javaType="Contact">
+        <id property="id" column="tc2_id"/>
+        <result property="nameMaster" column="tc2_name_master"/>
+        <result property="nameSlave" column="tc2_name_slave"/>
+        <result property="phoneNumberMaster" column="tc2_phone_number_master"/>
+        <result property="phoneNumberSlave" column="tc2_phone_number_slave"/>
+        <result property="comment" column="tc2_comment"/>
+      </association>
+    </collection>
+  </resultMap>
+
+  <resultMap id="HashMap" type="cn.xt.sms.Result.MapResult">
+    <result column="id" property="key"/>
+    <result column="name" property="value"/>
+  </resultMap>
+
+  <select id="selectContactIdById" parameterType="integer" resultType="integer">
+    SELECT `contact_id` FROM `table_enterprise` WHERE `id` = #{id}
+  </select>
+
+  <insert id="addEnterprise" parameterType="Enterprise" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO `table_enterprise` (`full_name`,`simple_name`,`UCCcode`,`legal_representative`,`website`,`main_product`,
+    `found_date`,`type`,`registered_capital`,`business_deadline_go`,`business_deadline_to`,`contact_id`,
+    `register_department`,`approval_date`,`register_state`,`address`,`operate_range`,`exception_info`,`danger_info`,
+    `trade_group_id`,`comment`,`user_defined_field_one`,`user_defined_field_two`,`user_defined_field_three`,
+    `user_defined_field_four`,`user_defined_field_five`,`enter_date`,`level`) VALUES (#{fullName},#{simpleName},#{UCCcode},
+    #{legalRepresentative},#{website},#{mainProduct},#{foundDate},#{type},
+    #{registeredCapital},#{businessDeadlineGo},#{businessDeadlineTo},#{contactId.id},#{registerDepartment},#{approvalDate},#{registerState},
+    #{address},#{operateRange},#{exceptionInfo},#{dangerInfo},#{tradeGroupId.id},#{comment},#{userDefinedFieldOne},
+    #{userDefinedFieldTwo},#{userDefinedFieldThree},#{userDefinedFieldFour},#{userDefinedFieldFive},#{enterDate},#{level});
+  </insert>
+
+  <delete id="deleteEnterprise" parameterType="integer">
+    DELETE FROM `table_enterprise` WHERE `id` = #{id};
+  </delete>
+
+  <update id="updateEnterprise" parameterType="Enterprise">
+    UPDATE `table_enterprise`
+      <set>
+        `id`=#{id},
+        <if test="fullName != null and fullName != ''">`full_name`=#{fullName},</if>
+        <if test="simpleName != null and simpleName != ''">`simple_name`=#{simpleName},</if>
+        <if test="UCCcode != null and UCCcode != ''">`UCCcode`=#{UCCcode},</if>
+        <if test="legalRepresentative != null and legalRepresentative !=''">`legal_representative`=#{legalRepresentative},</if>
+        <if test="website != null and website != ''">`website`=#{website},</if>
+        <if test="mainProduct != null and mainProduct != ''">`main_product`=#{mainProduct},</if>
+        <if test="foundDate != null ">`found_date`=#{foundDate},</if>
+        <if test="type != null and type != ''">`type`=#{type},</if>
+        <if test="registeredCapital != null and registeredCapital != ''">`registered_capital`=#{registeredCapital},</if>
+        <if test="businessDeadlineGo != null ">`business_deadline_go`=#{businessDeadlineGo},</if>
+        <if test="businessDeadlineTo != null ">`business_deadline_to`=#{businessDeadlineTo},</if>
+        <if test="registerDepartment != null and registerDepartment != ''">`register_department`=#{registerDepartment},</if>
+        <if test="approvalDate != null ">`approval_date`=#{approvalDate},</if>
+        <if test="registerState != null and registerState != ''">`register_state`=#{registerState},</if>
+        <if test="address != null and address != ''">`address`=#{address},</if>
+        <if test="operateRange != null and operateRange != ''">`operate_range`=#{operateRange},</if>
+        <if test="exceptionInfo != null and exceptionInfo != ''">`exception_info`=#{exceptionInfo},</if>
+        <if test="dangerInfo != null and dangerInfo != ''">`danger_info`=#{dangerInfo},</if>
+        <if test="tradeGroupId != null and tradeGroupId.id != 0">`trade_group_id`=#{tradeGroupId.id},</if>
+        <if test="comment != null and comment != ''">`comment`=#{comment},</if>
+        <if test="userDefinedFieldOne != null and userDefinedFieldOne != ''">`user_defined_field_one`=#{userDefinedFieldOne},</if>
+        <if test="userDefinedFieldTwo != null and userDefinedFieldTwo != ''">`user_defined_field_two`=#{userDefinedFieldTwo},</if>
+        <if test="userDefinedFieldThree != null and userDefinedFieldThree != ''">`user_defined_field_three`=#{userDefinedFieldThree},</if>
+        <if test="userDefinedFieldFour != null and userDefinedFieldFour != ''">`user_defined_field_four`=#{userDefinedFieldFour},</if>
+        <if test="userDefinedFieldFive != null and userDefinedFieldFive != ''">`user_defined_field_five`=#{userDefinedFieldFive},</if>
+        <if test="enterDate != null">`enter_date`=#{enterDate}</if>
+        <if test="level != null">`level`=#{level}</if>
+      </set>
+    WHERE `id` = #{id}
+  </update>
+
+  <select id="selectEnterprise" resultMap="EnterpriseMap">
+    SELECT temp2.*,
+      tco.`id` tco_id,tco.`project_name` tco_project_name,tco.`product_name` tco_product_name,
+      tc2.`id` tc2_id,tc2.`name_master` tc2_name_master,tc2.`name_slave` tc2_name_slave,tc2.`phone_number_master` tc2_phone_number_master,tc2.`phone_number_slave` tc2_phone_number_slave,tc2.`comment` tc2_comment
+    FROM
+      (SELECT temp.`identify` te_identify,te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
+      te.`found_date` te_found_date,te.`type` te_type,te.`registered_capital` te_registered_capital,te.`business_deadline_go` te_business_deadline_go,
+      te.`business_deadline_to` te_business_deadline_to,te.`register_department` te_register_department,te.`approval_date` te_approval_date,te.`register_state` te_register_state,
+      te.`address` te_address,te.`operate_range` te_operate_range,te.`exception_info` te_exception_info,te.`danger_info` te_danger_info,te.`comment` te_comment,
+      te.`user_defined_field_one` te_user_defined_field_one,te.`user_defined_field_two` te_user_defined_field_two,te.`user_defined_field_three` te_user_defined_field_three,
+      te.`user_defined_field_four` te_user_defined_field_four,te.`user_defined_field_five` te_user_defined_field_five,te.`enter_date` te_enter_date,te.`level` te_level,
+      tc.`id` tc_id,tc.`name_master` tc_name_master,tc.`name_slave` tc_name_slave,tc.`phone_number_master` tc_phone_number_master,tc.`phone_number_slave` tc_phone_number_slave,tc.`comment` tc_comment,
+      ttg.`id` ttg_id,ttg.`name` ttg_name
+
+      FROM `table_enterprise` AS te
+      LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
+      LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
+      LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`
+      <where>
+        1=1
+        <if test="enterpriseCondition != null">
+          <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+            AND
+            <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+              `trade_group_id` = #{group}
+            </foreach>
+          </if>
+          <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
+          <choose>
+            <when test="enterpriseCondition.unionSearch">
+              <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+              <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+            </when>
+            <otherwise>
+              <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+              <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+            </otherwise>
+          </choose>
+          <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+
+          <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
+            ORDER BY `${enterpriseCondition.sort}`
+            <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
+              ${enterpriseCondition.sorted}
+            </if>
+          </if>
+        </if>
+      </where>
+      <if test="pageSize != null and offset != null">
+        LIMIT #{offset},#{pageSize}
+      </if>) as temp2
+    LEFT JOIN `table_cooperation` AS tco ON tco.`enterprise_id` = temp2.`te_id`
+    LEFT JOIN `table_contact` AS tc2 ON tc2.`id` = tco.`contact_id`
+    ORDER BY `te_identify`
+  </select>
+
+  <select id="selectSimpleEnterprise" resultMap="EnterpriseMap">
+    SELECT temp.`identify` te_identify,te.`id` te_id,te.`full_name` te_full_name,te.`UCCcode` te_UCCcode,te.`website` te_website,te.`main_product` te_main_product,te.`level` te_level,ttg.`name` ttg_name
+    FROM `table_enterprise` AS te
+    LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
+    LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`
+    <where>
+      1=1
+      <if test="enterpriseCondition != null">
+        <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+          AND
+          <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+            `trade_group_id` = #{group}
+          </foreach>
+        </if>
+        <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
+        <choose>
+          <when test="enterpriseCondition.unionSearch">
+            <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+            <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+          </when>
+          <otherwise>
+            <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+            <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+          </otherwise>
+        </choose>
+        <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+
+        <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
+          ORDER BY `${enterpriseCondition.sort}`
+          <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
+            ${enterpriseCondition.sorted}
+          </if>
+        </if>
+
+      </if>
+    </where>
+
+    <if test="pageSize != null and offset != null">
+      LIMIT #{offset},#{pageSize}
+    </if>
+  </select>
+
+  <select id="selectEnterpriseCount" resultType="integer" parameterType="cn.xt.sms.Condition.EnterpriseCondition">
+    SELECT COUNT(`id`) FROM `table_enterprise`
+    <where>
+      1=1
+      <if test="groups != null and groups.size() > 0">
+        AND
+        <foreach collection="groups" item="group" separator="or" open="(" close=")">
+          `trade_group_id` = #{group}
+        </foreach>
+      </if>
+      <if test="operateRange != null and operateRange != ''">AND `operate_range` LIKE '%' #{operateRange} '%'</if>
+      <choose>
+        <when test="unionSearch">
+          <if test="fullName != null and fullName != ''">OR `full_name` LIKE '%' #{fullName} '%'</if>
+          <if test="uccCode != null and uccCode != ''">OR `UCCcode` LIKE '%' #{uccCode} '%'</if>
+        </when>
+        <otherwise>
+          <if test="fullName != null and fullName != ''">AND `full_name` LIKE '%' #{fullName} '%'</if>
+          <if test="uccCode != null and uccCode != ''">AND `UCCcode` LIKE '%' #{uccCode} '%'</if>
+        </otherwise>
+      </choose>
+      <if test="includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+    </where>
+  </select>
+
+  <select id="getEnterpriseById" parameterType="integer" resultMap="EnterpriseMap">
+    SELECT te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
+    te.`found_date` te_found_date,te.`type` te_type,te.`registered_capital` te_registered_capital,te.`business_deadline_go` te_business_deadline_go,
+    te.`business_deadline_to` te_business_deadline_to,te.`register_department` te_register_department,te.`approval_date` te_approval_date,te.`register_state` te_register_state,
+    te.`address` te_address,te.`operate_range` te_operate_range,te.`exception_info` te_exception_info,te.`danger_info` te_danger_info,te.`comment` te_comment,
+    te.`user_defined_field_one` te_user_defined_field_one,te.`user_defined_field_two` te_user_defined_field_two,te.`user_defined_field_three` te_user_defined_field_three,
+    te.`user_defined_field_four` te_user_defined_field_four,te.`user_defined_field_five` te_user_defined_field_five,te.`enter_date` te_enter_date,te.`level` te_level,
+    tc.`id` tc_id,tc.`name_master` tc_name_master,tc.`name_slave` tc_name_slave,tc.`phone_number_master` tc_phone_number_master,tc.`phone_number_slave` tc_phone_number_slave,tc.`comment` tc_comment,
+    tco.`id` tco_id,tco.`project_name` tco_project_name,tco.`product_name` tco_product_name,
+    tc2.`id` tc2_id,tc2.`name_master` tc2_name_master,tc2.`name_slave` tc2_name_slave,tc2.`phone_number_master` tc2_phone_number_master,tc2.`phone_number_slave` tc2_phone_number_slave,tc2.`comment` tc2_comment,
+    ttg.`id` ttg_id,ttg.`name` ttg_name
+
+    FROM `table_enterprise` AS te
+    LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
+    LEFT JOIN `table_cooperation` AS tco ON tco.`enterprise_id` = te.`id`
+    LEFT JOIN `table_contact` AS tc2 ON tc2.`id` = tco.`contact_id`
+    LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
+    WHERE te.`id` = #{id}
+  </select>
+
+  <select id="getUserDefinedFieldName" resultType="UserDefinedFieldName">
+    SELECT `user_defined_field_one_name`,`user_defined_field_two_name`,`user_defined_field_three_name`,`user_defined_field_four_name`,`user_defined_field_five_name` FROM `table_user_defined_field_name` LIMIT 0,1
+  </select>
+
+  <select id="getIdByFullName" parameterType="string" resultType="integer">
+    SELECT `id` FROM `table_enterprise` WHERE `full_name` = #{fullName} LIMIT 0,1
+  </select>
+
+  <select id="getIdByTradeGroupId" parameterType="integer" resultType="integer">
+    SELECT `id` FROM `table_enterprise` WHERE `trade_group_id` = #{tradeGroupId}
+  </select>
+
+  <select id="getEnterpriseIdAndName" resultMap="HashMap">
+    SELECT `id`, `full_name` `name` FROM `table_enterprise`
+  </select>
+
+</mapper>
