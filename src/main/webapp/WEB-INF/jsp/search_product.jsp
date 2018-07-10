@@ -1627,7 +1627,7 @@
         });
 
         var type = "product";
-        <jsp:include page="${pageContext.request.contextPath}/common/excel-download-modal.jsp"/>
+        <jsp:include page="${pageContext.request.contextPath}/common/excel-download-modal.js"/>
 
     });
 </script>

@@ -159,6 +159,11 @@
 <script src="${pageContent.request.contentPath}/statics/components/bootbox.js/bootbox.js"></script>
 <script src="${pageContent.request.contentPath}/statics/js/bootstrap-dialog.js"></script>
 
+<script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
 <!-- ace scripts -->
 <jsp:include page="${pageContent.request.contentPath}/common/ace-script.jsp"/>
 <jsp:include page="${pageContext.request.contextPath}/common/time.jsp"/>
@@ -198,21 +203,8 @@
             if (count < 1) {
                 deleteRow(id);
             } else {
-                bootbox.dialog({
-                    message: "你确定删除吗？这将删除分组下的"+ count +"条供应商信息！",
-                    buttons: {
-                        "cancel": {
-                            "label": "",
-                            "className": "btn-sm btn-primary"
-                        },
-                        "ok": {
-                            "label": "",
-                            "className": "btn-sm btn-danger",
-                            "callback": function() {
-                                deleteRow(id);
-                            }
-                        }
-                    }
+                $.modalConfirm("你确定删除吗？这将删除分组下的"+ count +"条供应商信息！", function() {
+                    deleteRow(id);
                 });
             }
 
@@ -318,9 +310,18 @@
 
         /*删除数据的方法*/
         function deleteRow(id) {
-            $.post("${pageContext.request.contextPath}/tradeGroup/delete", {"id": id}, function() {
-                refursh();
-            }, "text");
+            var config = {
+                url: "${pageContext.request.contextPath}/tradeGroup/delete",
+                type: "post",
+                dataType: "text",
+                data: {"id": id},
+                success: function(result) {
+                    result = result == "success" ? {code: "success", msg: "删除成功"} : {code: "error", msg: "删除失败"};
+                    $.modalMsg(result.msg, result.code);
+                    refursh();
+                }
+            };
+            $.ajax(config);
         }
     });
 </script>

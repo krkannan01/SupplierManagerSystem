@@ -40,7 +40,7 @@ function convert_error_only($el) {
 
 /*数字框校验*/
 $("body").delegate(".number-box", "keyup", function() {
-    this.value = this.value.replace(/[^\.\d]/g, "");
+    this.value = this.value.replace(/[^\d]/g, "");
 });
 
 $("body").delegate(".min-box", "keyup", function() {

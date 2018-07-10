@@ -275,6 +275,11 @@
 <script src="${pageContext.request.contextPath}/statics/components/raty/lib/jquery.raty.js"></script>
 <%--<script src="${pageContext.request.contextPath}/statics/components/chosen/chosen.jquery.js"></script>--%>
 
+<script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
 <!-- ace scripts -->
 <jsp:include page="${pageContext.request.contextPath}/common/ace-script.jsp"/>
 <jsp:include page="${pageContext.request.contextPath}/common/time.jsp"/>
@@ -422,46 +427,32 @@
                         $.get("${pageContext.request.contextPath}/enterprise/isUnique", {"fullName": $this.val()}, function(data) {
                             if (data == "true") {
                                 /*如果有 移除success,warning样式 添加error样式*/
-                                $this.closest(".form-group").removeClass("has-success").removeClass("has-warning").addClass("has-error");
-                                $this.next().removeClass("fa-info-circle").removeClass("fa-check-circle").removeClass("fa-check-circle").addClass("fa-times").attr("title", "企业名称已存在");
-                                bootbox.dialog({
-                                    "message": "该企业名称已存在了，不允许重复添加哦",
-                                    "buttons": {
-                                        "danger": {
-                                            "label": "知道了",
-                                            "className": "btn-sm btn-warning"
-                                        }
-                                    }
-                                });
+                                convert_error($this, "企业名称已存在");
+                                $.modalMsg("该企业名称已存在了，不允许重复添加哦", "warning");
+
                             } else {
                                 /*如果没有，移除error,warning样式 添加success样式*/
-                                $this.closest(".form-group").removeClass("has-warning").removeClass("has-error").addClass("has-success");
-                                $this.next().removeClass("fa-info-circle").removeClass("fa-times").addClass("fa-check-circle").attr("title", "通过验证");
+                                convert_success($this, "通过验证");
                             }
                         }, "text");
                     } else {
-                        $this.closest(".form-group").removeClass("has-success").removeClass("has-error").addClass("has-warning");
-                        $this.next().removeClass("fa-check-circle").addClass("fa-info-circle").remove("fa-times").attr("title", "必填项");
+                        convert_warning($this, "必填项");
                     }
                 }
                 /*对于id为tradeGroup的元素需要进行另类的验证*/
                 else if (this.getAttribute("id") == "tradeGroup") {
                     if ($this.val() > 0) {
-                        $this.closest(".form-group").removeClass("has-warning").addClass("has-success");
-                        $this.parent().next().find("i").removeClass("fa-info-circle").addClass("fa-check-circle").attr("title", "通过验证");
+                        convert_success($this, "通过验证");
                     } else {
-                        $this.closest(".form-group").removeClass("has-success").addClass("has-warning");
-                        $this.parent().next().find("i").removeClass("fa-check-circle").addClass("fa-info-circle").attr("title", "必填项");
+                        convert_warning($this, "必填项");
                     }
                 }
                 /*剩下的统一使用以下方法验证*/
                 else {
                     if ($this.val()) {
-                        $this.closest(".form-group").removeClass("has-warning").addClass("has-success");
-                        $this.next().removeClass("fa-info-circle").addClass("fa-check-circle").attr("title", "通过验证");
+                        convert_success($this, "通过验证");
                     } else {
-                        $this.closest(".form-group").removeClass("has-success").addClass("has-warning");
-                        $this.next().removeClass("fa-check-circle").addClass("fa-info-circle").attr("title", "必填项");
+                        convert_warning($this, "必填项");
                     }
                 }
 
@@ -484,11 +475,9 @@
             "blur": function() {
                 var $this = $(this);
                 if ($this.val()) {
-                    $this.closest(".form-group").removeClass("has-warning").addClass("has-success");
-                    $this.next().removeClass("fa-info-circle").addClass("fa-check-circle").attr("title","通过验证");
+                    convert_success($this, "通过验证");
                 } else {
-                    $this.closest(".form-group").removeClass("has-success").addClass("has-warning");
-                    $this.next().removeClass("fa-check-circle").addClass("fa-info-circle").attr("title","必填项");
+                    convert_warning($this, "必填项");
                 }
                 if ($("#contact-form .has-warning").length < 1) {
                     next.removeAttr("disabled");
