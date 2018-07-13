@@ -1,6 +1,6 @@
 package cn.xt.sms.service;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 

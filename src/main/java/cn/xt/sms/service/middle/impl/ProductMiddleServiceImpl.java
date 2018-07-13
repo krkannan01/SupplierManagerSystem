@@ -1,25 +1,20 @@
 package cn.xt.sms.service.middle.impl;
 
-import cn.xt.sms.Condition.ProductCondition;
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.condition.ProductCondition;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.*;
 import cn.xt.sms.exception.NullCellValueException;
 import cn.xt.sms.service.*;
-import cn.xt.sms.service.middle.IEnterpriseMiddleService;
 import cn.xt.sms.service.middle.IProductMiddleService;
 import cn.xt.sms.util.POIUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -28,10 +23,9 @@ import static org.fusesource.jansi.Ansi.ansi;
  * @author xietao.x@qq.com
  * @date 2018/5/6
  */
+@Log4j
 @Service
 public class ProductMiddleServiceImpl implements IProductMiddleService {
-
-    private Logger logger = Logger.getLogger(ProductMiddleServiceImpl.class);
 
     @Autowired
     private IProductService productService;
@@ -110,7 +104,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                     continue;
                 }
             } catch (Exception e) {
-                logger.error("插入材料信息出现异常!\t" + e.getMessage());
+                log.error("插入材料信息出现异常!\t" + e.getMessage());
                 continue;
             }
         }
@@ -178,7 +172,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                 id = Integer.valueOf(temp[i]);
                 enterpriseService.deleteEnterprise(id);
             } catch(Exception e) {
-                logger.error("删除材料信息出现异常!\t" + e.getMessage());
+                log.error("删除材料信息出现异常!\t" + e.getMessage());
                 continue;
             }
         }

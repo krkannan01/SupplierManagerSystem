@@ -1,9 +1,12 @@
 package cn.xt.sms.entity;
 
+import lombok.Data;
+
 /**
  * @author xietao.x@qq.com
  * @date 2018/4/28
  */
+@Data
 public class ProductBrand {
 
     private Integer id;
@@ -15,30 +18,6 @@ public class ProductBrand {
 
     public ProductBrand(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
     }
 
 }

@@ -9,12 +9,12 @@
 	w		弹出层宽度（缺省调默认值）
 	h		弹出层高度（缺省调默认值）
 */
-function layer_show(title, url, w, h) {
+function layer_show(title, content, w, h, type) {
     if (title == null || title == '') {
         title = false;
     };
-    if (url == null || url == '') {
-        url = "404.html";
+    if (content == null || content == '') {
+        content = "404.html";
     };
     if (w == null || w == '') {
         w = 800;
@@ -22,20 +22,27 @@ function layer_show(title, url, w, h) {
     if (h == null || h == '') {
         h = ($(window).height() - 50);
     };
+    if (type == null || type == '') {
+        type = 0;
+    }
     layer.open({
-        type: 2,
+        type: type,
         area: [w + 'px', h + 'px'],
         fix: false,
         //不固定
         maxmin: true,
         shade: 0.4,
         title: title,
-        content: url
+        content: content
     });
 }
 
-function layer_showAuto(title, url) {
-	layer_show(title, url, '', '');
+function layer_showAuto(title, url,) {
+	layer_show(title, url, '', '', 2);
+}
+
+function layer_showContent(title, content, w, h) {
+    layer_show(title, content, w, h, '');
 }
 
 /*关闭弹出框口*/

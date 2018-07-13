@@ -1,19 +1,17 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IUserService;
 import cn.xt.sms.util.MD5Util;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
@@ -21,7 +19,6 @@ import sun.misc.BASE64Decoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,11 +26,10 @@ import java.util.List;
  * @author xietao.x@qq.com
  * @date 2018/3/28
  */
+@Log4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
-
-    Logger log = Logger.getLogger(UserController.class);
 
     @Autowired
     private IUserService userService;

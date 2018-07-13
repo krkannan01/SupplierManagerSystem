@@ -1,11 +1,14 @@
 package cn.xt.sms.entity;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * 材料分组实体
  * @author xietao.x@qq.com
  */
+@Data
 public class ProductGroup {
 
     private Integer id;//ID
@@ -24,38 +27,6 @@ public class ProductGroup {
         this.id = id;
         this.name = name;
         this.parentId = parentId;
-        this.children = children;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public List<ProductGroup> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<ProductGroup> children) {
         this.children = children;
     }
 

@@ -1,7 +1,7 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.Condition.ProductCondition;
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.condition.ProductCondition;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.entity.ProductBrand;
 import cn.xt.sms.service.IProductBrandService;

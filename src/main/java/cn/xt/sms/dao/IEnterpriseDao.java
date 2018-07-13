@@ -1,14 +1,13 @@
 package cn.xt.sms.dao;
 
-import cn.xt.sms.Result.MapResult;
+import cn.xt.sms.result.MapResult;
 import cn.xt.sms.entity.Enterprise;
-import cn.xt.sms.Condition.EnterpriseCondition;
-import cn.xt.sms.entity.TradeGroup;
+import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.entity.UserDefinedFieldName;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *

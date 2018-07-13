@@ -1,6 +1,6 @@
 package cn.xt.sms.service.middle.impl;
 
-import cn.xt.sms.Condition.EnterpriseCondition;
+import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.entity.Contact;
 import cn.xt.sms.entity.Cooperation;
 import cn.xt.sms.entity.Enterprise;
@@ -8,10 +8,9 @@ import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.exception.NullCellValueException;
 import cn.xt.sms.service.IEnterpriseService;
 import cn.xt.sms.service.ITradeGroupService;
-import cn.xt.sms.service.impl.EnterpriseServiceImpl;
 import cn.xt.sms.service.middle.IEnterpriseMiddleService;
 import cn.xt.sms.util.POIUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -29,9 +28,8 @@ import static org.fusesource.jansi.Ansi.ansi;
  * @date 2018/5/6
  */
 @Service
+@Log4j
 public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
-
-    private Logger logger = Logger.getLogger(EnterpriseMiddleServiceImpl.class);
 
     @Autowired
     private IEnterpriseService enterpriseService;
@@ -233,7 +231,7 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                     success++;
                 }
             } catch (Exception e) {
-                logger.error("插入企业信息出现异常!\t" + e.getMessage());
+                log.error("插入企业信息出现异常!\t" + e.getMessage());
                 continue;
             }
         }
@@ -349,7 +347,7 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 id = Integer.valueOf(temp[i]);
                 enterpriseService.deleteEnterprise(id);
             } catch(Exception e) {
-                logger.error("删除企业信息出现异常!\t" + e.getMessage());
+                log.error("删除企业信息出现异常!\t" + e.getMessage());
                 continue;
             }
         }

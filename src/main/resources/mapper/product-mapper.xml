@@ -24,7 +24,7 @@
     </association>
   </resultMap>
 
-  <select id="selectProductCount" parameterType="cn.xt.sms.Condition.ProductCondition" resultType="integer">
+  <select id="selectProductCount" parameterType="cn.xt.sms.condition.ProductCondition" resultType="integer">
     SELECT count(tp.`id`)
     FROM `table_product` tp
     LEFT JOIN `table_product_group` tpg ON tp.`group_id` = tpg.`id`

@@ -1,12 +1,8 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.Result.MapResult;
-import cn.xt.sms.Result.MyResult;
-import cn.xt.sms.dao.IEnterpriseDao;
-import cn.xt.sms.entity.User;
+import cn.xt.sms.result.MapResult;
 import cn.xt.sms.service.IEnterpriseService;
 import cn.xt.sms.service.IRedisService;
-import cn.xt.sms.service.IUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

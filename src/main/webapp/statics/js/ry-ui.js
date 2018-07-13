@@ -43,7 +43,7 @@ $(function(){
 	}
 	// 确认窗体
 	$.modalConfirm = function (content, callBack) {
-	        layer.confirm(content, {
+		layer.confirm(content, {
 	        icon: 3,
 	        title: "系统提示",
 	        btn: ['确认', '取消'],

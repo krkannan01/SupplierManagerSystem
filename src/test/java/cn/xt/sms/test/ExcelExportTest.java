@@ -1,6 +1,6 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Cooperation;
 import cn.xt.sms.entity.Enterprise;
 import cn.xt.sms.entity.Product;
@@ -9,7 +9,6 @@ import cn.xt.sms.service.IProductService;
 import cn.xt.sms.util.POIUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.List;
 
 /**

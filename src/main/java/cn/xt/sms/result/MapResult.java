@@ -1,4 +1,4 @@
-package cn.xt.sms.Result;
+package cn.xt.sms.result;
 
 import java.io.Serializable;
 

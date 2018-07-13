@@ -1,12 +1,7 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.Result.MapResult;
-import cn.xt.sms.entity.Enterprise;
-import cn.xt.sms.entity.ProductBrand;
+import cn.xt.sms.result.MapResult;
 import com.alibaba.fastjson.JSON;
-
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
 
 import java.util.Timer;
 import java.util.TimerTask;

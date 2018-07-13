@@ -13,7 +13,7 @@ function product_group_unique(name) {
     var unique = false;
     /*验证该分组名称是否已存在*/
     $.ajax({
-        url: path + "/productGroup/unique",
+        url: $ctx + "/productGroup/unique",
         type: "POST",
         data: {name: name},
         dataType: "TEXT",
@@ -31,7 +31,7 @@ function product_group_unique(name) {
 function get_brand_by_group_ids(id_str) {
     var result = "";
     $.ajax({
-        url: path + "/product/getBrandByGroupId",
+        url: $ctx + "/product/getBrandByGroupId",
         type: "POST",
         dataType: "JSON",
         async: false,
@@ -174,7 +174,7 @@ function init_enterprise($el) {
     var html = "<option value='0'></option>";
     //加载数据
     $.ajax({
-        url: path + "/enterprise/getEnterpriseIdAndName",
+        url: $ctx + "/enterprise/getEnterpriseIdAndName",
         type: "POST",
         dataType: "JSON",
         async: false,

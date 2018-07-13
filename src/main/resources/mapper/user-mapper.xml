@@ -4,17 +4,17 @@
 
   <!--<resultMap id="UserMap" type="User">
     <id column="id" property="id"/>
-    <Result column="username" property="username"/>
-    <Result column="real_name" property="realName"/>
-    <Result column="phone_number" property="phoneNumber"/>
-    <Result column="is_su" property="isSu"/>
-    <Result column="level" property="level"/>
-    <Result column="last_online_time" property="lastOnLineTime"/>
-    <Result column="birthday" property="birthday"/>
-    <Result column="state" property="state"/>
-    <Result column="create_time" property="createTime"/>
-    <Result column="location" property="location"/>
-    <Result column="about_me" property="aboutMe"/>
+    <result column="username" property="username"/>
+    <result column="real_name" property="realName"/>
+    <result column="phone_number" property="phoneNumber"/>
+    <result column="is_su" property="isSu"/>
+    <result column="level" property="level"/>
+    <result column="last_online_time" property="lastOnLineTime"/>
+    <result column="birthday" property="birthday"/>
+    <result column="state" property="state"/>
+    <result column="create_time" property="createTime"/>
+    <result column="location" property="location"/>
+    <result column="about_me" property="aboutMe"/>
   </resultMap>-->
   
   <sql id="common_column">

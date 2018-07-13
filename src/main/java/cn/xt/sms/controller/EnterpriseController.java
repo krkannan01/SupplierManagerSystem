@@ -1,17 +1,14 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.Result.MapResult;
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MapResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Enterprise;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.entity.UserDefinedFieldName;
 import cn.xt.sms.service.IEnterpriseService;
-import cn.xt.sms.Condition.EnterpriseCondition;
+import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.service.ITradeGroupService;
 import cn.xt.sms.service.middle.IEnterpriseMiddleService;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
@@ -26,9 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 企业信息 控制层

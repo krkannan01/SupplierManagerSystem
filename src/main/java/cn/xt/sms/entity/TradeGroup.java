@@ -1,9 +1,12 @@
 package cn.xt.sms.entity;
 
+import lombok.Data;
+
 /**
  * 企业分组实体类
  * @author xietao.x@qq.com
  */
+@Data
 public class TradeGroup {
 
     private Integer id;//ID
@@ -19,36 +22,4 @@ public class TradeGroup {
         this.count = count;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    @Override
-    public String toString() {
-        return "TradeGroup{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                ", count=" + count +
-                '}';
-    }
 }

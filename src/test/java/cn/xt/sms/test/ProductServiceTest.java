@@ -1,11 +1,9 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.Condition.ProductCondition;
-import cn.xt.sms.Result.MyResult;
-import cn.xt.sms.dao.IProductGroupDao;
+import cn.xt.sms.condition.ProductCondition;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.entity.ProductGroup;
-import cn.xt.sms.service.IEnterpriseService;
 import cn.xt.sms.service.IProductGroupService;
 import cn.xt.sms.service.IProductService;
 import cn.xt.sms.service.middle.IProductMiddleService;

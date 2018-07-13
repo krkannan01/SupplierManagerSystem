@@ -6,7 +6,8 @@ import cn.xt.sms.service.IUserService;
 import cn.xt.sms.util.CheckCodeUtil;
 import cn.xt.sms.util.DeadlineUtil;
 import cn.xt.sms.util.MD5Util;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -41,11 +42,10 @@ import java.util.concurrent.TimeUnit;
  * @author xietao.x@qq.com
  * @date 2018/3/11
  */
+@Log4j
 @Controller
 @RequestMapping("/login")
 public class LoginController {
-
-    private Logger log = Logger.getLogger(LoginController.class);
 
     @Autowired
     private CheckCodeUtil checkCodeUtil;

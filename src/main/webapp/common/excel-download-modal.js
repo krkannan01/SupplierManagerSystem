@@ -1,4 +1,4 @@
-function excel_download(type) {
+function excel_download(type, defaultParams) {
     var lower_type = type.toLowerCase();
     var upper_type = lower_type.substring(0, 1).toUpperCase() + lower_type.substring(1);
     /*绑定导出excel事件*/
@@ -14,7 +14,7 @@ function excel_download(type) {
             var url = $ctx + "/" + lower_type + "/exportExcel?start=" + $min_value.val() + "&end=" +
                 $max_value.val();
             if (document.getElementById("hand-condition").checked) {
-                url += "&" + lower_type + "Condition=" + JSON.stringify(defaultParams);
+                url += "&" + lower_type + "condition=" + JSON.stringify(defaultParams);
             }
             location.href = url;
             $min_value.closest(".row").next().text("");

@@ -573,7 +573,7 @@
         if (!EXACT_DATE_TIME[year])
           EXACT_DATE_TIME[year] = {};
 
-        // Result for given parameters is already stored
+        // result for given parameters is already stored
         if (EXACT_DATE_TIME[year][rule])
           effectiveDate = EXACT_DATE_TIME[year][rule];
         else {

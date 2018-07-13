@@ -1,6 +1,6 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IUserService;
 import org.junit.Test;
@@ -10,11 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
-import static org.junit.Assert.*;
 
 /**
  * @author xietao.x@qq.com

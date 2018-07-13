@@ -1,5 +1,7 @@
 package cn.xt.sms.entity;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -7,6 +9,7 @@ import java.util.List;
  * @author xietao.x@qq.com
  * @date 2018/3/30
  */
+@Data
 public class Privilege {
     private Integer id;//权限ID
     private String name;//权限名称
@@ -25,54 +28,4 @@ public class Privilege {
         this.childrens = childrens;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public List<Privilege> getChildrens() {
-        return childrens;
-    }
-
-    public void setChildrens(List<Privilege> childrens) {
-        this.childrens = childrens;
-    }
-
-    @Override
-    public String toString() {
-        return "Privilege{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", parentId=" + parentId +
-                ", childrens=" + childrens +
-                '}';
-    }
 }

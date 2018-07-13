@@ -1,7 +1,8 @@
 package cn.xt.sms.util;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
 import java.text.ParseException;
@@ -12,9 +13,8 @@ import java.util.Date;
 /**
  * Created by Administrator on 2018/2/26.
  */
+@Log4j
 public class MyDateConverter implements Converter<String,Date> {
-
-    Logger log = Logger.getLogger(MyDateConverter.class);
 
     private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     public static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");

@@ -158,7 +158,7 @@ jQuery(function($) {
     }
 
 
-    /*实现复选框全选功能*/
+    /*全选*/
     $('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
         var th_checked = this.checked;//checkbox inside "TH" table header
 
@@ -170,18 +170,37 @@ jQuery(function($) {
 
     });
 
-    /*实现行与复选框的状态同步*/
-    $('#simple-table').delegate('tbody > tr', 'click', function(){
-        //TODO 此处如果是点击复选框，会触发两次行点击事件，暂时无法解决
-        var docCheckbox = $(this).find('td input[type=checkbox]').get(0);
-        if (docCheckbox.checked) {
-            docCheckbox.checked = false;
-            $(this).removeClass("success");
+    /*复选框单击事件*/
+    $('#simple-table').delegate('tbody .trbox', 'click', function(event){
+        var doc = $(this).find("input[type=checkbox]").get(0);
+        if (doc.checked) {
+            doc.checked = false;
+            $(this).closest("tr").removeClass("success");
+            $("#simple-table").find("thead input[type=checkbox]").prop("checked", false);
         } else {
-            docCheckbox.checked = true;
-            $(this).addClass("success");
+            doc.checked = true;
+            $(this).closest("tr").addClass("success");
+            handleIsAllSelect("#simple-table");
         }
+        // 阻止事件冒泡和默认行为
+        event.stopPropagation();
+        event.preventDefault();
+    });
 
+
+    /*行单击事件*/
+    $('#simple-table').delegate('tbody > tr', 'click', function(){
+        // 全部取消选中
+        $("#simple-table").find('tbody input[type=checkbox]').each(function(index, item) {
+            item.checked = false;
+            $(item).closest("tr").removeClass("success");
+        });
+        // 被点击行选中
+        var box = $(this).find("input[type=checkbox]").get(0);
+        box.checked = true;
+        $(this).addClass("success");
+        // 处理是否全选
+        handleIsAllSelect("#simple-table");
     });
 
     /*分组项的单击事件*/
@@ -235,13 +254,16 @@ jQuery(function($) {
             $.modalMsg("您还没有选中要删除的数据呢", "success");
             return;
         }
-        var ids = "";
-        $("#simple-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
-            if (element.checked) {
-                ids += element.getAttribute("data-id")+",";
-            }
-        });
+
         $.modalConfirm("你将删除选中的所有企业的数据，确定吗？", function() {
+            // 获取选中的id
+            var ids = "";
+            $("#simple-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
+                if (element.checked) {
+                    ids += element.getAttribute("data-id")+",";
+                }
+            });
+            // 设置ajax配置
             var config = {
                 url: $ctx + "/enterprise/mutliDelete",
                 type: "post",
@@ -255,6 +277,7 @@ jQuery(function($) {
                     sendRequest();
                 }
             };
+            // 发送ajax请求
             $.ajax(config);
         });
     });
@@ -329,6 +352,8 @@ jQuery(function($) {
         load.css("display", "block");
         prev.css("display", "none");
 
+        var table_data = null;
+        var success = false;
         $.ajax({
             url: $ctx + "/enterprise/search",
             type: "POST",
@@ -336,138 +361,158 @@ jQuery(function($) {
             data: param,
             async: false,
             success: function (data) {
-                var content = "";
-                if (data.rows != null && data.rows.length > 0) {
-                    var colorArray = [" label-success", " label-warning", ""];
-                    /*拼接字符串*/
-                    $.each(data.rows, function (index, item) {
-
-                        var websiteHtml = "<span class='red'>无</span>";
-                        if (item.website) {
-                            var temp_website = item.website;
-                            if (item.website.indexOf("http://") == -1) {
-                                temp_website = "http://" + item.website;
-                            }
-                            websiteHtml = "<a href='" + temp_website + "'>" + temp_website + "</a>";
-                        }
-
-                        var color = colorArray[Math.floor(Math.random() * colorArray.length)];
-                        var tradeGroupIdHtml = "<span class='label label-sm" + color + "'>" + item.tradeGroupId.name + "</span>"
-
-                        content += "<tr>" +
-                            "<td class='center'>" +
-                            "<label class='pos-rel'>" +
-                            "<input type='checkbox' data-id='" + item.id + "' class='ace' />" +
-                            "<span class='lbl'></span>" +
-                            "</label>" +
-                            "</td>" +
-                            "<td class='center'>" +
-                            "<label>"+ item.identify +"</label>" +
-                            "</td>" +
-                            "<td>" +
-                            item.fullName +
-                            "</td>" +
-                            "<td>"+ websiteHtml +"</td>" +
-                            "<td>" + item.uCCcode + "</td>" +
-                            "<td><div class='rating inline' data-score='"+ item.level +"'></div></td>" +
-                            "<td>" + item.mainProduct + "</td>" +
-
-                            "<td>" +
-                            tradeGroupIdHtml +
-                            "</td>" +
-
-                            "<td>" +
-                            "<div class='hidden-sm hidden-xs action-buttons'>" +
-                            "<a class='blue' href='${pageContext.request.contextPath}/enterprise/getEnterpriseById?id="+ item.id +"' target='view_window' title='查看详情'>" +
-                            "<i class='ace-icon fa fa-search-plus bigger-130'></i>" +
-                            "</a>" +
-
-                            "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
-                            "<a class='green' href='${pageContext.request.contextPath}/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' target='view_window' title='编辑'>" +
-                            "<i class='ace-icon fa fa-pencil bigger-130'></i>" +
-                            "</a>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
-                            "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'>" +
-                            "<i class='ace-icon fa fa-trash-o bigger-130'></i>" +
-                            "</a>" +
-                            "</div>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "<div class='hidden-md hidden-lg'>" +
-                            "<div class='inline pos-rel'>" +
-                            "<button class='btn btn-minier btn-yellow dropdown-toggle' data-toggle='dropdown' data-position='auto'>" +
-                            "<i class='ace-icon fa fa-caret-down icon-only bigger-120'></i>" +
-                            "</button>" +
-
-                            "<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'>" +
-                            "<li>" +
-                            "<a href='${pageContext.request.contextPath}/enterprise/getEnterpriseById?id="+ item.id +"' class='tooltip-info showDetails' data-rel='tooltip' title='查看详情' data-id='"+ item.id +"'>" +
-                            "<span class='blue'>" +
-                            "<i class='ace-icon fa fa-search-plus bigger-120'></i>" +
-                            "</span>" +
-                            "</a>" +
-                            "</li>" +
-
-                            "<li>" +
-                            "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
-                            "<a href='${pageContext.request.contextPath}/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
-                            "<span class='green'>" +
-                            "<i class='ace-icon fa fa-pencil-square-o bigger-120'></i>" +
-                            "</span>" +
-                            "</a>" +
-                            "</li>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "<li>" +
-                            "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
-                            "<a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
-                            "<span class='red'>" +
-                            "<i class='ace-icon fa fa-trash-o bigger-120'></i>" +
-                            "</span>" +
-                            "</a>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "</li>" +
-                            "</ul>" +
-                            "</div>" +
-                            "</div>" +
-                            "</td>" +
-                            "</tr>";
-                    });
-                } else {
-                    content += "<tr><td colspan='9'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
-                }
-                $("#simple-table > tbody").html(content);
-                maxCount.html(data.count);
-
-                checkPageState();
-
-
-                $("#simple-table .rating").each(function(index, item) {
-                    var score = item.getAttribute("data-score");
-                    $(item).raty({
-                        'cancel' : false,//是否可以取消 default:false
-                        'half': true,//是否可以选择半星 default:false
-                        'starType' : 'i',
-                        'score' : score,
-                        'readOnly' : true,
-                        'hints' : ['坏', '不好', '合格', '好', '极好']
-                    });
-                    var $children = $(item).children("i");
-                    if (score <= 1) $children.attr("style", "font-size: 20px; color: #d06b64;");
-                    else if (score <= 2) $children.attr("style", "font-size: 20px; color: #fa573c;");
-                    else if (score <= 3) $children.attr("style", "font-size: 20px; color: #ff7537;");
-                    else if (score <= 4) $children.attr("style", "font-size: 20px; color: #9fe1e7;");
-                    else $children.attr("style", "font-size: 20px; color: #42d692;");
-                });
+                table_data = data;
+                success = true;
 
                 /*隐藏加载图标*/
                 load.css("display", "none");
                 prev.css("display", "block");
             }
         });
+
+        if (success)
+            render(table_data);
+        else
+            $.modalMsg("请求出现错误, 重试一下吧！", "error");
+    }
+
+    /*根据新数据重新渲染表格*/
+    function render(data) {
+        var content = "";
+        if (data.rows != null && data.rows.length > 0) {
+
+            // 1. 检查页码
+            maxCount.html(data.count);
+            checkPageState();
+
+            // 2. 计算编号 （当前页数 - 1） * 每页数量 + 1 == 当前第一条记录的编号
+            var startNo = (Number($("#currentPage").val()) - 1) * Number($("#pageSize").val()) + 1;
+            startNo == NaN ? 1 : startNo;
+
+            // 3. 组装内容
+            var colorArray = [" label-success", " label-warning", ""];
+            /*拼接字符串*/
+            $.each(data.rows, function (index, item) {
+
+                /*var websiteHtml = "<span class='red'>无</span>";
+                if (item.website) {
+                    var temp_website = item.website;
+                    if (item.website.indexOf("http://") == -1) {
+                        temp_website = "http://" + item.website;
+                    }
+                    websiteHtml = "<a href='" + temp_website + "'>" + temp_website + "</a>";
+                }*/
+
+                var fullNameHtml = convert_href_html(item.fullName, false, $ctx + '/enterprise/getEnterpriseById?id=' + item.id, 'table-a');
+                var websiteHtml = convert_href_html(item.website, true, item.website, 'table-a');
+
+                var color = colorArray[Math.floor(Math.random() * colorArray.length)];
+                var tradeGroupIdHtml = "<span class='label label-sm" + color + "'>" + item.tradeGroupId.name + "</span>"
+
+                content += "<tr>" +
+                    "<td class='center trbox'>" +
+                    "<label class='pos-rel'>" +
+                    "<input type='checkbox' data-id='" + item.id + "' class='ace' />" +
+                    "<span class='lbl'></span>" +
+                    "</label>" +
+                    "</td>" +
+                    "<td class='center'>" +
+                    "<label>"+ startNo++ +"</label>" +
+                    "</td>" +
+                    "<td>"+ fullNameHtml +"</a></td>" +
+                    "<td>"+ websiteHtml +"</a></td>" +
+                    "<td>" + item.uCCcode + "</td>" +
+                    "<td><div class='rating inline' data-score='"+ item.level +"'></div></td>" +
+                    "<td>" + item.mainProduct + "</td>" +
+
+                    "<td>" +
+                    tradeGroupIdHtml +
+                    "</td>" +
+
+                    "<td>" +
+                    "<div class='hidden-sm hidden-xs action-buttons'>" +
+                    "<a class='blue' href= '" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"' target='view_window' title='查看详情'>" +
+                    "<i class='ace-icon fa fa-search-plus bigger-130'></i>" +
+                    "</a>" +
+
+                    "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
+                    "<a class='green' href= '" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' target='view_window' title='编辑'>" +
+                    "<i class='ace-icon fa fa-pencil bigger-130'></i>" +
+                    "</a>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
+                    "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'>" +
+                    "<i class='ace-icon fa fa-trash-o bigger-130'></i>" +
+                    "</a>" +
+                    "</div>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "<div class='hidden-md hidden-lg'>" +
+                    "<div class='inline pos-rel'>" +
+                    "<button class='btn btn-minier btn-yellow dropdown-toggle' data-toggle='dropdown' data-position='auto'>" +
+                    "<i class='ace-icon fa fa-caret-down icon-only bigger-120'></i>" +
+                    "</button>" +
+
+                    "<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'>" +
+                    "<li>" +
+                    "<a href='" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"' class='tooltip-info showDetails' data-rel='tooltip' title='查看详情' data-id='"+ item.id +"'>" +
+                    "<span class='blue'>" +
+                    "<i class='ace-icon fa fa-search-plus bigger-120'></i>" +
+                    "</span>" +
+                    "</a>" +
+                    "</li>" +
+
+                    "<li>" +
+                    "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
+                    "<a href='" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
+                    "<span class='green'>" +
+                    "<i class='ace-icon fa fa-pencil-square-o bigger-120'></i>" +
+                    "</span>" +
+                    "</a>" +
+                    "</li>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "<li>" +
+                    "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
+                    "<a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
+                    "<span class='red'>" +
+                    "<i class='ace-icon fa fa-trash-o bigger-120'></i>" +
+                    "</span>" +
+                    "</a>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "</li>" +
+                    "</ul>" +
+                    "</div>" +
+                    "</div>" +
+                    "</td>" +
+                    "</tr>";
+            });
+        } else {
+            content += "<tr><td colspan='9'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+        }
+        $("#simple-table > tbody").html(content);
+
+        // 4. 渲染星星样式
+        $("#simple-table .rating").each(function(index, item) {
+            var score = item.getAttribute("data-score");
+            $(item).raty({
+                'cancel' : false,//是否可以取消 default:false
+                'half': true,//是否可以选择半星 default:false
+                'starType' : 'i',
+                'score' : score,
+                'readOnly' : true,
+                'hints' : ['坏', '不好', '合格', '好', '极好']
+            });
+            var $children = $(item).children("i");
+            if (score <= 1) $children.attr("style", "font-size: 20px; color: #d06b64;");
+            else if (score <= 2) $children.attr("style", "font-size: 20px; color: #fa573c;");
+            else if (score <= 3) $children.attr("style", "font-size: 20px; color: #ff7537;");
+            else if (score <= 4) $children.attr("style", "font-size: 20px; color: #9fe1e7;");
+            else $children.attr("style", "font-size: 20px; color: #42d692;");
+        });
+
     }
 
     /*删除信息操作*/
@@ -548,6 +593,6 @@ jQuery(function($) {
     });
 
     var type = "enterprise";
-    excel_download(type);
+    excel_download(type, defaultParams);
 
 });

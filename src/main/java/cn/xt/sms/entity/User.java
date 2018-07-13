@@ -1,6 +1,7 @@
 package cn.xt.sms.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import java.util.Date;
  * 用户实体
  * @author xietao.x@qq.com
  */
+@Data
 public class User {
 
     private Integer id;//ID
@@ -55,144 +57,4 @@ public class User {
         this.headImg = headImg;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public Date getLastOnlineTime() {
-        return lastOnlineTime;
-    }
-
-    public void setLastOnlineTime(Date lastOnlineTime) {
-        this.lastOnlineTime = lastOnlineTime;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Integer getIsSu() {
-        return isSu;
-    }
-
-    public void setIsSu(Integer isSu) {
-        this.isSu = isSu;
-    }
-
-    public Integer getOnline() {
-        return online;
-    }
-
-    public void setOnline(Integer online) {
-        this.online = online;
-    }
-
-    public String getHeadImg() {
-        return headImg;
-    }
-
-    public void setHeadImg(String headImg) {
-        this.headImg = headImg;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", realName='" + realName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", isSu=" + isSu +
-                ", level='" + level + '\'' +
-                ", lastOnlineTime=" + lastOnlineTime +
-                ", state=" + state +
-                ", birthday=" + birthday +
-                ", location='" + location + '\'' +
-                ", createTime=" + createTime +
-                ", aboutMe='" + aboutMe + '\'' +
-                ", online=" + online +
-                ", headImg='" + headImg + '\'' +
-                '}';
-    }
 }

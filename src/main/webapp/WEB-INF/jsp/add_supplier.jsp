@@ -295,11 +295,11 @@
 
         /*渲染步骤条*/
         $('#fuelux-wizard-container')
-            /*初始化步骤条样式*/
+                /*初始化步骤条样式*/
                 .ace_wizard(
                 //{step: 4} //直接显示第3页
                 )
-            /*步骤条改变事件 arg0:自身 arg1:当前步骤*/
+                /*步骤条改变事件 arg0:自身 arg1:当前步骤*/
                 .on('changed.fu.wizard', function(self, step) {
                     /*如果是第5步：提交*/
                     if (step.step == 5) {
@@ -380,7 +380,7 @@
                         }
                     }
                 })
-            /*步骤条确定事件*/
+                /*步骤条确定事件*/
                 .on('finished.fu.wizard', function(e) {
                     /*点击完成后刷新页面*/
                     location.reload();
@@ -401,6 +401,8 @@
                 });
             }
             $("#tradeGroup").append(tradeGroupHtml);
+            // 隐藏下拉框不必要的显示内容
+            $("#tradeGroup").next().get(0).style.display = "none";
         }, "json");
 
         /*实现信用级别栏的 初始化*/
@@ -442,9 +444,11 @@
                 /*对于id为tradeGroup的元素需要进行另类的验证*/
                 else if (this.getAttribute("id") == "tradeGroup") {
                     if ($this.val() > 0) {
-                        convert_success($this, "通过验证");
+                        convert_success_only($this);
+                        $this.parent().next().children().attr("class", "ace-icon fa fa-check-circle").attr("title", "通过验证");
                     } else {
-                        convert_warning($this, "必填项");
+                        convert_warning_only($this);
+                        $this.parent().next().children().attr("class", "ace-icon fa fa-times").attr("title", "必选项");
                     }
                 }
                 /*剩下的统一使用以下方法验证*/

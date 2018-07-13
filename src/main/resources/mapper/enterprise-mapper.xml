@@ -4,7 +4,7 @@
 
   <resultMap id="EnterpriseMap" type="Enterprise">
     <id property="id" column="te_id"/>
-    <result property="identify" column="te_identify"/>
+    <!--<result property="identify" column="te_identify"/>-->
     <result property="fullName" column="te_full_name"/>
     <result property="simpleName" column="te_simple_name"/>
     <result property="UCCcode" column="te_UCCcode"/>
@@ -58,7 +58,7 @@
     </collection>
   </resultMap>
 
-  <resultMap id="MyMap" type="cn.xt.sms.Result.MapResult">
+  <resultMap id="MyMap" type="cn.xt.sms.result.MapResult">
     <result column="id" property="key"/>
     <result column="name" property="value"/>
   </resultMap>
@@ -123,7 +123,7 @@
       tco.`id` tco_id,tco.`project_name` tco_project_name,tco.`product_name` tco_product_name,
       tc2.`id` tc2_id,tc2.`name_master` tc2_name_master,tc2.`name_slave` tc2_name_slave,tc2.`phone_number_master` tc2_phone_number_master,tc2.`phone_number_slave` tc2_phone_number_slave,tc2.`comment` tc2_comment
     FROM
-      (SELECT temp.`identify` te_identify,te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
+      (SELECT /*temp.`identify` te_identify,*/te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
       te.`found_date` te_found_date,te.`type` te_type,te.`registered_capital` te_registered_capital,te.`business_deadline_go` te_business_deadline_go,
       te.`business_deadline_to` te_business_deadline_to,te.`register_department` te_register_department,te.`approval_date` te_approval_date,te.`register_state` te_register_state,
       te.`address` te_address,te.`operate_range` te_operate_range,te.`exception_info` te_exception_info,te.`danger_info` te_danger_info,te.`comment` te_comment,
@@ -135,7 +135,7 @@
       FROM `table_enterprise` AS te
       LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
       LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
-      LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`
+      /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
       <where>
         1=1
         <if test="enterpriseCondition != null">
@@ -175,10 +175,10 @@
   </select>
 
   <select id="selectSimpleEnterprise" resultMap="EnterpriseMap">
-    SELECT temp.`identify` te_identify,te.`id` te_id,te.`full_name` te_full_name,te.`UCCcode` te_UCCcode,te.`website` te_website,te.`main_product` te_main_product,te.`level` te_level,ttg.`name` ttg_name
+    SELECT /*temp.`identify` te_identify,*/te.`id` te_id,te.`full_name` te_full_name,te.`UCCcode` te_UCCcode,te.`website` te_website,te.`main_product` te_main_product,te.`level` te_level,ttg.`name` ttg_name
     FROM `table_enterprise` AS te
     LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
-    LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`
+    /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
     <where>
       1=1
       <if test="enterpriseCondition != null">
@@ -216,7 +216,7 @@
     </if>
   </select>
 
-  <select id="selectEnterpriseCount" resultType="integer" parameterType="cn.xt.sms.Condition.EnterpriseCondition">
+  <select id="selectEnterpriseCount" resultType="integer" parameterType="cn.xt.sms.condition.EnterpriseCondition">
     SELECT COUNT(`id`) FROM `table_enterprise`
     <where>
       1=1

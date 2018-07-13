@@ -1,6 +1,6 @@
 package cn.xt.sms.dao;
 
-import cn.xt.sms.Condition.ProductCondition;
+import cn.xt.sms.condition.ProductCondition;
 import cn.xt.sms.entity.Product;
 import org.apache.ibatis.annotations.Param;
 

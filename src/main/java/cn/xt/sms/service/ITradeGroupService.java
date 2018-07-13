@@ -1,9 +1,7 @@
 package cn.xt.sms.service;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.TradeGroup;
-
-import java.util.List;
 
 /**
  * @author xietao.x@qq.com

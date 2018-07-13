@@ -1,7 +1,6 @@
 package cn.xt.sms.service.impl;
 
-import cn.xt.sms.Result.MyResult;
-import cn.xt.sms.dao.IEnterpriseDao;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.dao.ITradeGroupDao;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.service.IEnterpriseService;

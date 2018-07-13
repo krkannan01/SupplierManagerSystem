@@ -212,7 +212,7 @@
 
         /*绑定新增按钮的事件*/
         $("#addBtn").click(function() {
-            BootstrapDialog.confirm({
+            /*BootstrapDialog.confirm({
                 title: "添加分组",
                 message: "<form class='form-horizontal'>" +
                 "<div class='row form-group has-warning'>" +
@@ -236,7 +236,7 @@
                 callback: function(result) {
                     // result will be true if button was click, while it will be false if users close the dialog directly.
                     if(result) {
-                        /*如果提交*/
+                        /!*如果提交*!/
                         var $tradeGroupName = $("#tradeGroupName");
                         if ($tradeGroupName.val()) {
                             $.post("${pageContext.request.contextPath}/tradeGroup/insert", {"name": $tradeGroupName.val()}, function(data) {
@@ -261,6 +261,42 @@
                         }
                     }
                 }
+            });*/
+            layer.open({
+                title: "添加分组",
+                type: 1,
+                content: "<form class='form-horizontal'>" +
+                    "<div class='row form-group has-warning' style='width: 96%; margin: 20px;'>" +
+                    "<label for='tradeGroupName' class='col-xs-12 col-sm-3 control-label'>分组名称：</label>" +
+                    "<div class='col-xs-12 col-sm-8'>" +
+                    "<span class='block input-icon input-icon-right'>" +
+                    "<input type='text' id='tradeGroupName' class='width-100' />" +
+                    "<i class='ace-icon fa fa-info-circle' title='必填项'></i>" +
+                    "</span>" +
+                    "</div>" +
+                    "<div class='col-xs-12 col-sm-reset inline'></div>" +
+                    "</div>" +
+                    "</form>",
+                btn: ["提交", "取消"],
+                yes: function (index) {
+                    /!*如果提交*!/
+                    var $tradeGroupName = $("#tradeGroupName");
+                    if ($tradeGroupName.val()) {
+                        $.post("${pageContext.request.contextPath}/tradeGroup/insert", {"name": $tradeGroupName.val()}, function(data) {
+                            if (data == "success") {
+                                $.modalMsg("添加成功", "success");
+                            } else {
+                                $.modalMsg("添加失败", "error");
+                            }
+                            refursh();
+                            layer.close(index);
+                        }, "text");
+                    } else {
+                        convert_error($tradeGroupName, "不能为空");
+                        $.modalMsg("分组名称不能为空", "warning");
+                    }
+                },
+                area: ['540px', '180px']
             });
         });
 

@@ -1,8 +1,7 @@
-package cn.xt.sms.Condition;
+package cn.xt.sms.condition;
 
 import cn.xt.sms.util.BasicUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

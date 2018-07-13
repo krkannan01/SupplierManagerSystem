@@ -1,8 +1,7 @@
 package cn.xt.sms.service.impl;
 
-import cn.xt.sms.Result.MyResult;
+import cn.xt.sms.result.MyResult;
 import cn.xt.sms.dao.IUserDao;
-import cn.xt.sms.entity.Enterprise;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IPrivilegeService;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 /**

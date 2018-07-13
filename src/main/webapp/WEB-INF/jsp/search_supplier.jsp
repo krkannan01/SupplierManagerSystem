@@ -121,7 +121,10 @@
             content: "\f0dd";
             top: -6px;
         }
-
+        .table-a:hover {
+            color: deepskyblue;
+            text-decoration: none;
+        }
     </style>
 
     <!-- ace settings handler -->
@@ -346,7 +349,7 @@
                                             <span class="lbl"></span>
                                         </label>
                                     </th>
-                                    <th>标识ID</th>
+                                    <th>序号</th>
                                     <th>供应商名称</th>
                                     <th>网站</th>
                                     <th>统一社会信息代码</th>

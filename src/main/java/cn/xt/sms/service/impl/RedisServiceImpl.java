@@ -2,14 +2,12 @@ package cn.xt.sms.service.impl;
 
 import cn.xt.sms.service.IRedisService;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.ConnectException;
 import java.util.List;
@@ -19,9 +17,9 @@ import java.util.List;
  * @date 2018/5/4
  */
 @Service
+@Log4j
 public class RedisServiceImpl<T> implements IRedisService<T> {
 
-    private Logger logger = Logger.getLogger(RedisServiceImpl.class);
     public static final int EXIPRE_SECOND = 3600;
 
     @Autowired
@@ -38,7 +36,7 @@ public class RedisServiceImpl<T> implements IRedisService<T> {
                 list = (List<T>) JSON.parseArray(result);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             if (jedis != null) jedis.close();
         }
@@ -53,7 +51,7 @@ public class RedisServiceImpl<T> implements IRedisService<T> {
             jedis.set(key, JSON.toJSONString(value));
             jedis.expire(key, expire);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             if (jedis != null) jedis.close();
         }

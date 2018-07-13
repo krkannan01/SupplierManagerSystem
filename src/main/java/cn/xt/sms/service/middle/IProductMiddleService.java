@@ -1,6 +1,6 @@
 package cn.xt.sms.service.middle;
 
-import cn.xt.sms.Condition.ProductCondition;
+import cn.xt.sms.condition.ProductCondition;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 

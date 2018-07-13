@@ -38,6 +38,40 @@ function convert_error_only($el) {
     $el.closest(".form-group").attr("class", "form-group has-error");
 }
 
+/* 把文本转换成有链接样式的 Html内容.
+* str: 需要装换的文本
+* isNeedPrefix: 是否需要带 http:// 的前缀
+* */
+function convert_href_html(str, isNeedPrefix, href, cls) {
+    if (str) {
+        if (isNeedPrefix && href.indexOf("http://") == -1) {
+            href = "http://" + href;
+            str = href;
+        }
+        return "<a href='" + href + "' class='" + cls + "' target='view_window'>" + str + "</a>";
+    } else {
+        return "<span class='red'>无</span>";
+    }
+}
+
+/**
+ * @method
+ * @param tableSelector 要判断表格的选择器.
+ * @desc 检查处理表格中的复选框是否全选.
+ */
+function handleIsAllSelect(tableSelector) {
+    var is = true;
+    $(tableSelector).find("tbody input[type=checkbox]").each(function(index, item) {
+
+        if (!item.checked) {
+            $(tableSelector).find("thead input[type=checkbox]").prop("checked", false);
+            is = false;
+        }
+    });
+    if (is)
+        $(tableSelector).find("thead input[type=checkbox]").prop("checked", true);
+}
+
 /*数字框校验*/
 $("body").delegate(".number-box", "keyup", function() {
     this.value = this.value.replace(/[^\d]/g, "");

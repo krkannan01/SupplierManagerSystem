@@ -246,6 +246,11 @@
 <script src="${pageContext.request.contextPath}/statics/components/_mod/x-editable/ace-editable.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/jquery.maskedinput/dist/jquery.maskedinput.min.js"></script>
 
+<script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
 <!-- ace scripts -->
 <jsp:include page="${pageContext.request.contextPath}/common/ace-script.jsp"/>
 <jsp:include page="${pageContext.request.contextPath}/common/time.jsp"/>
@@ -384,16 +389,21 @@
                 data: {file: thumb.substr(thumb.indexOf(',') + 1)},    //视情况将base64的前面字符串data:image/png;base64,删除
                 cache: false,
                 success: function(data) {
-                  BootstrapDialog.show({
+                  /*BootstrapDialog.show({
                     message: "头像上传成功",
                     type: BootstrapDialog.TYPE_INFO,
                     onhide: function(self) {
                       location.reload();
                     }
-                  });
+                  });*/
+                  $.modalMsg("头像上传成功", "success");
+                  setTimeout(function() {
+                      location.reload();
+                  }, 2000);
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                  alert("上传失败，请检查网络后重试");
+                  /*alert("上传失败，请检查网络后重试");*/
+                  $.modalMsg("上传失败，请检查网络后重试", "error");
                 }
               });
               deferred.resolve({'status':'OK'});

@@ -1,6 +1,4 @@
-package cn.xt.sms.Result;
-
-import cn.xt.sms.entity.Enterprise;
+package cn.xt.sms.result;
 
 import java.util.List;
 
