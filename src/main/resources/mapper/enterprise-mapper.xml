@@ -58,7 +58,7 @@
     </collection>
   </resultMap>
 
-  <resultMap id="HashMap" type="cn.xt.sms.Result.MapResult">
+  <resultMap id="MyMap" type="cn.xt.sms.Result.MapResult">
     <result column="id" property="key"/>
     <result column="name" property="value"/>
   </resultMap>
@@ -273,7 +273,7 @@
     SELECT `id` FROM `table_enterprise` WHERE `trade_group_id` = #{tradeGroupId}
   </select>
 
-  <select id="getEnterpriseIdAndName" resultMap="HashMap">
+  <select id="getEnterpriseIdAndName" resultMap="MyMap">
     SELECT `id`, `full_name` `name` FROM `table_enterprise`
   </select>
 
