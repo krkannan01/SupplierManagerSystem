@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface IProductGroupDao {
 
-    /*根据父分组ID查询子分组信息*/
-    List<ProductGroup> getProductGroupList(Integer parentId);
+    /*查询分组信息*/
+    List<ProductGroup> getProductGroupList();
 
     /*根据ID查询分组信息*/
     ProductGroup getProductGroupById(Integer id);

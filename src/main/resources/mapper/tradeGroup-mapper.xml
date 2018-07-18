@@ -14,8 +14,12 @@
     DELETE FROM `table_trade_group` WHERE `id` = #{id}
   </delete>
 
-  <select id="getTradeGroup" resultType="TradeGroup">
-    SELECT ttg.`id`,ttg.`name`,count(te.`id`) AS `count` FROM  `table_trade_group` ttg LEFT JOIN `table_enterprise` te ON ttg.`id` = te.`trade_group_id` GROUP BY ttg.`id`
+  <select id="getTradeGroup" resultType="TradeGroup" parameterType="integer">
+    SELECT trade.`id`,trade.`name`,trade.`parent_id`,count(en.`id`) count FROM `table_trade_group` trade LEFT JOIN `table_enterprise` en ON trade.`id` = en.`trade_group_id`
+    <if test="categoryId != null">
+      WHERE en.`category_id` = #{categoryId}
+    </if>
+    GROUP BY trade.`id`;
   </select>
 
   <select id="selectIdByName" parameterType="string" resultType="integer">

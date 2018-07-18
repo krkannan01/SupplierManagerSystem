@@ -45,86 +45,38 @@
     <!-- inline styles related to this page -->
     <style>
         /* styling the grid page's grid elements */
-        .center {
-            text-align: center;
-        }
-        .center [class*="col-"] {
-            margin-top: 2px;
-            margin-bottom: 2px;
+        .center{text-align:center;}
+        .center [class*="col-"]{margin-top:2px;margin-bottom:2px;position:relative;text-overflow:ellipsis;}
+        .center [class*="col-"]  div{position:relative;z-index:2;padding-top:4px;padding-bottom:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;}
+        .center [class*="col-"]  div span{position:relative;z-index:2;}
+        .center [class*="col-"] div:before{display:block;content:"";position:absolute;top:0;bottom:0;left:0;right:0;z-index:1;border:1px solid #DDD;}
+        .center [class*="col-"] div:hover:before{background-color:#FCE6A6;border-color:#EFD27A;}
+        .select{background-color:#BBFFFF;}
+        .center [class*="col-"] div.select:hover:before{background-color:#BBFFFF;}
 
-            position: relative;
-            text-overflow: ellipsis;
-        }
-        .center [class*="col-"]  div{
-            position: relative;
-            z-index: 2;
+        /* 排序图标样式. */
+        body [class^="sort-"].active{color:#307ECC;}
+        body [class^="sort-"]:hover{color:orange;}
+        body [class^="sort-"]:after{float:right;display:inline;content:"\f0dc";font-family:FontAwesome;font-size:13px;font-weight:normal;}
+        body [class^="sort-"].active.active-up:after{content:"\f0de";top:4px;}
+        body [class^="sort-"].active.active-down:after{content:"\f0dd";top:-6px;}
 
-            padding-top: 4px;
-            padding-bottom: 4px;
+        /* 表格a标签样式. */
+        .table-a:hover{color:deepskyblue;text-decoration:none;}
 
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        /* 条件栏样式. */
+        .filter-box{margin:6px 20px;}
+        .filter-head button{color:#000000;float:right;background-color:#FFFFFF;border:1px solid #DDDDDD;}
+        .filter-head button:hover{color:red;border:1px solid orange;}
+        .filter-head button:after{font-family:FontAwesome;font-size:14px;content:"\f106";padding:0;margin:0 8px 0 10px;position:relative;top:1px;}
+        .filter-head button.show:after{content:"\f107";}
+        .filter-body { border: 1px solid #e8e8e8; margin: 6px -12px; padding: 6px; }
+        .filter-body .group .group-head { line-height: 30px; color: #999999; }
+        .filter-body .group-lowest .group-head { line-height: 30px; color: #999999; }
 
-            width: 100%;
-        }
-        .center [class*="col-"]  div span{
-            position: relative;
-            z-index: 2;
-        }
-        .center [class*="col-"] div:before {
-            display: block;
-            content: "";
-
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1;
-
-            border: 1px solid #DDD;
-        }
-
-        .center [class*="col-"] div:hover:before {
-            background-color: #FCE6A6;
-            border-color: #EFD27A;
-        }
-
-        .select {
-            background-color: #BBFFFF;
-        }
-        .center [class*="col-"] div.select:hover:before {
-            background-color: #BBFFFF;
-        }
-
-        body [class^="sort-"].active {
-            color: #307ECC;
-        }
-        body [class^="sort-"]:hover {
-            color: orange;
-        }
-        body [class^="sort-"]:after {
-            float: right;
-            display: inline;
-            content: "\f0dc";
-            font-family: FontAwesome;
-            font-size: 13px;
-            font-weight: normal;
-        }
-        body [class^="sort-"].active.active-up:after {
-            content: "\f0de";
-            top: 4px;
-        }
-        body [class^="sort-"].active.active-down:after {
-            content: "\f0dd";
-            top: -6px;
-        }
-        .table-a:hover {
-            color: deepskyblue;
-            text-decoration: none;
-        }
+        /*显示查询条件的样式*/
+        #show-filter { padding: 2px 10px; color: #999999; border: 1px solid #e8e8e8; line-height: 2; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; }
+        .filter-tab { margin-right: 24px; padding: 2px 10px; background: #9595A8; color: white; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; }
     </style>
 
     <!-- ace settings handler -->
@@ -193,153 +145,95 @@
                         </div>
 
                         <!-- PAGE CONTENT BEGINS -->
-                        <div class="" style="background-color: #EFF3F8; padding: 5px;">
+                        <div class="">
                             <div class="row">
                                 <div class="col-sm-12 col-xs-6">
-                                    <div class="widget-box transparent" id="recent-box">
+                                    <div class="widget-box transparent" id="recent-box" style="background-color: #EFF3F8;">
                                         <div class="widget-header">
-                                            <h4 class="widget-title lighter smaller" style="dispaly: inline;float: left;">
-                                                <span class="label label-pink label-lg arrowed-right">条件筛选</span>
-                                            </h4>
-                                            <label id="loadAnimate" style="font-size: 18px;display: none; float: left;margin-top: 5px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
-                                            <div class="widget-toolbar no-border">
+                                            <%--<h4 class="widget-title lighter smaller" style="dispaly: inline;float: left;">
+                                                <span class="label label-pink label-lg arrowed-left">条件筛选</span>
+                                            </h4>--%>
+                                            <div class="widget-toolbar no-border" style="float:left;">
                                                 <ul class="nav nav-tabs" id="recent-tab">
-                                                    <li class="active">
-                                                        <a data-toggle="tab" href="#task-tab">基本筛选</a>
-                                                    </li>
-
-                                                    <li>
-                                                        <a data-toggle="tab" href="#member-tab">分组筛选</a>
-                                                    </li>
-
-                                                    <li>
-                                                        <a data-toggle="tab" href="#comment-tab">排除筛选</a>
-                                                    </li>
+                                                    <li class="active"> <a data-toggle="tab" id="category-huizon" href="#huizon">汇总</a> </li>
+                                                    <li> <a data-toggle="tab" id="category-shiyong" href="#">试用供应商</a> </li>
+                                                    <li> <a data-toggle="tab" id="category-zhanlue" href="#">战略供应商</a> </li>
+                                                    <li> <a data-toggle="tab" id="category-hege" href="#">合格供应商</a> </li>
+                                                    <li> <a data-toggle="tab" id="category-xiumian" href="#">休眠供应商</a> </li>
                                                 </ul>
                                             </div>
                                         </div>
-
-                                        <div class="widget-body">
-                                            <div class="widget-main padding-4">
-                                                <div class="tab-content padding-8">
-                                                    <div id="task-tab" class="tab-pane active">
-                                                        <div class="row">
-
-                                                            <div class="form-group has-success">
-                                                                <div class="row col-xs-12 col-sm-3">
-                                                                    <label for="operateRange" class="col-sm-6 control-label" style="height: 34px;padding: 5px; text-align: right;">经营范围包含:</label>
-
-                                                                    <div class="col-sm-6 no-padding-left">
-																				<span class="block">
-																					<input type="text" id="operateRange" class="width-100" />
-																				</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row col-xs-12 col-sm-3">
-                                                                    <label for="uccCode" class="col-sm-6 control-label" style="height: 34px;padding: 5px; text-align: right;">单位税号包含:</label>
-
-                                                                    <div class="col-sm-6 no-padding-left">
-																				<span class="block">
-																					<input type="text" id="uccCode" class="width-100" />
-																				</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row col-xs-12 col-sm-3">
-                                                                    <label for="fullName" class="col-sm-6 control-label" style="height: 34px;padding: 5px; text-align: right;">公司名称包含:</label>
-
-                                                                    <div class="col-sm-6 no-padding-left">
-																				<span class="block">
-																					<input type="text" id="fullName" class="width-100" />
-																				</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row col-xs-12 col-sm-3" style="margin: 5px;">
-                                                                    <div class="col-sm-2"></div>
-                                                                    <div class="col-sm-10">
-                                                                        <button class="btn btn-white btn-success btn-sm btn-round" id="startSearch">
-                                                                            <i class="ace-icon fa fa-search bigger-125"></i>
-                                                                            开始查询
-                                                                            <i class="ace-icon fa fa-arrow-right icon-on-right bigger-125"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-
-
-
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-12 hr hr-double hr8"></div>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <div id="member-tab" class="tab-pane">
-                                                        <div class="widget-box">
-                                                            <div class="widget-header widget-header-blue widget-header-flat">
-                                                                <h4 class="widget-title lighter">分组选择</h4>
-
-                                                                <div class="widget-toolbar">
-                                                                    <label>
-                                                                        <small class="green">
-                                                                            <b>是否支持多选</b>
-                                                                        </small>
-
-                                                                        <input id="isSupportMutliChecked" type="checkbox" class="ace ace-switch ace-switch-4" checked="" />
-                                                                        <span class="lbl middle"></span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="widget-body">
-                                                                <div class="widget-main">
-                                                                    <div class="row center">
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="row">
-                                                            <div class="col-sm-12 hr hr-double hr8"></div>
-                                                        </div>
-
-                                                    </div><!-- /.#member-tab -->
-
-                                                    <div id="comment-tab" class="tab-pane">
-
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <div class="checkbox">
-                                                                    <label>
-                                                                        <input name="form-field-checkbox" id="notIncludeException" type="checkbox" class="ace" />
-                                                                        <span class="lbl"> 不看有异常违法信息的企业</span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-sm-12 hr hr-double hr8"></div>
-                                                        </div>
-
-                                                        <!-- /section:pages/dashboard.comments -->
-                                                    </div>
-                                                </div>
-                                            </div><!-- /.widget-main -->
-                                        </div><!-- /.widget-body -->
                                     </div><!-- /.widget-box -->
                                 </div><!-- /.col -->
-
                             </div>
-
                         </div>
 
                         <!-- PAGE CONTENT ENDS -->
                         <!-- div.dataTables_borderWrap -->
                         <div>
+                            <div style="float: left; width: 15%; margin-top: 5px; border-top: 1px dashed orange; border-right: 1px dashed orange;">
+                                <ul id="enterprise-group-tree"></ul>
+                            </div>
+                            <div style="float: right; width: 84%;">
+                            <div class="row filter-box">
+                                <div class="row filter-body groups">
+                                    <div class="row group-lowest">
+                                        <div class="col-sm-1 col-xs-12 group-head">模糊筛选：</div>
+                                        <div class="col-sm-11 col-xs-12 group-body">
+                                            <div class="row">
+                                                <form class="form-search">
+                                                    <div class="col-sm-3">
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-addon"> 供应商名称 </span>
+                                                            <input type="text" class="form-control search-query" id="supplier-input" placeholder="按供应商名称搜索" />
+                                                            <span class="input-group-btn">
+                                                                <button type="button" class="btn btn-purple btn-xs" id="supplier-search">
+                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                    搜索
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-addon"> 单位税号 </span>
+                                                            <input type="text" class="form-control search-query" id="ucccode-input" placeholder="按单位税号搜索" />
+                                                            <span class="input-group-btn">
+                                                                <button type="button" class="btn btn-info btn-xs" id="ucccode-search">
+                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                    搜索
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-addon"> 经营范围 </span>
+                                                            <input type="text" class="form-control search-query" id="operate-range-input" placeholder="按经营范围搜索" />
+                                                            <span class="input-group-btn">
+                                                                <button type="button" class="btn btn- btn-xs" id="operate-range-search">
+                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                    搜索
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <button type="button" class="btn btn-info btn-xs btn-round" id="unite-search">
+                                                            <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                            联合搜索
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="show-filter">当前查询条件：</div>
+                            </div>
                             <table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-bottom:0">
                                 <thead>
                                 <tr>
@@ -356,7 +250,7 @@
                                     <th class="sort-level">信用级别<i class="menu-icon fa fa-acret-right"/><i class="menu-icon fa fa-acret-down"/></th>
                                     <th>主营产品</th>
                                     <th>分组</th>
-                                    <th>操作</th>
+                                    <th width="100">操作</th>
                                 </tr>
                                 </thead>
 
@@ -364,6 +258,7 @@
 
                                 </tbody>
                             </table>
+                            <label id="loadAnimate" style="z-index: 2; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
                             <div class="" style="background-color: #EFF3F8; padding: 5px;">
                                 <div class="row">
                                     <!--left-->
@@ -430,6 +325,7 @@
 
 
                         </div>
+                        </div>
                     </div>
                 </div>
             </div><!-- /.page-content -->
@@ -470,7 +366,9 @@
 <jsp:include page="${pageContext.request.contextPath}/common/ace-script.jsp"/>
 <jsp:include page="${pageContext.request.contextPath}/common/time.jsp"/>
 
-<!-- page specific plugin scripts -->
+<!-- page specific plugin scripts -->\
+<script src="${pageContext.request.contextPath}/statics/assets/js/src/elements.treeview-modified-version.js"></script>
+<script src="${pageContext.request.contextPath}/statics/components/_mod/fuelux/tree-modified-version.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/datatables/media/js/jquery.dataTables.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/_mod/datatables/jquery.dataTables.bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
@@ -492,6 +390,7 @@
 <script src="${pageContext.request.contextPath}/statics/components/raty/lib/jquery.raty.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/dropzone/dist/dropzone.js"></script>
 
+<script src="${pageContext.request.contextPath}/statics/js/pagination.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
@@ -522,4 +421,3 @@
 </body>
 </html>
 
-    

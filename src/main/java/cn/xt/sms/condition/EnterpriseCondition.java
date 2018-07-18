@@ -1,6 +1,7 @@
 package cn.xt.sms.condition;
 
 import cn.xt.sms.util.BasicUtil;
+import lombok.Data;
 
 import java.util.List;
 
@@ -8,7 +9,11 @@ import java.util.List;
  *
  * @author xietao.x@qq.com
  */
+@Data
 public class EnterpriseCondition {
+
+    private Integer categoryId;//供应商种类
+
     private List<Integer> groups;//分组
 
     private String operateRange;//经营范围包含
@@ -38,90 +43,8 @@ public class EnterpriseCondition {
         this.sorted = sorted;
     }
 
-    public List<Integer> getGroups() {
-        return groups;
-    }
-
     public void setGroups(String groups) {
         this.groups = BasicUtil.convertIntegers(groups);
     }
 
-    public String getOperateRange() {
-        return operateRange;
-    }
-
-    public void setOperateRange(String operateRange) {
-        this.operateRange = operateRange;
-    }
-
-    public boolean isIncludeException() {
-        return includeException;
-    }
-
-    public void setIncludeException(boolean includeException) {
-        this.includeException = includeException;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getMainProduct() {
-        return mainProduct;
-    }
-
-    public void setMainProduct(String mainProduct) {
-        this.mainProduct = mainProduct;
-    }
-
-    public String getUccCode() {
-        return uccCode;
-    }
-
-    public void setUccCode(String uccCode) {
-        this.uccCode = uccCode;
-    }
-
-    public boolean isUnionSearch() {
-        return unionSearch;
-    }
-
-    public void setUnionSearch(boolean unionSearch) {
-        this.unionSearch = unionSearch;
-    }
-
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
-
-    public String getSorted() {
-        return sorted;
-    }
-
-    public void setSorted(String sorted) {
-        this.sorted = sorted;
-    }
-
-    @Override
-    public String toString() {
-        return "EnterpriseCondition{" +
-                "groups=" + groups +
-                ", operateRange='" + operateRange + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", mainProduct='" + mainProduct + '\'' +
-                ", uccCode='" + uccCode + '\'' +
-                ", includeException=" + includeException +
-                ", unionSearch=" + unionSearch +
-                ", sort='" + sort + '\'' +
-                ", sorted='" + sorted + '\'' +
-                '}';
-    }
 }

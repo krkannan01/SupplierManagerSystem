@@ -142,7 +142,7 @@
             cursor: pointer;
         }
         .my-menu:hover{
-            background-color: yellow;
+            background-color: cyan;
         }
     </style>
 
@@ -224,9 +224,9 @@
                                             <div class="row">
                                                 <div class="col-sm-2" style="border-right: 1px dashed orange;">
                                                     <ul id="product-group-tree"></ul>
-                                                    <button id="tree-search" class="btn btn-xs btn-success" style="margin-top: 6px;">
+                                                    <%--<button id="tree-search" class="btn btn-xs btn-success" style="margin-top: 6px;">
                                                         <i class="ace-icon fa fa-search">查询</i>
-                                                    </button>
+                                                    </button>--%>
                                                 </div>
                                                 <div class="col-sm-10">
                                                     <div class="row filter-box">
@@ -335,6 +335,7 @@
                                                                     <span class="lbl"></span>
                                                                 </label>
                                                             </th>
+                                                            <th>编号</th>
                                                             <th>产品名称</th>
                                                             <th>产品规格</th>
                                                             <th>品牌</th>
@@ -353,7 +354,7 @@
 
                                                         </tbody>
                                                     </table>
-                                                    <label id="loadAnimate" style="z-index: 2; font-size: 18px; position: absolute; left: 48%; tpp: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
+                                                    <label id="loadAnimate" style="z-index: 2; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
                                                     <div class="" style="background-color: #EFF3F8; padding: 5px;">
                                                         <div class="row">
                                                             <!--left-->
@@ -535,9 +536,9 @@
 <script src="${pageContext.request.contextPath}/statics/components/chosen/chosen.jquery.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/dropzone/dist/dropzone.js"></script>
 
-
+<script src="${pageContext.request.contextPath}/statics/js/pagination.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
-<script src="${pageContext.request.contextPath}/statics/js/product.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/project/product.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>

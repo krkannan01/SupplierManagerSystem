@@ -1,5 +1,22 @@
 jQuery(function($){
+
+    // BEGIN 分类树组件定义 //
     loadData();
+
+    /*绑定树形菜单查询事件*/
+    var tree_search = function() {
+        /*1: 获取当前所有选中的节点*/
+        var selected_ids_str = "";
+        $.each($("li.tree-item.tree-selected"), function(index, item) {
+            selected_ids_str += item.getAttribute("data-value") + ",";
+        });
+        defaultParams.groupIds = selected_ids_str;
+        $("#brandIds").html(get_brand_by_group_ids(selected_ids_str));
+        var $group = $("#brandIds").closest(".group");
+        init_group($group);
+        set_single_selection($group, defaultParams, sendRequest);
+        sendRequest();
+    };
 
     function loadData() {
         /*获取所有材料分组数据*/
@@ -7,7 +24,7 @@ jQuery(function($){
         var sampleData = initiateDemoData(product_group_data);//see below
         $('#product-group-tree').ace_tree({
             dataSource: sampleData['dataSource1'],
-            multiSelect: true,
+            multiSelect: false,
             cacheItems: true,
             'selectable' : true,
             'open-icon' : 'ace-icon tree-minus',
@@ -17,7 +34,10 @@ jQuery(function($){
             'expand': true,
             'selected-icon' : 'ace-icon fa fa-check',
             'unselected-icon' : 'ace-icon fa fa-times',
-            loadingHTML : '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>'
+            loadingHTML : '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+            onSelect: function() {
+                tree_search();
+            }
         });
     }
 
@@ -26,7 +46,7 @@ jQuery(function($){
         var responseData;
         $.ajax({
             url: $ctx + "/productGroup/getProductGroupList",
-            type: "POST",
+            type: "GET",
             async: false,
             dataType: "json",
             success: function(data) {
@@ -34,7 +54,34 @@ jQuery(function($){
             }
         });
         var tree_data = {};
-        var create = function(data, container) {
+
+        var create = function (data, tree_data) {
+            if (data.children != null && data.children.length > 0) {
+                tree_data['additionalParameters'] = {
+                    'children' : {}
+                };
+                $.each(data.children, function(index, item) {
+                    if (!item.children) {
+                        tree_data['additionalParameters']['children'][item.id] = {text: item.name, type: 'item', value: item.id};
+                    } else {
+                        tree_data['additionalParameters']['children'][item.id] = {text: item.name, type: 'folder', value: item.id};
+                        create(item, tree_data['additionalParameters']['children'][item.id]);
+                    }
+                });
+            };
+        };
+        if (responseData != null && responseData.length > 0) {
+            $.each(responseData, function(index, item) {
+                // 如果该菜单只有一级
+                if (!item.children) {
+                    tree_data[item.id] = {text: item.name, type: 'item', value: item.id};
+                } else {  // 如果该菜单是多级
+                    tree_data[item.id] = {text: item.name, type: 'folder', value: item.id};
+                    create(item, tree_data[item.id]);
+                }
+            });
+        };
+        /*function(data, container) {
             if (data != null && data.length > 0) {
                 $.each(data, function(index, item) {
                     if (!item.children) {
@@ -50,8 +97,8 @@ jQuery(function($){
                     }
                 });
             }
-        }
-        create(responseData, tree_data);
+        }*/
+        /*create(responseData, tree_data);*/
 
         return tree_data;
     }
@@ -80,117 +127,58 @@ jQuery(function($){
         return {'dataSource1': dataSource1}
 
     }
+    // END 分类树组件定义 //
 
     /*全局常用参数与对象*/
     var keywords = $("#keywords");
     var currentPage = $("#currentPage");
     var pageSize = $("#pageSize");
 
-    var keywordsValue = null;/*关键字参数*/
-    var currentPageValue = 1;/*当前页参数*/
-    var pageSizeValue = 10;/*每页条数参数*/
-
     var defaultParams = {};
     initParam(defaultParams);
 
     /*参数初始化方法*/
-    function initParam() {
+    function initParam(params) {
 
-        defaultParams = {
-            "currentPage": currentPageValue,
-            "pageSize": pageSizeValue,
-            "keywords": keywordsValue
+        params = {
+            "currentPage": null, //关键字参数
+            "pageSize": 1, //当前页参数
+            "keywords": 10 //每页条数参数
         };
-        keywords.val(keywordsValue);
-        currentPage.val(currentPageValue);
-        pageSize.val(pageSizeValue);
+        keywords.val(params.currentPage);
+        currentPage.val(params.pageSize);
+        pageSize.val(params.keywords);
     }
 
-    /*第一页，上一页，下一页，最后一页，功能*/
-    var maxPrev = $("#maxPrev");//第一页
-    var prev = $("#prev");//上一页
-    var next = $("#next");//下一页
-    var maxNext = $("#maxNext");//最后一页
-    var maxPage = $("#maxPage");//最大页码  注意元素为label节点 用html()获取值 以下相同
-    var start = $("#start");//记录起点
-    var end = $("#end");//记录结束点
-    var maxCount = $("#maxCount");//最大记录数
-
-    maxPrev.click(function() {
-        currentPage.val(1);
-        commonPageOperation();
+    //获取分页对象
+    var pagination = new Pagination({
+        "maxPrev": $("#maxPrev"),//第一页
+        "prev": $("#prev"),//上一页
+        "next": $("#next"),//下一页
+        "maxNext": $("#maxNext"),//最后一页
+        "maxPage": $("#maxPage"),//最大页数
+        "start": $("#start"),//记录起点
+        "end": $("#end"),//记录结束点
+        "maxCount": $("#maxCount"),//最大记录数
+        "currentPage": currentPage,//当前页数
+        "pageSize": pageSize,//页面容量
     });
-    prev.click(function() {
-        currentPage.val(Number(currentPage.val()) - 1);
-        commonPageOperation();
+    //绑定分页事件
+    pagination.maxPrev.click(function () {
+        pagination.goPage(pagination.click_max_prev(), defaultParams, sendRequest);
     });
-    next.click(function() {
-        currentPage.val(Number(currentPage.val()) + 1);
-        commonPageOperation();
+    pagination.prev.click(function () {
+        pagination.goPage(pagination.click_prev(), defaultParams, sendRequest);
     });
-    maxNext.click(function() {
-        currentPage.val(maxPage.html());
-        commonPageOperation();
+    pagination.next.click(function () {
+        pagination.goPage(pagination.click_next(), defaultParams, sendRequest);
     });
-    /*公共的页码操作方法*/
-    function commonPageOperation() {
-        defaultParams.currentPage = currentPage.val();
-        sendRequest();
-    }
-
-    /*检查页码状态方法*/
-    function checkPageState() {
-        /*检查数据*/
-        var tempMaxCountValue = Number(maxCount.html());
-        var tempPageSizeValue = Number(pageSize.val());
-        var tempCurrentPageValue = Number(currentPage.val());
-        /*设置最大页数*/
-        var temp = Math.ceil(tempMaxCountValue / tempPageSizeValue);
-        maxPage.html(temp < 1 ? 1:temp);
-
-        /*检查页码范围*/
-        checkRange();
-        tempCurrentPageValue = Number(currentPage.val());
-
-        /*设置起始记录数*/
-        temp = tempCurrentPageValue * tempPageSizeValue - tempPageSizeValue + 1;
-        start.html(temp > tempMaxCountValue ? tempMaxCountValue:temp);
-        /*设置结束记录数*/
-        temp = tempCurrentPageValue * tempPageSizeValue;
-        end.html(temp > tempMaxCountValue ? tempMaxCountValue:temp);
-    }
-    /*检查页码范围与禁用状态*/
-    function checkRange() {
-        /*范围检查*/
-        if (currentPage.val() > Number(maxPage.html())) {
-            currentPage.val(maxPage.html());
-        } else if (currentPage.val() < 1) {
-            currentPage.val(0);
-        }
-
-        /*判断是否禁用向前翻页*/
-        if (currentPage.val() <= 1) {
-            currentPage.val(1);
-            maxPrev.get(0).disabled = true;
-            prev.get(0).disabled = true;
-        } else {
-            maxPrev.get(0).disabled = false;
-            prev.get(0).disabled = false;
-        }
-
-        /*判断是否禁用向后翻页*/
-        if (currentPage.val() >= Number(maxPage.html())) {
-            currentPage.val(maxPage.html());
-            maxNext.get(0).disabled = true;
-            next.get(0).disabled = true;
-        } else {
-            maxNext.get(0).disabled = false;
-            next.get(0).disabled = false;
-        }
-    }
+    pagination.maxNext.click(function () {
+        pagination.goPage(pagination.click_max_next(), defaultParams, sendRequest);
+    });
 
 
-    /*实现复选框全选功能*/
+    /*全选*/
     $('#product-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
         var th_checked = this.checked;//checkbox inside "TH" table header
 
@@ -199,20 +187,40 @@ jQuery(function($){
             if(th_checked) $(row).addClass("success").find('input[type=checkbox]').eq(0).prop('checked', true);
             else $(row).removeClass("success").find('input[type=checkbox]').eq(0).prop('checked', false);
         });
+
     });
 
-    /*实现行与复选框的状态同步*/
-    $('#product-table').delegate('tbody > tr', 'click', function(e){
-        var docCheckbox = $(this).find('td input[type=checkbox]').get(0);
-        if (docCheckbox.checked) {
-            docCheckbox.checked = false;
-            $(this).removeClass("success");
+    /*复选框单击事件*/
+    $('#product-table').delegate('tbody .trbox', 'click', function(event){
+        var doc = $(this).find("input[type=checkbox]").get(0);
+        if (doc.checked) {
+            doc.checked = false;
+            $(this).closest("tr").removeClass("success");
+            $("#product-table").find("thead input[type=checkbox]").prop("checked", false);
         } else {
-            docCheckbox.checked = true;
-            $(this).addClass("success");
+            doc.checked = true;
+            $(this).closest("tr").addClass("success");
+            handleIsAllSelect("#product-table");
         }
-        //阻止默认事件与冒泡传播
-        return false;
+        // 阻止事件冒泡和默认行为
+        event.stopPropagation();
+        event.preventDefault();
+    });
+
+
+    /*行单击事件*/
+    $('#product-table').delegate('tbody > tr', 'click', function(){
+        // 全部取消选中
+        $("#product-table").find('tbody input[type=checkbox]').each(function(index, item) {
+            item.checked = false;
+            $(item).closest("tr").removeClass("success");
+        });
+        // 被点击行选中
+        var box = $(this).find("input[type=checkbox]").get(0);
+        box.checked = true;
+        $(this).addClass("success");
+        // 处理是否全选
+        handleIsAllSelect("#simple-table");
     });
 
     /*渲染每页条数框*/
@@ -252,92 +260,25 @@ jQuery(function($){
         /*显示加载图标*/
         showLoad();
 
+        var table_data = null;
+        var success = false;
         $.ajax({
             url: $ctx + "/product/getProductList",
-            type: "POST",
+            type: "GET",
             dataType: "JSON",
             data: param,
-            /*async: false,*/
+            async: false,
             success: function (data) {
-                var content = "";
-                console.log(data);
-                if (data.rows != null && data.rows.length > 0) {
-                    /*拼接字符串*/
-                    $.each(data.rows, function (index, item) {
-
-                        var simple_technical_param = item.technicalParam ? item.technicalParam.length > 15 ? item.technicalParam.substring(0, 15) + "..." : item.technicalParam : "";
-                        var unitprice = item.unitprice + "元 / " + item.unit;
-                        var size = item.size ? item.size : "";
-                        var brand = item.brandId ? item.brandId.name : "";
-                        var comment = item.comment ? item.comment : "";
-
-                        content += "<tr>" +
-                            "<td class='center'>" +
-                            "<label class='pos-rel'>" +
-                            "<input type='checkbox' class='ace' data-id='"+ item.id +"' />" +
-                            "<span class='lbl'></span>" +
-                            "</label>" +
-                            "</td>" +
-
-                            "<td>" +
-                            item.name +
-                            "</td>" +
-
-                            "<td>" +
-                            size +
-                            "</td>" +
-                            "<td>"+ brand +"</td>" +
-
-                            "<td class='technical-param'>" +
-                            "<a href='javascript:void(0);' data-trigger='hover' data-placement='auto top' data-toggle='popover' data-content='"+ item.technicalParam +"'>" +
-                            simple_technical_param +
-                            "</a>" +
-                            "</td>" +
-
-                            "<td>"+ unitprice +"</td>" +
-
-                            "<td>" +
-                            comment +
-                            "</td>" +
-
-                            "<td>"+ item.enterpriseId.fullName +"</td>" +
-                            "<td>"+ item.groupId.name +"</td>" +
-                            "<td>" +
-                            "<div class='btn-group'>" +
-
-
-                            "<shiro:hasAnyPermission name='admin,updateProduct'>" +
-                            "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'>" +
-                            "<i class='ace-icon fa fa-pencil bigger-120'></i>修改" +
-                            "</button>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "<shiro:hasAnyPermission name='admin,deleteProduct'>" +
-                            "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'>" +
-                            "<i class='ace-icon fa fa-trash-o bigger-120'></i>删除" +
-                            "</button>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "</div>" +
-                            "</td>" +
-                            "</tr>";
-                    });
-                } else {
-                    content += "<tr><td colspan='10'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
-                }
-                $("#product-table > tbody").html(content);
-
-                $("#product-table .technical-param > a").popover({html:true});
-
-                maxCount.html(data.count);
-
-                checkPageState();
-
+                table_data = data;
+                success = true;
                 /*隐藏加载图标*/
                 hideLoad();
             }
         });
-
+        if (success)
+            render(table_data);
+        else
+            $.modalMsg("请求出现错误, 重试一下吧！", "error");
     }
 
     function showLoad() {
@@ -358,6 +299,87 @@ jQuery(function($){
         var table = load.prev();
         table.css("opacity", "");
         load.css("display", "none");
+    }
+
+    function render(data) {
+
+        var content = "";
+        console.log(data);
+
+        // 1. 检查页码
+        pagination.maxCount.html(data.count);
+        pagination.checkPageState();
+
+        if (data.rows != null && data.rows.length > 0) {
+
+            // 2. 计算编号 （当前页数 - 1） * 每页数量 + 1 == 当前第一条记录的编号
+            var startNo = (Number($("#currentPage").val()) - 1) * Number($("#pageSize").val()) + 1;
+            startNo == NaN ? 1 : startNo;
+
+            /*拼接字符串*/
+            $.each(data.rows, function (index, item) {
+
+                var simple_technical_param = item.technicalParam ? item.technicalParam.length > 15 ? item.technicalParam.substring(0, 15) + "..." : item.technicalParam : "";
+                var unitprice = item.unitprice + "元 / " + item.unit;
+                var size = item.size ? item.size : "";
+                var brand = item.brandId ? item.brandId.name : "";
+                var comment = item.comment ? item.comment : "";
+
+                content += "<tr>" +
+                    "<td class='center trbox'>" +
+                    "<label class='pos-rel'>" +
+                    "<input type='checkbox' class='ace' data-id='"+ item.id +"' />" +
+                    "<span class='lbl'></span>" +
+                    "</label>" +
+                    "</td>" +
+
+                    "<td>" + startNo++ + "</td>" +
+
+                    "<td>" + item.name + "</td>" +
+
+                    "<td>" + size + "</td>" +
+                    "<td>"+ brand +"</td>" +
+
+                    "<td class='technical-param'>" +
+                    "<a href='javascript:void(0);' data-trigger='hover' data-placement='auto top' data-toggle='popover' data-content='"+ item.technicalParam +"'>" +
+                    simple_technical_param +
+                    "</a>" +
+                    "</td>" +
+
+                    "<td>"+ unitprice +"</td>" +
+
+                    "<td>" +
+                    comment +
+                    "</td>" +
+
+                    "<td>"+ item.enterpriseId.fullName +"</td>" +
+                    "<td>"+ item.groupId.name +"</td>" +
+                    "<td>" +
+                    "<div class='btn-group'>" +
+
+                    "<shiro:hasAnyPermission name='admin,updateProduct'>" +
+                    "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'>" +
+                    "<i class='ace-icon fa fa-pencil bigger-120'></i>修改" +
+                    "</button>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "<shiro:hasAnyPermission name='admin,deleteProduct'>" +
+                    "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'>" +
+                    "<i class='ace-icon fa fa-trash-o bigger-120'></i>删除" +
+                    "</button>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "</div>" +
+                    "</td>" +
+                    "</tr>";
+            });
+        } else {
+            content += "<tr><td colspan='10'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+        }
+        $("#product-table > tbody").html(content);
+
+        $("#product-table .technical-param > a").popover({html:true});
+
     }
 
     /*给材料表单模态框绑定事件*/
@@ -396,7 +418,7 @@ jQuery(function($){
         }
 
         /*请求数据*/
-        $.post($ctx + '/productGroup/getProductGroupList', function(data) {
+        $.get($ctx + '/productGroup/getProductGroupList', function(data) {
             var html = "<option value='0'>-- 请选择 --</option>";
             html += handler(data,"","&nbsp;&nbsp;&nbsp;&nbsp;");
             $('#group').html(html);
@@ -468,7 +490,6 @@ jQuery(function($){
             });
         });
 
-        console.log(123);
         /*3):绑定确定事件*/
         $("#confirm").click(function() {
             for (var i=0; i<nodes.length; i++) {
@@ -720,10 +741,6 @@ jQuery(function($){
             menu.css("width", '125px');
         }
         /*绑定新增，删除，修改事件*/
-        /*TODO 备忘
-        * 直接写成
-        * $("#insertChildNode").click(insert_child_node(current_id, current_name);)
-        * 会在右键点击时直接触发*/
         $("#insertChildNode").click(function() {
             insert_child_node(current_id);
             /*事件解绑*/
@@ -796,7 +813,7 @@ jQuery(function($){
             var product_group_data = {};
             if (name.val()) product_group_data["name"] = name.val();
             if (parent.val()) product_group_data["parentId"] = parent.val();
-            $.post($ctx + "/productGroup/insertProductGroup", product_group_data, function(data) {
+            $.get($ctx + "/productGroup/insertProductGroup", product_group_data, function(data) {
                 if (data == "success") {
                     $("#product-group-form-modal").modal("hide");
                     mShow("信息", "新增成功");
@@ -827,7 +844,7 @@ jQuery(function($){
             btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
             callback: function(result) {
                 if(result) {
-                    $.post($ctx + "/productGroup/deleteProductGroup", {id: id}, function(data) {
+                    $.get($ctx + "/productGroup/deleteProductGroup", {id: id}, function(data) {
                         if (data == "success") {
                             if ($item.is("li")) $item.remove();
                             else $item.closest("li").remove();
@@ -844,7 +861,7 @@ jQuery(function($){
     function update_node(id, name) {
         $.ajax({
             url: $ctx + "/productGroup/getProductGroupById",
-            type: "POST",
+            type: "GET",
             async: false,
             data: {id: id},
             dataType: "JSON",
@@ -883,7 +900,7 @@ jQuery(function($){
                         }
                         if ($parent.val() != data.parentId) product_group_data["parentId"] = $parent.val();
                         if (product_group_data["name"] || product_group_data["parentId"]) {
-                            $.post($ctx + "/productGroup/updateProductGroup", product_group_data, function(data) {
+                            $.get($ctx + "/productGroup/updateProductGroup", product_group_data, function(data) {
                                 if (data == "success") {
                                     $("#product-group-form-modal").modal("hide");
                                     mShow("信息", "修改成功");
@@ -908,25 +925,10 @@ jQuery(function($){
         });
     }
 
-    /*绑定树形菜单查询事件*/
-    $("#tree-search").click(function() {
-        /*1: 获取当前所有选中的节点*/
-        var selected_ids_str = "";
-        $.each($("li.tree-item.tree-selected"), function(index, item) {
-            selected_ids_str += item.getAttribute("data-value") + ",";
-        });
-        defaultParams.groupIds = selected_ids_str;
-        $("#brandIds").html(get_brand_by_group_ids(selected_ids_str));
-        var $group = $("#brandIds").closest(".group");
-        init_group($group);
-        set_single_selection($group, defaultParams, sendRequest);
-        sendRequest();
-    });
-
-    window.onclick = function(e){
+    window.onclick = function(e) {
         /*隐藏右键菜单*/
         $("#my-menu").css("width", 0);
-    }
+    };
 
     /*加载品牌列表*/
     $("#brandIds").html(get_brand_by_group_ids());

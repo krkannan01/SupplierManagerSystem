@@ -2,6 +2,9 @@ package cn.xt.sms.service;
 
 import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.TradeGroup;
+import cn.xt.sms.vo.TradeGroupVO;
+
+import java.util.List;
 
 /**
  * @author xietao.x@qq.com
@@ -19,7 +22,7 @@ public interface ITradeGroupService {
     String delete(Integer id);
 
     /*查询所有TradeGroup信息*/
-    MyResult<TradeGroup> getTradeGroup();
+    List<TradeGroup> getTradeGroup(Integer parentId, Integer categoryId);
 
     /*根据分组名查询id,没有查到则新增*/
     Integer selectIdByNameOrInsert(String name);

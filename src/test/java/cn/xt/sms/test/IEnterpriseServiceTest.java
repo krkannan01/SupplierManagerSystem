@@ -166,7 +166,7 @@ public class IEnterpriseServiceTest {
 
     @Test
     public void testGetTradeGroup() throws Exception {
-        MyResult<TradeGroup> result = tradeGroupService.getTradeGroup();
+        /*MyResult<TradeGroup> result = tradeGroupService.getTradeGroup();*/ // DISCARD
         System.out.println("123");
     }
 

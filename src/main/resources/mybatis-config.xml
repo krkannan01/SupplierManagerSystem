@@ -13,6 +13,10 @@
          <setting name="useColumnLabel" value="true"/>
          <!-- 开启驼峰命名转换：Table(create_time) -> Entity(createTime) -->
          <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 指定 MyBatis 所用日志的具体实现，未指定时将自动查找。
+         有效值： SLF4J | LOG4J | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING
+          默认值： Not set -->
+        <setting name="logImpl" value="LOG4J"></setting>
     </settings>
     <typeAliases>
          <!--这里给实体类取别名，方便在mapper配置文件中使用-->

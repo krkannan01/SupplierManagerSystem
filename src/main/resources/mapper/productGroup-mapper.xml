@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.xt.sms.dao.IProductGroupDao" >
 
-  <select id="getProductGroupList" resultType="ProductGroup" parameterType="integer">
-    SELECT `id`,`name` FROM `table_product_group` WHERE `parent_id` = #{parentId}
+  <select id="getProductGroupList" resultType="ProductGroup">
+    SELECT `id`,`name`,`parent_id` FROM `table_product_group`;
   </select>
 
   <select id="getProductGroupById" resultType="ProductGroup" parameterType="integer">

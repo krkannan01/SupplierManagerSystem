@@ -146,6 +146,6 @@
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript"> var $path = "${pageContext.request.contextPath}"; </script>
-<script src="${pageContext.request.contextPath}/statics/js/login.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/project/login.js"></script>
 </body>
 </html>

@@ -67,7 +67,7 @@ public class ProductServiceTest {
         product.setUnit("台");
         product.setTechnicalParam("testTechnicalParam");
         product.setUnitprice(0.0F);
-        product.setGroupId(new ProductGroup(19, null, null, null));
+        product.setGroupId(new ProductGroup(19, null, null));
         System.out.println(productService.insertProduct(product));
     }
 
@@ -83,7 +83,7 @@ public class ProductServiceTest {
         product.setId(11);
         product.setName("testUpdateName");
         product.setTechnicalParam("testUpdateTechnicalParam");
-        product.setGroupId(new ProductGroup(18, null, null, null));
+        product.setGroupId(new ProductGroup(18, null, null));
         System.out.println(productService.updateProduct(product));
     }
 
@@ -105,13 +105,13 @@ public class ProductServiceTest {
 
     @Test
     public void testInsertProductGroup() {
-        ProductGroup productGroup = new ProductGroup(null,"test",0,null);
+        ProductGroup productGroup = new ProductGroup(null,"test",0);
         System.out.println(productGroupService.setIdAndInsertProductGroup(productGroup));
     }
 
     @Test
     public void testUpdateProductGroup() {
-        ProductGroup productGroup = new ProductGroup(21,"testUpdate",20,null);
+        ProductGroup productGroup = new ProductGroup(21,"testUpdate",20);
         System.out.println(productGroupService.updateProductGroup(productGroup));
     }
 

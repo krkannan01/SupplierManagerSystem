@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductList", method = RequestMethod.GET)
     @ResponseBody
     public MyResult<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize) {
         return productService.getProductList(productCondition, currentPage, pageSize);

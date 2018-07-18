@@ -33,7 +33,7 @@
 					<span class="tree-branch-name tree-item">\
 						<i class="icon-folder '+$options['close-icon']+'"></i>\
 						<span class="tree-item-name">\
-						  '+($options['unselected-icon'] == null ? '' : '<i class="icon-item '+$options['unselected-icon']+'"></i>')+'\
+						  '+($options['multiSelect'] ? ($options['unselected-icon'] == null ? '' : '<i class="icon-item '+$options['unselected-icon']+'"></i>') : '') +'\
 						</span>\
 						<span class="tree-label"></span>\
 					</span>\

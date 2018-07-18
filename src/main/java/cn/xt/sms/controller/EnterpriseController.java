@@ -9,6 +9,7 @@ import cn.xt.sms.service.IEnterpriseService;
 import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.service.ITradeGroupService;
 import cn.xt.sms.service.middle.IEnterpriseMiddleService;
+import cn.xt.sms.vo.TradeGroupVO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
@@ -42,7 +43,7 @@ public class EnterpriseController {
     private IEnterpriseMiddleService enterpriseMiddleService;
 
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public MyResult<Enterprise> search(EnterpriseCondition enterpriseCondition, Integer currentPage, Integer pageSize, HttpSession session) {
         session.setAttribute("currentPage", currentPage);
@@ -108,10 +109,11 @@ public class EnterpriseController {
 
     /*查询分组信息*/
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/getTradeGroup", method = RequestMethod.POST)
+    @RequestMapping(value = "/getTradeGroup", method = RequestMethod.GET)
     @ResponseBody
-    public MyResult<TradeGroup> getTradeGroup() {
-        return tradeGroupService.getTradeGroup();
+    public List<TradeGroup> getTradeGroup(@RequestParam(required = false, defaultValue = "0") Integer parentId,
+                                          Integer categoryId) {
+        return tradeGroupService.getTradeGroup(parentId, categoryId);
     }
 
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)

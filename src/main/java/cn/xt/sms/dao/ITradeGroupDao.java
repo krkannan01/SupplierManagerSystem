@@ -1,6 +1,7 @@
 package cn.xt.sms.dao;
 
 import cn.xt.sms.entity.TradeGroup;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface ITradeGroupDao {
     Integer deleteTradeGroup(Integer id);
 
     /*查询所有TradeGroup信息*/
-    List<TradeGroup> getTradeGroup();
+    List<TradeGroup> getTradeGroup(@Param("categoryId") Integer categoryId);
 
     /*根据Name查询Id*/
     Integer selectIdByName();

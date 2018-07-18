@@ -136,42 +136,51 @@
       LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
       LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
       /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
-      <where>
-        1=1
-        <if test="enterpriseCondition != null">
-          <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
-            AND
-            <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
-              `trade_group_id` = #{group}
-            </foreach>
-          </if>
-          <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
-          <choose>
-            <when test="enterpriseCondition.unionSearch">
-              <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-              <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
-            </when>
-            <otherwise>
-              <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-              <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
-            </otherwise>
-          </choose>
-          <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+      <choose>
+        <when test="enterpriseCondition != null">
+          <where>
+            1=1
+            <if test="enterpriseCondition.categoryId != null">
+              AND `category_id` = #{enterpriseCondition.categoryId}
+            </if>
+            <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+              AND
+              <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+                `trade_group_id` = #{group}
+              </foreach>
+            </if>
+            <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
+            <choose>
+              <when test="enterpriseCondition.unionSearch">
+                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              </when>
+              <otherwise>
+                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              </otherwise>
+            </choose>
+            <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
 
-          <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
-            ORDER BY `${enterpriseCondition.sort}`
+            ORDER BY `enter_date` DESC
+            <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
+            ,`${enterpriseCondition.sort}`
             <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
               ${enterpriseCondition.sorted}
             </if>
           </if>
-        </if>
-      </where>
+          </where>
+        </when>
+        <otherwise>
+          ORDER BY `enter_date` DESC
+        </otherwise>
+      </choose>
       <if test="pageSize != null and offset != null">
         LIMIT #{offset},#{pageSize}
       </if>) as temp2
     LEFT JOIN `table_cooperation` AS tco ON tco.`enterprise_id` = temp2.`te_id`
     LEFT JOIN `table_contact` AS tc2 ON tc2.`id` = tco.`contact_id`
-    ORDER BY `te_identify`
+    /*ORDER BY `te_identify`*/
   </select>
 
   <select id="selectSimpleEnterprise" resultMap="EnterpriseMap">
@@ -179,37 +188,51 @@
     FROM `table_enterprise` AS te
     LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
     /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
-    <where>
-      1=1
-      <if test="enterpriseCondition != null">
-        <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
-          AND
-          <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
-            `trade_group_id` = #{group}
-          </foreach>
-        </if>
-        <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
-        <choose>
-          <when test="enterpriseCondition.unionSearch">
-            <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-            <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
-          </when>
-          <otherwise>
-            <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-            <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
-          </otherwise>
-        </choose>
-        <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+    <choose>
+      <when test="enterpriseCondition != null">
+        <where>
+          1=1
+          <if test="enterpriseCondition != null">
+            <if test="enterpriseCondition.categoryId != null">
+              AND `category_id` = #{enterpriseCondition.categoryId}
+            </if>
+            /*按分组查询*/
+            <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+              AND
+              <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+                `trade_group_id` = #{group}
+              </foreach>
+            </if>
+            /*按经营范围查询*/
+            <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
 
-        <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
-          ORDER BY `${enterpriseCondition.sort}`
-          <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
-            ${enterpriseCondition.sorted}
+            <choose>
+              <when test="enterpriseCondition.unionSearch">
+                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              </when>
+              <otherwise>
+                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
+                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              </otherwise>
+            </choose>
+            <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+
+            ORDER BY `enter_date` DESC
+            <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
+              ,`${enterpriseCondition.sort}`
+              <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
+                ${enterpriseCondition.sorted}
+              </if>
+            </if>
+
           </if>
-        </if>
-
-      </if>
-    </where>
+        </where>
+      </when>
+      <otherwise>
+        ORDER BY `enter_date` DESC
+      </otherwise>
+    </choose>
 
     <if test="pageSize != null and offset != null">
       LIMIT #{offset},#{pageSize}
@@ -220,6 +243,9 @@
     SELECT COUNT(`id`) FROM `table_enterprise`
     <where>
       1=1
+      <if test="categoryId != null">
+        AND `category_id` = #{categoryId}
+      </if>
       <if test="groups != null and groups.size() > 0">
         AND
         <foreach collection="groups" item="group" separator="or" open="(" close=")">

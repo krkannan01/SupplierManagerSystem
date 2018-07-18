@@ -24,7 +24,7 @@ public class ProductGroupController {
     private IProductGroupService productGroupService;
 
     @RequiresPermissions(value = {"admin","searchProduct","searchProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductGroupList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductGroupList", method = RequestMethod.GET)
     @ResponseBody
     public List<ProductGroup> getProductGroupList() {
         /*0代表从跟节点查询所有子节点*/

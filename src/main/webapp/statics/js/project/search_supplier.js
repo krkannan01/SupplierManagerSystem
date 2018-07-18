@@ -1,7 +1,15 @@
 jQuery(function($) {
 
+    var CATEGORY = {
+        HuiZon: {id: null, name: null}, //汇总
+        ShiYong: {id: 0, name: "试用供应商"}, //试用
+        ZhanLue: {id: 1, name: "战略供应商"}, //战略
+        HeGe: {id: 2, name: "合格供应商"}, //合格
+        XiuMian: {id: 3, name: "休眠供应商"} //休眠
+    };
+
     /*加载企业分组信息*/
-    $.post($ctx + "/enterprise/getTradeGroup",function(data) {
+    $.get($ctx + "/enterprise/getTradeGroup",function(data) {
         /*设置默认显示数据*/
         var tradeGroupHtml = "<div class='alert alert-danger' style='margin: 0 auto;padding: 5px;width: 36%;'>系统提示:没有分组</div>";
         if (data) {
@@ -22,141 +30,66 @@ jQuery(function($) {
     }, "json");
 
     /*全局常用参数与对象*/
-    var operateRange = $("#operateRange");
-    var uccCode = $("#uccCode");
-    var fullName = $("#fullName");
-    var groups = ".center [class*='col-'] div";//该对象比较特殊，是有js动态生成，所以决定用字符串保存选择器，稍后用delegate方法进行绑定事件
-    var notIncludeException = $("#notIncludeException");
+    var operateRange = $("#operate-range-input");
+    var uccCode = $("#ucccode-input");
+    var fullName = $("#supplier-input");
+    var sort = $(".sort-level");
     var currentPage = $("#currentPage");
     var pageSize = $("#pageSize");
-    var sort = $(".sort-level");
-
-    var operateRangeValue = null;/*经营范围参数*/
-    var uccCodeValue = null;/*主营产品参数*/
-    var fullNameValue = null;/*全称参数*/
-    var groupsValue = null;/*分组参数*/
-    var includeExceptionValue = false;/*不包含异常信息参数*/
-    var currentPageValue = 1;/*当前页参数*/
-    var pageSizeValue = 10;/*每页条数参数*/
-    var unionSearchValue = false;/*是否交集查询*/
-    var sortValue = null;/*排序的字段*/
-    var sortedValue = "desc";/*排序的顺序*/
 
     var defaultParams = {};
     initParam(defaultParams);
 
     /*参数初始化方法*/
-    function initParam() {
+    function initParam(params) {
 
-        defaultParams = {
-            "operateRange": operateRangeValue,
-            "uccCode": uccCodeValue,
-            "fullName": fullNameValue,
-            "groups": groupsValue,
-            "includeException": includeExceptionValue,
-            "currentPage": currentPageValue,
-            "pageSize": pageSizeValue,
-            "unionSearch": unionSearchValue,
-            "sort": sortValue,
-            "sorted": sortedValue
+        params = {
+            "operateRange": null, //经营范围参数
+            "uccCode": null, //主营产品参数
+            "fullName": null, //全称参数
+            "groups": null, //分组参数
+            "unionSearch": false, //是否交集查询
+            "sort": null, //排序的字段
+            "sorted": "desc", //排序的顺序
+            "includeException": false, //不包含异常信息参数
+            "categoryId": null, //供应商种类
+            "currentPage": 1, //当前页参数
+            "pageSize": 10 //每页条数参数
         };
-        operateRange.val("");
-        //TODO 暂不清楚为什么不能直接用定义好的uccCode对象，可能是有多个造成混淆，待处理
-        $("#uccCode").val("");
-        fullName.val("");
-        $(groups).each(function(index, element) {
-            $(element).addClass("select");
-        });
-        notIncludeException.get(0).checked = false;
-        currentPage.val(currentPageValue);
-        pageSize.val(pageSizeValue);
+        operateRange.val(params.operateRange);
+        uccCode.val(params.uccCode);
+        fullName.val(params.fullName);
+        currentPage.val(params.currentPage);
+        pageSize.val(params.pageSize);
         sort.removeClass("active").removeClass("active-up").removeClass("active-down");
     }
 
-    /*第一页，上一页，下一页，最后一页，功能*/
-    var maxPrev = $("#maxPrev");//第一页
-    var prev = $("#prev");//上一页
-    var next = $("#next");//下一页
-    var maxNext = $("#maxNext");//最后一页
-    var maxPage = $("#maxPage");//最大页码  注意元素为label节点 用html()获取值 以下相同
-    var start = $("#start");//记录起点
-    var end = $("#end");//记录结束点
-    var maxCount = $("#maxCount");//最大记录数
-
-    maxPrev.click(function() {
-        currentPage.val(1);
-        commonPageOperation();
+    //获取分页对象
+    var pagination = new Pagination({
+        "maxPrev": $("#maxPrev"),//第一页
+        "prev": $("#prev"),//上一页
+        "next": $("#next"),//下一页
+        "maxNext": $("#maxNext"),//最后一页
+        "maxPage": $("#maxPage"),//最大页数
+        "start": $("#start"),//记录起点
+        "end": $("#end"),//记录结束点
+        "maxCount": $("#maxCount"),//最大记录数
+        "currentPage": currentPage,//当前页数
+        "pageSize": pageSize,//页面容量
     });
-    prev.click(function() {
-        currentPage.val(Number(currentPage.val()) - 1);
-        commonPageOperation();
+    //绑定分页事件
+    pagination.maxPrev.click(function () {
+        pagination.goPage(pagination.click_max_prev(), defaultParams, sendRequest);
     });
-    next.click(function() {
-        currentPage.val(Number(currentPage.val()) + 1);
-        commonPageOperation();
+    pagination.prev.click(function () {
+        pagination.goPage(pagination.click_prev(), defaultParams, sendRequest);
     });
-    maxNext.click(function() {
-        currentPage.val(maxPage.html());
-        commonPageOperation();
+    pagination.next.click(function () {
+        pagination.goPage(pagination.click_next(), defaultParams, sendRequest);
     });
-    /*公共的页码操作方法*/
-    function commonPageOperation() {
-        defaultParams.currentPage = currentPage.val();
-        sendRequest();
-    }
-
-    /*检查页码状态方法*/
-    function checkPageState() {
-        /*检查数据*/
-        var tempMaxCountValue = Number(maxCount.html());
-        var tempPageSizeValue = Number(pageSize.val());
-        /*设置最大页数*/
-        var temp = Math.ceil(tempMaxCountValue / tempPageSizeValue);
-        maxPage.html(temp < 1 ? 1:temp);
-
-        /*检查页码范围*/
-        checkRange();
-        tempCurrentPageValue = Number(currentPage.val());
-
-        /*设置起始记录数*/
-        temp = tempCurrentPageValue * tempPageSizeValue - tempPageSizeValue + 1;
-        start.html(temp > tempMaxCountValue ? tempMaxCountValue:temp);
-        /*设置结束记录数*/
-        temp = tempCurrentPageValue * tempPageSizeValue;
-        end.html(temp > tempMaxCountValue ? tempMaxCountValue:temp);
-    }
-    /*检查页码范围与禁用状态*/
-    function checkRange() {
-        /*范围检查*/
-        if (currentPage.val() > Number(maxPage.html())) {
-            currentPage.val(maxPage.html());
-        } else if (currentPage.val() < 1) {
-            currentPage.val(0);
-        } else {
-            currentPage.val(defaultParams.currentPage);
-        }
-
-        /*判断是否禁用向前翻页*/
-        if (currentPage.val() <= 1) {
-            currentPage.val(1);
-            maxPrev.get(0).disabled = true;
-            prev.get(0).disabled = true;
-        } else {
-            maxPrev.get(0).disabled = false;
-            prev.get(0).disabled = false;
-        }
-
-        /*判断是否禁用向后翻页*/
-        if (currentPage.val() >= Number(maxPage.html())) {
-            currentPage.val(maxPage.html());
-            maxNext.get(0).disabled = true;
-            next.get(0).disabled = true;
-        } else {
-            maxNext.get(0).disabled = false;
-            next.get(0).disabled = false;
-        }
-    }
-
+    pagination.maxNext.click(function () {
+        pagination.goPage(pagination.click_max_next(), defaultParams, sendRequest);
+    });
 
     /*全选*/
     $('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
@@ -204,7 +137,7 @@ jQuery(function($) {
     });
 
     /*分组项的单击事件*/
-    $("#member-tab").delegate(groups, "click", function (){
+    /*$("#member-tab").delegate(groups, "click", function (){
         var isSupportMutliChecked = $("#isSupportMutliChecked").get(0);
         if (!isSupportMutliChecked.checked) {
             $(groups).each(function(index, element) {
@@ -222,21 +155,214 @@ jQuery(function($) {
         });
         defaultParams.groups = idArr;
         sendRequest();
-    });
+    });*/
 
     /*添加排除筛选的单击事件，修改参数并发送请求*/
-    notIncludeException.click(function() {
+    /*notIncludeException.click(function() {
         defaultParams.includeException = $(this).get(0).checked;
+        sendRequest();
+    });*/
+
+    // BEGIN 分类树组件定义 //
+    loadData();
+
+    /*绑定树形菜单查询事件*/
+    var tree_search = function() {
+        /*1: 获取当前所有选中的节点*/
+        var selected_ids_str = "";
+        $.each($("li.tree-item.tree-selected"), function(index, item) {
+            selected_ids_str += item.getAttribute("data-value") + ",";
+        });
+        console.log(selected_ids_str);
+        defaultParams.groups = selected_ids_str;
+        sendRequest();
+        // defaultParams.groupIds = selected_ids_str;
+        // $("#brandIds").html(get_brand_by_group_ids(selected_ids_str));
+        // var $group = $("#brandIds").closest(".group");
+        // init_group($group);
+        // set_single_selection($group, defaultParams, sendRequest);
+        // sendRequest();
+    };
+
+    function loadData(requestData) {
+
+        /*获取所有供应商分组数据*/
+        var product_group_data = getProductGroupData(requestData);
+        var sampleData = initiateDemoData(product_group_data);//see below
+        $('#enterprise-group-tree').ace_tree({
+            dataSource: sampleData['dataSource1'],
+            multiSelect: false,
+            cacheItems: true,
+            'selectable' : true,
+            'open-icon' : 'ace-icon fa fa-folder-open',
+            'close-icon' : 'ace-icon fa fa-folder',
+            'itemSelect' : true,
+            'folderSelect': false,
+            'expand': true,
+            'selected-icon' : null,
+            'unselected-icon' : null,
+            'folder-open-icon' : 'ace-icon tree-plus',
+            'folder-close-icon' : 'ace-icon tree-minus',
+            loadingHTML : '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+            onSelect: function() {
+                tree_search();
+            }
+        });
+    }
+
+    function replaceTree(id) {
+        var tree = $("#" + id);  // 获取元素
+        tree.attr("id", "temp-" + Math.random());  // 给元素修改一个随机ID
+        tree.after("<ul id='" + id + "'></ul>");  // 元素后面添加新元素,并吧id给新元素
+        tree.remove();  // 移除自己
+    }
+
+    /*获取所有供应商分组数据*/
+    function getProductGroupData(requestData) {
+        var responseData;
+        $.ajax({
+            url: $ctx + "/enterprise/getTradeGroup",
+            data: requestData,
+            type: "GET",
+            async: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                responseData = data;
+            }
+        });
+        var tree_data = {};
+
+        var create = function (data, tree_data) {
+            if (data.children != null && data.children.length > 0) {
+                tree_data['additionalParameters'] = {
+                    'children' : {}
+                };
+                $.each(data.children, function(index, item) {
+                    if (!item.children) {
+                        tree_data['additionalParameters']['children'][item.id] = {text: '<i class="ace-icon fa fa-book blue"></i>' + item.name + ' (' + item.count + ')', type: 'item', value: item.id};
+                    } else {
+                        tree_data['additionalParameters']['children'][item.id] = {text: item.name + ' (' + item.count + ')', type: 'folder', value: item.id, 'icon-class': 'orange'};
+                        create(item, tree_data['additionalParameters']['children'][item.id]);
+                    }
+                });
+            };
+        };
+        if (responseData != null && responseData.length > 0) {
+            $.each(responseData, function(index, item) {
+                // 如果该菜单只有一级
+                if (!item.children) {
+                    tree_data[item.id] = {text: '<i class="ace-icon fa fa-book blue"></i>' + item.name + ' (' + item.count + ')', type: 'item', value: item.id};
+                } else {  // 如果该菜单是多级
+                    tree_data[item.id] = {text: item.name + ' (' + item.count + ')', type: 'folder', value: item.id, 'icon-class': 'orange'};
+                    create(item, tree_data[item.id]);
+                }
+            });
+        };
+
+        return tree_data;
+    }
+
+    /*初始化供应商分组数据*/
+    function initiateDemoData(privilege_data){
+
+        var dataSource1 = function(options, callback){
+            var $data = null
+            if(!("text" in options) && !("type" in options)){
+                $data = privilege_data;//the root tree
+                callback({ data: $data });
+                return;
+            }
+            else if("type" in options && options.type == "folder") {
+                if("additionalParameters" in options && "children" in options.additionalParameters)
+                    $data = options.additionalParameters.children || {};
+                else $data = {}//no data
+            }
+
+            if($data != null)//
+                setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+
+        }
+
+        return {'dataSource1': dataSource1}
+
+    }
+    // END 分类树组件定义 //
+
+    // BEGIN 选项卡切换 //
+    $("#category-huizon").click(function() {
+        replaceTree("enterprise-group-tree");
+        defaultParams.categoryId = CATEGORY.HuiZon.id;
+        loadData({categoryId: CATEGORY.HuiZon.id});
+        sendRequest();
+    });
+    $("#category-shiyong").click(function() {
+        replaceTree("enterprise-group-tree");
+        defaultParams.categoryId = CATEGORY.ShiYong.id;
+        loadData({categoryId: CATEGORY.ShiYong.id});
+        sendRequest();
+    });
+    $("#category-zhanlue").click(function() {
+        replaceTree("enterprise-group-tree");
+        defaultParams.categoryId = CATEGORY.ZhanLue.id;
+        loadData({categoryId: CATEGORY.ZhanLue.id});
+        sendRequest();
+    });
+    $("#category-hege").click(function() {
+        replaceTree("enterprise-group-tree");
+        defaultParams.categoryId = CATEGORY.HeGe.id;
+        loadData({categoryId: CATEGORY.HeGe.id});
+        sendRequest();
+    });
+    $("#category-xiumian").click(function() {
+        replaceTree("enterprise-group-tree");
+        defaultParams.categoryId = CATEGORY.XiuMian.id;
+        loadData({categoryId: CATEGORY.XiuMian.id});
+        sendRequest();
+    });
+    // END 选项卡切换 //
+
+
+    $("#supplier-search").click(function() {
+        defaultParams.fullName = fullName.val();
+        defaultParams.uccCode = null;
+        defaultParams.operateRange = null;
+        sendRequest();
+    });
+    fullName.keypress(function () {
+        if (event.keyCode == 13) {
+            $("#supplier-search").click();
+        }
+    });
+    $("#ucccode-search").click(function() {
+        defaultParams.fullName = null;
+        defaultParams.uccCode = uccCode.val();
+        defaultParams.operateRange = null;
+        sendRequest();
+    });
+    uccCode.keypress(function () {
+        if (event.keyCode == 13) {
+            $("#ucccode-search").click();
+        }
+    });
+    $("#operate-range-search").click(function() {
+        defaultParams.fullName = null;
+        defaultParams.uccCode = null;
+        defaultParams.operateRange = operateRange.val();
+        sendRequest();
+    });
+    operateRange.keypress(function () {
+        if (event.keyCode == 13) {
+            $("#operate-range-search").click();
+        }
+    });
+    $("#unite-search").click(function() {
+        defaultParams.fullName = fullName.val();
+        defaultParams.uccCode = uccCode.val();
+        defaultParams.operateRange = operateRange.val();
         sendRequest();
     });
 
-    /*实现基本筛选的功能*/
-    $("#startSearch").click(function() {
-        defaultParams.operateRange = operateRange.val();
-        defaultParams.uccCode = uccCode.val();
-        defaultParams.fullName = fullName.val();
-        sendRequest();
-    });
 
     /*刷新*/
     $("#refresh").click(function() {
@@ -298,13 +424,6 @@ jQuery(function($) {
         sendRequest();
     });
 
-    /*绑定三个条件输入框的回车事件*/
-    $("#fullName,#uccCode,#operateRange").on("keypress", function(event) {
-        if (event.keyCode == 13) {
-            $("#startSearch").click();
-        }
-    });
-
     /*绑定信用级别排序事件*/
     sort.click(function() {
         if (!$(this).hasClass("active")) {
@@ -316,7 +435,7 @@ jQuery(function($) {
                 defaultParams.sorted = "asc"
             } else {
                 $(this).removeClass("active-up").addClass("active-down");
-                defaultParams.sorted = sortedValue;
+                defaultParams.sorted = "desc";
             }
         }
         sendRequest();
@@ -345,18 +464,15 @@ jQuery(function($) {
     /*发送请求方法*/
     function sendRequest(param) {
         if (!param) param = defaultParams;
-        var load = $("#loadAnimate");
-        var prev = load.prev();
 
         /*显示加载图标*/
-        load.css("display", "block");
-        prev.css("display", "none");
+        showLoad();
 
         var table_data = null;
         var success = false;
         $.ajax({
             url: $ctx + "/enterprise/search",
-            type: "POST",
+            type: "GET",
             dataType: "JSON",
             data: param,
             async: false,
@@ -365,8 +481,7 @@ jQuery(function($) {
                 success = true;
 
                 /*隐藏加载图标*/
-                load.css("display", "none");
-                prev.css("display", "block");
+                hideLoad();
             }
         });
 
@@ -374,6 +489,67 @@ jQuery(function($) {
             render(table_data);
         else
             $.modalMsg("请求出现错误, 重试一下吧！", "error");
+
+        // 显示查询条件标签
+        generatorSearchTab(param);
+    }
+
+    function showLoad() {
+        var load = $("#loadAnimate");
+
+        /*显示加载图标*/
+        var table = load.prev();
+        var parent = load.parent();
+        table.css("opacity", 0.5);
+        load.css("display", "block");
+        load.css("top", table.offset().top - parent.offset().top + table.height()/2 + "px");
+    }
+
+    function hideLoad() {
+        var load = $("#loadAnimate");
+
+        /*隐藏加载图标*/
+        var table = load.prev();
+        table.css("opacity", "");
+        load.css("display", "none");
+    }
+
+    /*生成查询标签*/
+    function generatorSearchTab(param) {
+        var box = $("#show-filter");
+        box.html("当前查询条件：");
+        // 生成供应商种类标签
+        if (param.categoryId != null) {
+            for (var attr in CATEGORY) {
+                if (CATEGORY[attr].id == param.categoryId) {
+                    box.append("<span class='filter-tab' style='background: #33B5E5;'>" + CATEGORY[attr].name + "</span>");
+                    break;
+                }
+            }
+        }
+        // 生成供应商分组标签
+        if (param.groups) {
+            var list = param.groups.slice(0, -1).split(",");
+            var str = "供应商分组属于\""
+            for (var i = 0; i < list.length; i ++) {
+                str += $("li[data-value=" + list[i] + "]").find("span.tree-label").text().slice(0, -4) + ",";
+            }
+            str = str.slice(0, -1);
+            str += "\"";
+            box.append("<span class='filter-tab'>" + str + "</span>")
+        }
+        // 生成供应商条件标签
+        if (param.fullName)
+            box.append("<span class='filter-tab' style='background: #AA66CC;'>供应商名称包含'" + param.fullName + "'</span>");
+        // 生成单位税号条件标签
+        if (param.uccCode)
+            box.append("<span class='filter-tab' style='background: #99CC00;'>单位税号包含'" + param.uccCode + "'</span>");
+        // 生成经营范围条件标签
+        if (param.operateRange)
+            box.append("<span class='filter-tab' style='background: #669900;'>经营范围包含'" + param.operateRange + "'</span>");
+        // 生成页面范围标签
+        if (Number(pagination.pageSize.val()) < Number(pagination.maxCount.html()))
+            box.append("<span class='filter-tab' style='background: #0099CC;'>第" + pagination.start.html() + "页到第" + pagination.end.html() + "页</span>");
     }
 
     /*根据新数据重新渲染表格*/
@@ -382,8 +558,8 @@ jQuery(function($) {
         if (data.rows != null && data.rows.length > 0) {
 
             // 1. 检查页码
-            maxCount.html(data.count);
-            checkPageState();
+            pagination.maxCount.html(data.count);
+            pagination.checkPageState();
 
             // 2. 计算编号 （当前页数 - 1） * 每页数量 + 1 == 当前第一条记录的编号
             var startNo = (Number($("#currentPage").val()) - 1) * Number($("#pageSize").val()) + 1;
@@ -403,7 +579,20 @@ jQuery(function($) {
                     websiteHtml = "<a href='" + temp_website + "'>" + temp_website + "</a>";
                 }*/
 
-                var fullNameHtml = convert_href_html(item.fullName, false, $ctx + '/enterprise/getEnterpriseById?id=' + item.id, 'table-a');
+                // 设置搜索时匹配部分高亮显示 针对 uccCode fullName
+                var uccCodeHtml = item.uCCcode;
+                if (defaultParams.uccCode) {
+                    var rule = RegExp(defaultParams.uccCode + "+", "g");
+                    uccCodeHtml = uccCodeHtml.replace(rule, "<span style='color: red;'>" + defaultParams.uccCode + "</span>");
+                }
+
+                var fullNameHtml = item.fullName;
+                if (defaultParams.fullName) {
+                    var rule = RegExp(defaultParams.fullName + "+", "g");
+                    fullNameHtml = fullNameHtml.replace(rule, "<span style='color: red;'>" + defaultParams.fullName + "</span>")
+                }
+
+                var fullNameHtml = convert_href_html(fullNameHtml, false, $ctx + '/enterprise/getEnterpriseById?id=' + item.id, 'table-a');
                 var websiteHtml = convert_href_html(item.website, true, item.website, 'table-a');
 
                 var color = colorArray[Math.floor(Math.random() * colorArray.length)];
@@ -421,7 +610,7 @@ jQuery(function($) {
                     "</td>" +
                     "<td>"+ fullNameHtml +"</a></td>" +
                     "<td>"+ websiteHtml +"</a></td>" +
-                    "<td>" + item.uCCcode + "</td>" +
+                    "<td>" + uccCodeHtml + "</td>" +
                     "<td><div class='rating inline' data-score='"+ item.level +"'></div></td>" +
                     "<td>" + item.mainProduct + "</td>" +
 
