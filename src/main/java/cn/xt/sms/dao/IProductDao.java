@@ -33,6 +33,9 @@ public interface IProductDao {
     Product getProductById(Integer id);
 
     /*判断产品是否已存在(根据产品名称和供应商)*/
-    Integer existsByNameAndEnterprise(Product product);
+    Integer existsByNameAndSupplier(Product product);
+
+    /*获取当前最大的产品编号*/
+    String getMaxNo();
 
 }

@@ -56,6 +56,11 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <!-- 配置自定义的监听器 供应商ID监听器 -->
+    <listener>
+        <listener-class>cn.xt.sms.listener.EnterpriseNoListener</listener-class>
+    </listener>
+
     <!-- 配置SpringMVC核心拦截器 -->
     <servlet>
         <servlet-name>springmvc</servlet-name>

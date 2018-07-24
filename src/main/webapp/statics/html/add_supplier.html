@@ -886,7 +886,7 @@
 							enterprise_data.userDefinedFieldFive = $("#userDefinedFieldFive").val();
 
 							/*第五步：发送请求*/
-							$.post("/enterprise/insert", "", function(data) {
+							$.post("/supplier/insert", "", function(data) {
 								//TODO 发送请求
 								next.removeAttr("disabled");
 							}, "text");

@@ -14,7 +14,7 @@ public interface ICooperationDao {
     Integer selectContactIdById(Integer id);
 
     /*根据enterpriseId查询id*/
-    List<Integer> selectIdByEnterpriseId(Integer enterpriseId);
+    List<Integer> selectIdBySupplierId(Integer supplierId);
 
     /*删除合作情况信息*/
     Integer deleteCooperation(Integer id);

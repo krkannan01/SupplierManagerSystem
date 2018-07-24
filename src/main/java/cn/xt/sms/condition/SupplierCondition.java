@@ -10,7 +10,7 @@ import java.util.List;
  * @author xietao.x@qq.com
  */
 @Data
-public class EnterpriseCondition {
+public class SupplierCondition {
 
     private Integer categoryId;//供应商种类
 
@@ -27,10 +27,10 @@ public class EnterpriseCondition {
     private String sort;//排序字段
     private String sorted;//排序方式 desc:降 asc:升
 
-    public EnterpriseCondition() {
+    public SupplierCondition() {
     }
 
-    public EnterpriseCondition(List<Integer> groups, String operateRange, String fullName, String mainProduct, String uccCode, boolean includeException, boolean unionSearch
+    public SupplierCondition(List<Integer> groups, String operateRange, String fullName, String mainProduct, String uccCode, boolean includeException, boolean unionSearch
             , String sort, String sorted) {
         this.groups = groups;
         this.operateRange = operateRange;

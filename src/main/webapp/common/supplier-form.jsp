@@ -1,4 +1,4 @@
-<%@ page import="cn.xt.sms.entity.Enterprise" %>
+<%@ page import="cn.xt.sms.entity.Supplier" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -7,7 +7,7 @@
             level = "3", tradeGroup="", address="", operateRange="", exceptionInfo="", dangerInfo="", comment="";
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    Enterprise ep = (Enterprise)request.getAttribute("enterprise");
+    Supplier ep = (Supplier)request.getAttribute("supplier");
     if (ep != null) {
         if (ep.getId() != null) id = ep.getId().toString();
         if (ep.getUCCcode() != null) UCCcode = ep.getUCCcode();

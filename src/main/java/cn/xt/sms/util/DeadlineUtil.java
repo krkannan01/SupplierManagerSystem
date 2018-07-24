@@ -4,25 +4,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ÊµÏÖ´æ·ÅÔÚÏßĞÅÏ¢µÄMap¼¯ºÏ¹ÜÀí
+ * å®ç°å­˜æ”¾åœ¨çº¿ä¿¡æ¯çš„Mapé›†åˆç®¡ç†
  * @author xietao.x@qq.com
  * @date 2018/4/10
  */
 public class DeadlineUtil {
 
-    // <String, Long> key´æ·ÅÓÃ»§ÃûĞÅÏ¢£¬ value´æ·Å¹ıÆÚÊ±¼äĞÅÏ¢
+    // <String, Long> keyå­˜æ”¾ç”¨æˆ·åä¿¡æ¯ï¼Œ valueå­˜æ”¾è¿‡æœŸæ—¶é—´ä¿¡æ¯
     private static Map<String, Long> states = new HashMap<String, Long>();
 
-    //ÉèÖÃÖµ, key¼üÖµ  millisecondÉèÖÃ¶àÉÙºÁÃëºó¹ıÆÚ
+    //è®¾ç½®å€¼, keyé”®å€¼  millisecondè®¾ç½®å¤šå°‘æ¯«ç§’åè¿‡æœŸ
     public static void set(String key, Long millisecond) {
         states.put(key, System.currentTimeMillis() + millisecond);
     }
 
-    /*·µ»Ø¸ÃÖµÊÇ·ñ¹ıÆÚ*/
+    /*è¿”å›è¯¥å€¼æ˜¯å¦è¿‡æœŸ*/
     public static boolean expire(String key) {
         Long time = states.get(key);
         if (time != null) {
-            //Èç¹ûÃ»ÓĞµ½¹ıÆÚÊ±¼ä
+            //å¦‚æœæ²¡æœ‰åˆ°è¿‡æœŸæ—¶é—´
             if (time > System.currentTimeMillis()) {
                 return false;
             } else {

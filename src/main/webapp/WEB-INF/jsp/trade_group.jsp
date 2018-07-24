@@ -203,8 +203,10 @@
             if (count < 1) {
                 deleteRow(id);
             } else {
-                $.modalConfirm("你确定删除吗？这将删除分组下的"+ count +"条供应商信息！", function() {
-                    deleteRow(id);
+                $.modalConfirm("你确定删除吗？这将删除分组下的"+ count +"条供应商信息！", function(isOk) {
+                    if (isOk) {
+                        deleteRow(id);
+                    }
                 });
             }
 
@@ -212,56 +214,6 @@
 
         /*绑定新增按钮的事件*/
         $("#addBtn").click(function() {
-            /*BootstrapDialog.confirm({
-                title: "添加分组",
-                message: "<form class='form-horizontal'>" +
-                "<div class='row form-group has-warning'>" +
-                "<label for='tradeGroupName' class='col-xs-12 col-sm-3 control-label'>分组名称：</label>" +
-                "<div class='col-xs-12 col-sm-6'>" +
-                "<span class='block input-icon input-icon-right'>" +
-                "<input type='text' id='tradeGroupName' class='width-100' />" +
-                "<i class='ace-icon fa fa-info-circle' title='必填项'></i>" +
-                "</span>" +
-                "</div>" +
-                "<div class='col-xs-12 col-sm-reset inline'></div>" +
-                "</div>" +
-                "</form>",
-                type: BootstrapDialog.TYPE_INFO, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-                closable: false, // <-- Default value is false
-                draggable: false, // <-- Default value is false
-                btnCancelLabel: '取消', // <-- Default value is 'Cancel',
-                btnCancelClass: "btn btn-white btn-primary",
-                btnOKLabel: "确定", // <-- Default value is 'OK',
-                btnOKClass: "btn btn-white btn-success", // <-- If you didn't specify it, dialog type will be used,
-                callback: function(result) {
-                    // result will be true if button was click, while it will be false if users close the dialog directly.
-                    if(result) {
-                        /!*如果提交*!/
-                        var $tradeGroupName = $("#tradeGroupName");
-                        if ($tradeGroupName.val()) {
-                            $.post("${pageContext.request.contextPath}/tradeGroup/insert", {"name": $tradeGroupName.val()}, function(data) {
-                                if (data == "success") {
-                                    BootstrapDialog.show({
-                                        title: '信息',
-                                        message: '添加成功'
-                                    });
-                                } else {
-                                    BootstrapDialog.show({
-                                        title: '信息',
-                                        message: '添加失败'
-                                    });
-                                }
-                                refursh();
-                            }, "text");
-                        } else {
-                            $tradeGroupName.closest(".form-group").removeClass("has-warning").addClass("has-error");
-                            $tradeGroupName.next().removeClass("fa-info-circle").addClass("fa-times").get(0).setAttribute("title", "不能为空");
-                            $tradeGroupName.parent().parent().next().html("<label class='control-label'>不能为空</label>");
-                            return false;
-                        }
-                    }
-                }
-            });*/
             layer.open({
                 title: "添加分组",
                 type: 1,
@@ -279,7 +231,6 @@
                     "</form>",
                 btn: ["提交", "取消"],
                 yes: function (index) {
-                    /!*如果提交*!/
                     var $tradeGroupName = $("#tradeGroupName");
                     if ($tradeGroupName.val()) {
                         $.post("${pageContext.request.contextPath}/tradeGroup/insert", {"name": $tradeGroupName.val()}, function(data) {
@@ -330,12 +281,12 @@
         /*重新加载数据的方法*/
         function refursh() {
             /*获取数据*/
-            $.post("${pageContext.request.contextPath}/enterprise/getTradeGroup", function(data) {
+            $.get("${pageContext.request.contextPath}/supplier/getTradeGroup", function(data) {
                 var bodyHtml = "<tr><td colspan='3'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
                 if (data) {
-                    if (data.rows.length > 0) {
+                    if (data.length > 0) {
                         bodyHtml = "";
-                        $.each(data.rows, function(index, item) {
+                        $.each(data, function(index, item) {
                             bodyHtml += converterRow(item);
                         });
                     }

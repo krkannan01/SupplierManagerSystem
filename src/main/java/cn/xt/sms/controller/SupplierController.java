@@ -1,15 +1,16 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.condition.SupplierCondition;
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.result.MapResult;
 import cn.xt.sms.result.MyResult;
-import cn.xt.sms.entity.Enterprise;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.entity.UserDefinedFieldName;
+import cn.xt.sms.result.SimpleResponse;
+import cn.xt.sms.result.SimpleResponse.ResponseCode;
 import cn.xt.sms.service.IEnterpriseService;
-import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.service.ITradeGroupService;
 import cn.xt.sms.service.middle.IEnterpriseMiddleService;
-import cn.xt.sms.vo.TradeGroupVO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/enterprise")
-public class EnterpriseController {
+public class SupplierController {
 
     @Autowired
     private IEnterpriseService enterpriseService;
@@ -45,17 +46,17 @@ public class EnterpriseController {
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public MyResult<Enterprise> search(EnterpriseCondition enterpriseCondition, Integer currentPage, Integer pageSize, HttpSession session) {
+    public MyResult<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session) {
         session.setAttribute("currentPage", currentPage);
         session.setAttribute("pageSize", pageSize);
-        return enterpriseService.getEnterpriseList(enterpriseCondition, currentPage, pageSize);
+        return enterpriseService.getEnterpriseList(supplierCondition, currentPage, pageSize);
     }
 
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
     @RequestMapping(value = "/getEnterpriseCount", method = RequestMethod.POST)
     @ResponseBody
-    public Integer searchEnterpriseCount(EnterpriseCondition enterpriseCondition) {
-        return enterpriseService.getEnterpriseCount(enterpriseCondition);
+    public Integer searchEnterpriseCount(SupplierCondition supplierCondition) {
+        return enterpriseService.getEnterpriseCount(supplierCondition);
     }
 
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
@@ -75,8 +76,8 @@ public class EnterpriseController {
     @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ResponseBody
-    public String insert(Enterprise enterprise) {
-        return enterpriseService.insertEnterprise(enterprise);
+    public String insert(HttpServletRequest request, Supplier supplier) {
+        return enterpriseService.insertEnterprise(request.getServletContext(), supplier);
     }
 
     @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
@@ -103,8 +104,8 @@ public class EnterpriseController {
     @RequiresPermissions(value = {"admin","updateEnterprise"},logical = Logical.OR)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public String update(Enterprise enterprise) {
-        return enterpriseService.updateEnterprise(enterprise);
+    public String update(Supplier supplier) {
+        return enterpriseService.updateEnterprise(supplier);
     }
 
     /*查询分组信息*/
@@ -119,10 +120,32 @@ public class EnterpriseController {
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
     @RequestMapping("/getEnterpriseById")
     public String getEnterpriseById(Integer id, String action, HttpServletRequest request) {
-        Enterprise enterprise = enterpriseService.getEnterpriseById(id);
-        request.setAttribute("enterprise", enterprise);
+        Supplier supplier = enterpriseService.getEnterpriseById(id);
+        request.setAttribute("enterprise", supplier);
         return action == null ? "details":action;
     }
+
+    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
+    @RequestMapping("/getEnterpriseById2")
+    public String getEnterpriseById2(Integer id, HttpServletRequest request) {
+        Supplier supplier = enterpriseService.getEnterpriseById(id);
+        request.setAttribute("enterprise", supplier);
+        return "enterprise/detail_iframe";
+    }
+
+    /*转到detail_iframe页面*/
+//    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
+//    @RequestMapping("/toDetailIframe")
+//    public String toDetailIframe() {
+//        return "detail_iframe";
+//    }
+
+//    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
+//    @RequestMapping(value = "/getEnterpriseJsonById", method = RequestMethod.GET)
+//    @ResponseBody
+//    public Supplier getEnterpriseJsonById(Integer id) {
+//        return enterpriseService.getEnterpriseById(id);
+//    }
 
     /*转到serach_supplier页面*/
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
@@ -133,21 +156,21 @@ public class EnterpriseController {
         }
         request.setAttribute("currentPage", session.getAttribute("currentPage"));
         request.setAttribute("pageSize", session.getAttribute("pageSize"));
-        return "search_supplier";
+        return "enterprise/search_supplier";
     }
 
     /*转到add_supplier页面*/
     @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
     @RequestMapping("/toAddSupplier")
     public String toAddSupplier(HttpSession session) {
-        return "add_supplier";
+        return "enterprise/add_supplier";
     }
 
     /*excel文件导入*/
     @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     @ResponseBody
-    public String importExcel(MultipartFile upload) {
+    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
             //解析excel
             //1.读取文件输入流
@@ -157,26 +180,26 @@ public class EnterpriseController {
             //3.打开需要解析的Sheet工作表
             Sheet sheet = wb.getSheetAt(0);
             //4.遍历工作表对象（本质是个行的集合）,读取每一行
-            String message = enterpriseMiddleService.getEnterpriseFormExcel(sheet);
+            String message = enterpriseMiddleService.getEnterpriseFormExcel(request.getServletContext(), sheet);
             //关流
             is.close();
 
             //解析成功
-            return message;
+            return new SimpleResponse(ResponseCode.SUCCESS, message);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "解析错误";
+        return new SimpleResponse(ResponseCode.ERROR, "解析错误");
     }
 
     @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
     @RequestMapping("/exportExcel")
     @ResponseBody
-    public String exportExcel(HttpServletResponse response, Integer start, Integer end, EnterpriseCondition enterpriseCondition) {
+    public String exportExcel(HttpServletResponse response, Integer start, Integer end, SupplierCondition supplierCondition) {
         Workbook wb = new XSSFWorkbook();
 
-        enterpriseMiddleService.setEnterpriseToExcel(wb, start, end, enterpriseCondition);
+        enterpriseMiddleService.setEnterpriseToExcel(wb, start, end, supplierCondition);
 
         //转码，防止文件名中文乱码
         String fileName = "供应商信息.xlsx";
@@ -213,7 +236,7 @@ public class EnterpriseController {
     @RequiresPermissions(value = {"admin","updateEnterprise"},logical = Logical.OR)
     @RequestMapping("/toEdit")
     public String toEdit(HttpSession session) {
-        return "edit";
+        return "enterprise/edit";
     }
 
 }

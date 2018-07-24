@@ -94,3 +94,77 @@ $("body").delegate(".max-box", "keyup", function() {
         $this.val(max_value);
     }
 });
+
+/**
+ * param 将要转为URL参数字符串的对象
+ * key URL参数字符串的前缀
+ * encode true/false 是否进行URL编码,默认为true
+ *
+ * return URL参数字符串
+ */
+function urlEncode(param, key, encode) {
+    if(param==null) return '';
+    var paramStr = '';
+    var t = typeof (param);
+    if (t == 'string' || t == 'number' || t == 'boolean') {
+        paramStr += '&' + key + '=' + ((encode==null||encode) ? encodeURIComponent(param) : param);
+    } else {
+        for (var i in param) {
+            var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+            paramStr += urlEncode(param[i], k, encode);
+        }
+    }
+    return paramStr;
+};
+
+
+function initTableCheckbox(tableSelector, rowSelector) {
+    if (!tableSelector) tableSelector = "#simple-table";
+    if (!rowSelector) rowSelector = "tbody > tr";
+
+    /*全选*/
+    $(tableSelector + ' > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
+        var th_checked = this.checked;//checkbox inside "TH" table header
+
+        $(this).closest('table').find('tbody > tr').each(function(){
+            var row = this;
+            if(th_checked) $(row).addClass("success").find('input[type=checkbox]').eq(0).prop('checked', true);
+            else $(row).removeClass("success").find('input[type=checkbox]').eq(0).prop('checked', false);
+        });
+
+    });
+
+    /*复选框单击事件*/
+    $(tableSelector).delegate('tbody .trbox', 'click', function(event){
+        var doc = $(this).find("input[type=checkbox]").get(0);
+        if (!doc) return;
+        if (doc.checked) {
+            doc.checked = false;
+            $(this).closest("tr").removeClass("success");
+            $(tableSelector).find("thead input[type=checkbox]").prop("checked", false);
+        } else {
+            doc.checked = true;
+            $(this).closest("tr").addClass("success");
+            handleIsAllSelect(tableSelector);
+        }
+        // 阻止事件冒泡和默认行为
+        event.stopPropagation();
+        event.preventDefault();
+    });
+
+
+    /*行单击事件*/
+    $(tableSelector).delegate(rowSelector, 'click', function(){
+        // 全部取消选中
+        $(tableSelector).find('tbody input[type=checkbox]').each(function(index, item) {
+            item.checked = false;
+            $(item).closest("tr").removeClass("success");
+        });
+        // 被点击行选中
+        var box = $(this).find("input[type=checkbox]").get(0);
+        box.checked = true;
+        $(this).addClass("success");
+        // 处理是否全选
+        handleIsAllSelect(tableSelector);
+    });
+}

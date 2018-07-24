@@ -7,10 +7,12 @@ import cn.xt.sms.entity.Product;
 import cn.xt.sms.service.IProductBrandService;
 import cn.xt.sms.service.IProductGroupService;
 import cn.xt.sms.service.IProductService;
+import cn.xt.sms.util.NoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.ServletContext;
 import java.util.List;
 
 /**
@@ -54,11 +56,11 @@ public class ProductServiceImpl implements IProductService {
             offset = (count-1)/pageSize*pageSize;
         }
 
-        List<Product> enterpriseList = productDao.selectProductList(pageSize, offset, productCondition);
-        if (enterpriseList != null && count != null) {
+        List<Product> suppliereList = productDao.selectProductList(pageSize, offset, productCondition);
+        if (suppliereList != null && count != null) {
             productResult.setMsg("success");
             productResult.setCount(count);
-            productResult.setRows(enterpriseList);
+            productResult.setRows(suppliereList);
         } else {
             productResult.setMsg("error");
         }
@@ -72,12 +74,13 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     @Transactional
-    public String insertProduct(Product product) {
+    public String insertProduct(ServletContext context, Product product) {
         if (product != null) {
             if (product.getBrandId() != null && product.getGroupId() != null) {
                 product.getBrandId().setGroupId(product.getGroupId().getId().toString());
             }
             productBrandService.setIdAndInsertProductBrand(product.getBrandId());
+            product.setNo(NoUtil.getProductNo(context)); // 获取商品编号并设置到实体中
             return productDao.insertProduct(product) > 0 ? "success" : "fail";
         }
         return "fail";
@@ -85,12 +88,12 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     @Transactional
-    public String insertFromExcelProduct(Product product) {
+    public String insertFromExcelProduct(ServletContext context, Product product) {
         //处理分组 判断是否需要添加分组
         product.getGroupId().setParentId(0);
         productGroupService.setIdAndInsertProductGroup(product.getGroupId());
 
-        return insertProduct(product);
+        return insertProduct(context, product);
     }
 
     @Override
@@ -118,7 +121,12 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public boolean isUnique(Product product) {
-        return productDao.existsByNameAndEnterprise(product) > 0;
+        return productDao.existsByNameAndSuppliere(product) > 0;
+    }
+
+    @Override
+    public String getMaxNo() {
+        return productDao.getMaxNo();
     }
 
 }

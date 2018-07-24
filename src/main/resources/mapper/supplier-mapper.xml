@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.xt.sms.dao.IEnterpriseDao" >
+<mapper namespace="cn.xt.sms.dao.ISupplierDao" >
 
-  <resultMap id="EnterpriseMap" type="Enterprise">
+  <!-- 表名 -->
+  <sql id="table-name">`table_supplier`</sql>
+
+  <resultMap id="SupplierMap" type="Supplier">
     <id property="id" column="te_id"/>
-    <!--<result property="identify" column="te_identify"/>-->
+    <result property="no" column="te_no"/>
     <result property="fullName" column="te_full_name"/>
     <result property="simpleName" column="te_simple_name"/>
     <result property="UCCcode" column="te_UCCcode"/>
@@ -64,27 +67,27 @@
   </resultMap>
 
   <select id="selectContactIdById" parameterType="integer" resultType="integer">
-    SELECT `contact_id` FROM `table_enterprise` WHERE `id` = #{id}
+    SELECT `contact_id` FROM <include refid="table-name"></include> WHERE `id` = #{id}
   </select>
 
-  <insert id="addEnterprise" parameterType="Enterprise" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO `table_enterprise` (`full_name`,`simple_name`,`UCCcode`,`legal_representative`,`website`,`main_product`,
+  <insert id="addSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO <include refid="table-name"></include> (`full_name`,`simple_name`,`UCCcode`,`legal_representative`,`website`,`main_product`,
     `found_date`,`type`,`registered_capital`,`business_deadline_go`,`business_deadline_to`,`contact_id`,
     `register_department`,`approval_date`,`register_state`,`address`,`operate_range`,`exception_info`,`danger_info`,
     `trade_group_id`,`comment`,`user_defined_field_one`,`user_defined_field_two`,`user_defined_field_three`,
-    `user_defined_field_four`,`user_defined_field_five`,`enter_date`,`level`) VALUES (#{fullName},#{simpleName},#{UCCcode},
+    `user_defined_field_four`,`user_defined_field_five`,`enter_date`,`level`,`no`) VALUES (#{fullName},#{simpleName},#{UCCcode},
     #{legalRepresentative},#{website},#{mainProduct},#{foundDate},#{type},
     #{registeredCapital},#{businessDeadlineGo},#{businessDeadlineTo},#{contactId.id},#{registerDepartment},#{approvalDate},#{registerState},
     #{address},#{operateRange},#{exceptionInfo},#{dangerInfo},#{tradeGroupId.id},#{comment},#{userDefinedFieldOne},
-    #{userDefinedFieldTwo},#{userDefinedFieldThree},#{userDefinedFieldFour},#{userDefinedFieldFive},#{enterDate},#{level});
+    #{userDefinedFieldTwo},#{userDefinedFieldThree},#{userDefinedFieldFour},#{userDefinedFieldFive},#{enterDate},#{level},#{no});
   </insert>
 
-  <delete id="deleteEnterprise" parameterType="integer">
-    DELETE FROM `table_enterprise` WHERE `id` = #{id};
+  <delete id="deleteSupplier" parameterType="integer">
+    DELETE FROM <include refid="table-name"></include> WHERE `id` = #{id};
   </delete>
 
-  <update id="updateEnterprise" parameterType="Enterprise">
-    UPDATE `table_enterprise`
+  <update id="updateSupplier" parameterType="Supplier">
+    UPDATE <include refid="table-name"></include>
       <set>
         `id`=#{id},
         <if test="fullName != null and fullName != ''">`full_name`=#{fullName},</if>
@@ -118,12 +121,12 @@
     WHERE `id` = #{id}
   </update>
 
-  <select id="selectEnterprise" resultMap="EnterpriseMap">
+  <select id="selectSupplier" resultMap="SupplierMap">
     SELECT temp2.*,
       tco.`id` tco_id,tco.`project_name` tco_project_name,tco.`product_name` tco_product_name,
       tc2.`id` tc2_id,tc2.`name_master` tc2_name_master,tc2.`name_slave` tc2_name_slave,tc2.`phone_number_master` tc2_phone_number_master,tc2.`phone_number_slave` tc2_phone_number_slave,tc2.`comment` tc2_comment
     FROM
-      (SELECT /*temp.`identify` te_identify,*/te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
+      (SELECT te.`no` te_no, te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
       te.`found_date` te_found_date,te.`type` te_type,te.`registered_capital` te_registered_capital,te.`business_deadline_go` te_business_deadline_go,
       te.`business_deadline_to` te_business_deadline_to,te.`register_department` te_register_department,te.`approval_date` te_approval_date,te.`register_state` te_register_state,
       te.`address` te_address,te.`operate_range` te_operate_range,te.`exception_info` te_exception_info,te.`danger_info` te_danger_info,te.`comment` te_comment,
@@ -132,97 +135,95 @@
       tc.`id` tc_id,tc.`name_master` tc_name_master,tc.`name_slave` tc_name_slave,tc.`phone_number_master` tc_phone_number_master,tc.`phone_number_slave` tc_phone_number_slave,tc.`comment` tc_comment,
       ttg.`id` ttg_id,ttg.`name` ttg_name
 
-      FROM `table_enterprise` AS te
+      FROM <include refid="table-name"></include> AS te
       LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
       LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
-      /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
       <choose>
-        <when test="enterpriseCondition != null">
+        <when test="supplierCondition != null">
           <where>
             1=1
-            <if test="enterpriseCondition.categoryId != null">
-              AND `category_id` = #{enterpriseCondition.categoryId}
+            <if test="supplierCondition.categoryId != null">
+              AND `category_id` = #{supplierCondition.categoryId}
             </if>
-            <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+            <if test="supplierCondition.groups != null and supplierCondition.groups.size() > 0">
               AND
-              <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+              <foreach collection="supplierCondition.groups" item="group" separator="or" open="(" close=")">
                 `trade_group_id` = #{group}
               </foreach>
             </if>
-            <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
+            <if test="supplierCondition.operateRange != null and supplierCondition.operateRange != ''">AND `operate_range` LIKE '%' #{supplierCondition.operateRange} '%'</if>
             <choose>
-              <when test="enterpriseCondition.unionSearch">
-                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              <when test="supplierCondition.unionSearch">
+                <if test="supplierCondition.fullName != null and supplierCondition.fullName != ''">OR `full_name` LIKE '%' #{supplierCondition.fullName} '%'</if>
+                <if test="supplierCondition.uccCode != null and supplierCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{supplierCondition.uccCode} '%'</if>
               </when>
               <otherwise>
-                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+                <if test="supplierCondition.fullName != null and supplierCondition.fullName != ''">AND `full_name` LIKE '%' #{supplierCondition.fullName} '%'</if>
+                <if test="supplierCondition.uccCode != null and supplierCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{supplierCondition.uccCode} '%'</if>
               </otherwise>
             </choose>
-            <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+            <if test="supplierCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
 
-            ORDER BY `enter_date` DESC
-            <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
-            ,`${enterpriseCondition.sort}`
-            <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
-              ${enterpriseCondition.sorted}
+            ORDER BY `no` DESC
+            <if test="supplierCondition.sort != null and supplierCondition.sort != ''">
+            ,`${supplierCondition.sort}`
+            <if test="supplierCondition.sorted != null and supplierCondition.sorted != ''">
+              ${supplierCondition.sorted}
             </if>
           </if>
           </where>
         </when>
         <otherwise>
-          ORDER BY `enter_date` DESC
+          ORDER BY `no` DESC
         </otherwise>
       </choose>
       <if test="pageSize != null and offset != null">
         LIMIT #{offset},#{pageSize}
       </if>) as temp2
-    LEFT JOIN `table_cooperation` AS tco ON tco.`enterprise_id` = temp2.`te_id`
+    LEFT JOIN `table_cooperation` AS tco ON tco.`supplier_id` = temp2.`te_id`
     LEFT JOIN `table_contact` AS tc2 ON tc2.`id` = tco.`contact_id`
     /*ORDER BY `te_identify`*/
   </select>
 
-  <select id="selectSimpleEnterprise" resultMap="EnterpriseMap">
-    SELECT /*temp.`identify` te_identify,*/te.`id` te_id,te.`full_name` te_full_name,te.`UCCcode` te_UCCcode,te.`website` te_website,te.`main_product` te_main_product,te.`level` te_level,ttg.`name` ttg_name
-    FROM `table_enterprise` AS te
+  <select id="selectSimpleSupplier" resultMap="SupplierMap">
+    SELECT te.`no` te_no, te.`id` te_id, te.`full_name` te_full_name, te.`UCCcode` te_UCCcode,te.`website` te_website,te.`main_product` te_main_product,te.`level` te_level,ttg.`name` ttg_name
+    FROM <include refid="table-name"></include> AS te
     LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
-    /*LEFT JOIN (SELECT @rownum:=@rownum+1 AS identify, `id` FROM (SELECT @rownum:=0) a,`table_enterprise`) AS temp ON te.`id` = temp.`id`*/
     <choose>
-      <when test="enterpriseCondition != null">
+      <when test="supplierCondition != null">
         <where>
           1=1
-          <if test="enterpriseCondition != null">
-            <if test="enterpriseCondition.categoryId != null">
-              AND `category_id` = #{enterpriseCondition.categoryId}
+          <if test="supplierCondition != null">
+            <if test="supplierCondition.categoryId != null">
+              AND `category_id` = #{supplierCondition.categoryId}
             </if>
             /*按分组查询*/
-            <if test="enterpriseCondition.groups != null and enterpriseCondition.groups.size() > 0">
+            <if test="supplierCondition.groups != null and supplierCondition.groups.size() > 0">
               AND
-              <foreach collection="enterpriseCondition.groups" item="group" separator="or" open="(" close=")">
+              <foreach collection="supplierCondition.groups" item="group" separator="or" open="(" close=")">
                 `trade_group_id` = #{group}
               </foreach>
             </if>
             /*按经营范围查询*/
-            <if test="enterpriseCondition.operateRange != null and enterpriseCondition.operateRange != ''">AND `operate_range` LIKE '%' #{enterpriseCondition.operateRange} '%'</if>
+            <if test="supplierCondition.operateRange != null and supplierCondition.operateRange != ''">AND `operate_range` LIKE '%' #{supplierCondition.operateRange} '%'</if>
 
             <choose>
-              <when test="enterpriseCondition.unionSearch">
-                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">OR `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+              <when test="supplierCondition.unionSearch">
+                <if test="supplierCondition.fullName != null and supplierCondition.fullName != ''">OR `full_name` LIKE '%' #{supplierCondition.fullName} '%'</if>
+                <if test="supplierCondition.uccCode != null and supplierCondition.uccCode != ''">OR `UCCcode` LIKE '%' #{supplierCondition.uccCode} '%'</if>
               </when>
               <otherwise>
-                <if test="enterpriseCondition.fullName != null and enterpriseCondition.fullName != ''">AND `full_name` LIKE '%' #{enterpriseCondition.fullName} '%'</if>
-                <if test="enterpriseCondition.uccCode != null and enterpriseCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{enterpriseCondition.uccCode} '%'</if>
+                <if test="supplierCondition.fullName != null and supplierCondition.fullName != ''">AND `full_name` LIKE '%' #{supplierCondition.fullName} '%'</if>
+                <if test="supplierCondition.uccCode != null and supplierCondition.uccCode != ''">AND `UCCcode` LIKE '%' #{supplierCondition.uccCode} '%'</if>
               </otherwise>
             </choose>
-            <if test="enterpriseCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
+            <if test="supplierCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
 
-            ORDER BY `enter_date` DESC
-            <if test="enterpriseCondition.sort != null and enterpriseCondition.sort != ''">
-              ,`${enterpriseCondition.sort}`
-              <if test="enterpriseCondition.sorted != null and enterpriseCondition.sorted != ''">
-                ${enterpriseCondition.sorted}
+            ORDER BY `no` DESC
+            <if test="supplierCondition.sort != null and supplierCondition.sort != ''">
+              ,`${supplierCondition.sort}`
+              <if test="supplierCondition.sorted != null and supplierCondition.sorted != ''">
+                ${supplierCondition.sorted}
               </if>
             </if>
 
@@ -230,7 +231,7 @@
         </where>
       </when>
       <otherwise>
-        ORDER BY `enter_date` DESC
+        ORDER BY `no` DESC
       </otherwise>
     </choose>
 
@@ -239,8 +240,8 @@
     </if>
   </select>
 
-  <select id="selectEnterpriseCount" resultType="integer" parameterType="cn.xt.sms.condition.EnterpriseCondition">
-    SELECT COUNT(`id`) FROM `table_enterprise`
+  <select id="selectSupplierCount" resultType="integer" parameterType="cn.xt.sms.condition.SupplierCondition">
+    SELECT COUNT(`id`) FROM <include refid="table-name"></include>
     <where>
       1=1
       <if test="categoryId != null">
@@ -267,7 +268,7 @@
     </where>
   </select>
 
-  <select id="getEnterpriseById" parameterType="integer" resultMap="EnterpriseMap">
+  <select id="getSupplierById" parameterType="integer" resultMap="SupplierMap">
     SELECT te.`id` te_id,te.`full_name` te_full_name,te.`simple_name` te_simple_name,te.`UCCcode` te_UCCcode,te.`legal_representative` te_legal_representative,te.`website` te_website,te.`main_product` te_main_product,
     te.`found_date` te_found_date,te.`type` te_type,te.`registered_capital` te_registered_capital,te.`business_deadline_go` te_business_deadline_go,
     te.`business_deadline_to` te_business_deadline_to,te.`register_department` te_register_department,te.`approval_date` te_approval_date,te.`register_state` te_register_state,
@@ -279,9 +280,9 @@
     tc2.`id` tc2_id,tc2.`name_master` tc2_name_master,tc2.`name_slave` tc2_name_slave,tc2.`phone_number_master` tc2_phone_number_master,tc2.`phone_number_slave` tc2_phone_number_slave,tc2.`comment` tc2_comment,
     ttg.`id` ttg_id,ttg.`name` ttg_name
 
-    FROM `table_enterprise` AS te
+    FROM <include refid="table-name"></include> AS te
     LEFT JOIN `table_contact` AS tc ON te.`contact_id` = tc.`id`
-    LEFT JOIN `table_cooperation` AS tco ON tco.`enterprise_id` = te.`id`
+    LEFT JOIN `table_cooperation` AS tco ON tco.`supplier_id` = te.`id`
     LEFT JOIN `table_contact` AS tc2 ON tc2.`id` = tco.`contact_id`
     LEFT JOIN `table_trade_group` AS ttg ON ttg.`id` = te.`trade_group_id`
     WHERE te.`id` = #{id}
@@ -292,15 +293,19 @@
   </select>
 
   <select id="getIdByFullName" parameterType="string" resultType="integer">
-    SELECT `id` FROM `table_enterprise` WHERE `full_name` = #{fullName} LIMIT 0,1
+    SELECT `id` FROM <include refid="table-name"></include> WHERE `full_name` = #{fullName} LIMIT 0,1
   </select>
 
   <select id="getIdByTradeGroupId" parameterType="integer" resultType="integer">
-    SELECT `id` FROM `table_enterprise` WHERE `trade_group_id` = #{tradeGroupId}
+    SELECT `id` FROM <include refid="table-name"></include> WHERE `trade_group_id` = #{tradeGroupId}
   </select>
 
-  <select id="getEnterpriseIdAndName" resultMap="MyMap">
-    SELECT `id`, `full_name` `name` FROM `table_enterprise`
+  <select id="getSupplierIdAndName" resultMap="MyMap">
+    SELECT `id`, `full_name` `name` FROM <include refid="table-name"></include>
+  </select>
+
+  <select id="getMaxNo" resultType="string">
+    SELECT max(`no`) FROM <include refid="table-name"></include>;
   </select>
 
 </mapper>

@@ -3,15 +3,11 @@ package cn.xt.sms.test;
 import cn.xt.sms.entity.*;
 import cn.xt.sms.exception.NullCellValueException;
 import cn.xt.sms.util.POIUtil;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.expression.spel.ast.Projection;
 
 import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
 
-import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -31,7 +27,7 @@ public class ExcelImport {
         excelImport();
     }
 
-    public static List<Enterprise> excelImport() throws IOException, org.apache.poi.openxml4j.exceptions.InvalidFormatException {
+    public static List<Supplier> excelImport() throws IOException, org.apache.poi.openxml4j.exceptions.InvalidFormatException {
         /*读取信用信息表*/
         File f = new File("C:\\Users\\Administrator\\Desktop\\项目资源\\模板.xlsx");
         Workbook wb = WorkbookFactory.create(f);
@@ -39,18 +35,18 @@ public class ExcelImport {
 //        File f2 = new File("C:/Users/Administrator/Desktop/供应商汇总表--孙纯.xlsx");
 //        Workbook wb2 = WorkbookFactory.create(f2);
         /*数据集合*/
-//        List<Enterprise> enterpriseList = new ArrayList<Enterprise>();
+//        List<Supplier> supplierList = new ArrayList<Supplier>();
         /*开始循环读取 以信用信息表为主*/
         Sheet sheet = wb.getSheetAt(0);
 //        Sheet sheet2 = wb2.getSheetAt(0);
         int index = 0;
-        List<Enterprise> enterpriseList = null;
+        List<Supplier> supplierList = null;
         for (Row row: sheet) {
             if (row.getRowNum() == 0) continue;
             index++;
             int pointer = 1;
             System.out.println("\n" + ansi().eraseScreen().render("@|blue --------\t正在读取第"+ index +"条记录\t--------|@"));
-            Enterprise enterprise = null;
+            Supplier supplier = null;
             try {
                 // 统一社会信用代码 (String)
                 String uCCcode = POIUtil.getStringValue(row.getCell(pointer++), "统一社会信用代码");
@@ -95,29 +91,29 @@ public class ExcelImport {
                 // 备注
                 String comment = POIUtil.getStringValue(row.getCell(pointer++));
 
-                enterprise = new Enterprise();
+                supplier = new Supplier();
 
-                enterprise.setUCCcode(uCCcode);
-                enterprise.setFullName(fullName);
-                enterprise.setType(type);
-                enterprise.setLegalRepresentative(legalRepresentative);
-                enterprise.setWebsite(website);
-                enterprise.setSimpleName(simpleName);
-                enterprise.setFoundDate(foundDate);
-                enterprise.setRegisteredCapital(registeredCapital);
-                enterprise.setApprovalDate(approvalDate);
-                enterprise.setRegisterDepartment(registerDepartment);
-                enterprise.setRegisterState(registerState);
-                enterprise.setMainProduct(mainProduct);
-                enterprise.setBusinessDeadlineGo(sdf.format(businessDeadlineGo));
-                enterprise.setBusinessDeadlineTo(sdf.format(businessDeadlineTo));
-                enterprise.setLevel(level);
-                enterprise.setTradeGroupId(new TradeGroup(null, tradeGroup, null));
-                enterprise.setAddress(address);
-                enterprise.setOperateRange(operateRange);
-                enterprise.setExceptionInfo(exceptionInfo);
-                enterprise.setDangerInfo(dangerInfo);
-                enterprise.setComment(comment);
+                supplier.setUCCcode(uCCcode);
+                supplier.setFullName(fullName);
+                supplier.setType(type);
+                supplier.setLegalRepresentative(legalRepresentative);
+                supplier.setWebsite(website);
+                supplier.setSimpleName(simpleName);
+                supplier.setFoundDate(foundDate);
+                supplier.setRegisteredCapital(registeredCapital);
+                supplier.setApprovalDate(approvalDate);
+                supplier.setRegisterDepartment(registerDepartment);
+                supplier.setRegisterState(registerState);
+                supplier.setMainProduct(mainProduct);
+                supplier.setBusinessDeadlineGo(sdf.format(businessDeadlineGo));
+                supplier.setBusinessDeadlineTo(sdf.format(businessDeadlineTo));
+                supplier.setLevel(level);
+                supplier.setTradeGroupId(new TradeGroup(null, tradeGroup, null));
+                supplier.setAddress(address);
+                supplier.setOperateRange(operateRange);
+                supplier.setExceptionInfo(exceptionInfo);
+                supplier.setDangerInfo(dangerInfo);
+                supplier.setComment(comment);
 
                 System.out.println(ansi().eraseScreen().render("@|green --------\t信息读取成功\t--------|@"));
 
@@ -148,7 +144,7 @@ public class ExcelImport {
                 contact.setPhoneNumberSlave(phoneNumberSlave);
                 contact.setComment(comment);
 
-                enterprise.setContactId(contact);
+                supplier.setContactId(contact);
 
             } catch (NullCellValueException ncve) {
                 pointer = tempPointer + 5;
@@ -166,11 +162,11 @@ public class ExcelImport {
             // 自定义属性5
             Date userDefinedFieldFive = POIUtil.getDateValue(row.getCell(pointer++));
 
-            enterprise.setUserDefinedFieldOne(userDefinedFieldOne);
-            enterprise.setUserDefinedFieldTwo(userDefinedFieldTwo);
-            enterprise.setUserDefinedFieldThree(userDefinedFieldThree);
-            enterprise.setUserDefinedFieldFour(userDefinedFieldFour);
-            enterprise.setUserDefinedFieldFive(userDefinedFieldFive);
+            supplier.setUserDefinedFieldOne(userDefinedFieldOne);
+            supplier.setUserDefinedFieldTwo(userDefinedFieldTwo);
+            supplier.setUserDefinedFieldThree(userDefinedFieldThree);
+            supplier.setUserDefinedFieldFour(userDefinedFieldFour);
+            supplier.setUserDefinedFieldFive(userDefinedFieldFive);
 
             List<Cooperation> cooperationList = new ArrayList<Cooperation>();
             for (int i=0; i<2; i++) {
@@ -223,19 +219,19 @@ public class ExcelImport {
 
             }
 
-            if (cooperationList.size() > 0) enterprise.setCooperationList(cooperationList);
+            if (cooperationList.size() > 0) supplier.setCooperationList(cooperationList);
 
-            enterpriseList.add(enterprise);
+            supplierList.add(supplier);
 
         }
 
-//        readGYSHZ(sheet2, enterpriseList);
-//        readXYXX(sheet, sheet2, enterpriseList);
+//        readGYSHZ(sheet2, supplierList);
+//        readXYXX(sheet, sheet2, supplierList);
         System.out.println("debug");
         return null;
     }
 
-    public static void readGYSHZ(Sheet sheet, List<Enterprise> enterpriseList) {
+    public static void readGYSHZ(Sheet sheet, List<Supplier> supplierList) {
         /*NO 产品范围 序号 企业名称 企业简称 公司网站 联系人 联系方式1 联系方式2
             主营产品 合作情况 合作项目 产品名称 姓名 联系电话 地址*/
         Integer no = 0;
@@ -243,7 +239,7 @@ public class ExcelImport {
             System.out.println("\tRow " + row.getRowNum());
             if (row.getRowNum() == 0 || row.getRowNum() == 1) continue;
             if (row.getRowNum() == 10) break;
-            Enterprise enterprise = new Enterprise();
+            Supplier supplier = new Supplier();
             try {
                 int temp = (int)row.getCell(0).getNumericCellValue();
                 if (temp > 0) {
@@ -269,12 +265,12 @@ public class ExcelImport {
         }
     }
 
-    public static void readXYXX(Sheet sheet, Sheet sheet2, List<Enterprise> enterpriseList) {
+    public static void readXYXX(Sheet sheet, Sheet sheet2, List<Supplier> supplierList) {
         int rowIndex = 30,rowIndex2 = 31,no = 3;
         while(true) {
             Row row = sheet.getRow(rowIndex);
 
-            Enterprise enterprise = new Enterprise();
+            Supplier supplier = new Supplier();
             /*企业名称 全名 统一社会信用代码 法定代表人
             成立日期 类型 注册资本 营业期限自 营业期限至*/
             try {
@@ -289,31 +285,31 @@ public class ExcelImport {
                 }
                 if (fullName == null && fullName == "") break;
 
-                enterprise.setFullName(fullName);
-                enterprise.setUCCcode(row.getCell(2).getStringCellValue());
-                enterprise.setLegalRepresentative(row.getCell(3).getStringCellValue());
-                enterprise.setFoundDate(row.getCell(4).getDateCellValue());
-                enterprise.setType(row.getCell(5).getStringCellValue());
-                enterprise.setRegisteredCapital(row.getCell(6).getStringCellValue());
+                supplier.setFullName(fullName);
+                supplier.setUCCcode(row.getCell(2).getStringCellValue());
+                supplier.setLegalRepresentative(row.getCell(3).getStringCellValue());
+                supplier.setFoundDate(row.getCell(4).getDateCellValue());
+                supplier.setType(row.getCell(5).getStringCellValue());
+                supplier.setRegisteredCapital(row.getCell(6).getStringCellValue());
                 try {
-                    enterprise.setBusinessDeadlineGo(sdf.format(row.getCell(7).getDateCellValue()));
+                    supplier.setBusinessDeadlineGo(sdf.format(row.getCell(7).getDateCellValue()));
                 } catch (NullPointerException npe) {}
                 try {
-                    enterprise.setBusinessDeadlineTo(sdf.format(row.getCell(8).getDateCellValue()));
+                    supplier.setBusinessDeadlineTo(sdf.format(row.getCell(8).getDateCellValue()));
                 } catch (NullPointerException npe) {}
                 /*登记机关 核准日期 登记状态 住所
                 经营范围 异常信息 违法信息*/
-                enterprise.setRegisterDepartment(row.getCell(9).getStringCellValue());
-                enterprise.setApprovalDate(row.getCell(10).getDateCellValue());
-                enterprise.setRegisterState(row.getCell(11).getStringCellValue());
-                enterprise.setAddress(row.getCell(12).getStringCellValue());
-                enterprise.setOperateRange(row.getCell(13).getStringCellValue());
+                supplier.setRegisterDepartment(row.getCell(9).getStringCellValue());
+                supplier.setApprovalDate(row.getCell(10).getDateCellValue());
+                supplier.setRegisterState(row.getCell(11).getStringCellValue());
+                supplier.setAddress(row.getCell(12).getStringCellValue());
+                supplier.setOperateRange(row.getCell(13).getStringCellValue());
                 try {
-                    enterprise.setExceptionInfo(row.getCell(14).getStringCellValue());
+                    supplier.setExceptionInfo(row.getCell(14).getStringCellValue());
                 } catch (NullPointerException npe) {
                 }
                 try {
-                    enterprise.setDangerInfo(row.getCell(15).getStringCellValue());
+                    supplier.setDangerInfo(row.getCell(15).getStringCellValue());
                 } catch (NullPointerException npe) {
                 }
 
@@ -335,11 +331,11 @@ public class ExcelImport {
 
                 TradeGroup tg = new TradeGroup();
                 tg.setId(no);
-                enterprise.setTradeGroupId(tg);
+                supplier.setTradeGroupId(tg);
 
-                enterprise.setSimpleName(row2.getCell(4).getStringCellValue());
+                supplier.setSimpleName(row2.getCell(4).getStringCellValue());
                 try {
-                    enterprise.setWebsite(row2.getCell(5).getStringCellValue());
+                    supplier.setWebsite(row2.getCell(5).getStringCellValue());
                 } catch (NullPointerException npe) {}
                 Contact contact = new Contact();
 //                try {
@@ -353,9 +349,9 @@ public class ExcelImport {
 //                try {
 //                    contact.setPhoneNumberTwo(row2.getCell(8).getStringCellValue());
 //                } catch (NullPointerException npe) {}
-//                enterprise.setContactId(contact);
+//                supplier.setContactId(contact);
 //
-//                enterprise.setMainProduct(row2.getCell(9).getStringCellValue());
+//                supplier.setMainProduct(row2.getCell(9).getStringCellValue());
 //                Cooperation cooperation = new Cooperation();
 //
 //                try {
@@ -382,8 +378,8 @@ public class ExcelImport {
             }
             rowIndex++;
             rowIndex2++;
-            enterpriseList.add(enterprise);
-            System.out.println(enterprise.getFullName());
+            supplierList.add(supplier);
+            System.out.println(supplier.getFullName());
         }
     }
 

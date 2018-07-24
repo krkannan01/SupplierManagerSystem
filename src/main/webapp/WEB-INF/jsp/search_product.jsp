@@ -38,112 +38,35 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace-skins.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace-rtl.css" />
     <style type="text/css">
-        #product-form-modal > .modal-dialog {
-            width: 800px;
-            margin: 30px auto;
-            margin-top: 30px;
-        }
-        hr {
-            border-style: dashed;
-            margin: 5px 0;
-        }
-        .filter-box {
-            margin: 6px 20px;
-        }
-        .filter-head button {
-            color: #000000;
-            float: right;
-            background-color: #FFFFFF;
-            border: 1px solid #DDDDDD;
-        }
-        .filter-head button:hover {
-            color: red;
-            border: 1px solid orange;
-        }
-        .filter-head button:after {
-            font-family: FontAwesome;
-            font-size: 14px;
-            content: "\f106";
-            padding: 0;
-            margin: 0 8px 0 10px;
-            position: relative;
-            top: 1px;
-        }
-        .filter-head button.show:after {
-            content: "\f107";
-        }
-        .filter-body {
-            border: 1px solid #e8e8e8;
-            margin: 6px -12px;
-            padding: 6px;
-        }
-        .filter-body .group .group-head {
-            line-height: 30px;
-            color: #999999;
-        }
-        .filter-body .group-lowest .group-head {
-            line-height: 30px;
-            color: #999999;
-        }
-        .filter-body .group .group-body ul {
-            line-height: 24px;
-            list-style: none;
-            margin: 0;
-        }
+        #product-form-modal>.modal-dialog{width:800px;margin:30px auto;margin-top:30px}
+        hr{border-style:dashed;margin:5px 0}
+        .filter-box{margin:6px 20px}
+        .filter-head button{color:#000;float:right;background-color:#FFF;border:1px solid #DDD}
+        .filter-head button:hover{color:red;border:1px solid orange}
+        .filter-head button:after{font-family:FontAwesome;font-size:14px;content:"\f106";padding:0;margin:0 8px 0 10px;position:relative;top:1px}
+        .filter-head button.show:after{content:"\f107"}
+        .filter-body{border:1px solid #e8e8e8;margin:6px -12px;padding:6px}
+        .filter-body .group .group-head{line-height:30px;color:#999}
+        .filter-body .group-lowest .group-head{line-height:30px;color:#999}
+        .filter-body .group .group-body ul{line-height:24px;list-style:none;margin:0}
+        .filter-body .group .group-body ul li{border:1px solid #fff;margin:0 10px;padding:2px;float:left}
+        .filter-body .group .group-body ul li.active{border-color:orange}
+        .filter-body .group .group-body ul li:hover{color:red}
+        .filter-body .group .group-body ul li.active:hover{border-color:red}
+        .filter-body .group .group-foot button{color:#000;background-color:#FFF;border:1px solid #DDD}
+        .filter-body .group .group-foot button:hover{color:red}
+        .filter-body .group .group-foot span:hover{color:red}
+        .filter-body .group .group-foot span:after{font-family:FontAwesome;content:"\f107"}
+        .filter-body .group .group-foot span.active:after{content:"\f106"}
+        /*设置为0 隐藏自定义菜单*/
+        /*隐藏溢出的元素*/
+        /*自定义菜单相对与body元素进行定位*/
+        #my-menu{width:0;z-index:2;background-color:#fff;height:75px;overflow:hidden;box-shadow:0 1px 1px #888,1px 0 1px #ccc;position:absolute}
+        .my-menu{width:130px;height:25px;line-height:25px;padding:0 10px;cursor:pointer}
+        .my-menu:hover{background-color:#0ff}
 
-        .filter-body .group .group-body ul li {
-            border: 1px solid white;
-            margin: 0 10px;
-            padding: 2px;
-            float: left;
-        }
-        .filter-body .group .group-body ul li.active {
-            border-color: orange;
-        }
-        .filter-body .group .group-body ul li:hover {
-            color: red;
-        }
-        .filter-body .group .group-body ul li.active:hover {
-            border-color: red;
-        }
-
-        .filter-body .group .group-foot button {
-            color: #000000;
-            background-color: #FFFFFF;
-            border: 1px solid #DDDDDD;
-        }
-        .filter-body .group .group-foot button:hover {
-            color: red;
-        }
-        .filter-body .group .group-foot span:hover {
-            color: red;
-        }
-        .filter-body .group .group-foot span:after {
-            font-family: FontAwesome;
-            content: "\f107";
-        }
-        .filter-body .group .group-foot span.active:after {
-            content: "\f106";
-        }
-        #my-menu{
-            width: 0; /*设置为0 隐藏自定义菜单*/
-            z-index: 2;
-            background-color: white;
-            height: 75px;
-            overflow: hidden; /*隐藏溢出的元素*/
-            box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
-            position: absolute; /*自定义菜单相对与body元素进行定位*/
-        }
-        .my-menu{
-            width: 130px;
-            height: 25px;
-            line-height: 25px;
-            padding: 0 10px;
-            cursor: pointer;
-        }
-        .my-menu:hover{
-            background-color: cyan;
-        }
+        .span-block { display: block; padding: 5px 10px; background: #B8C2B8; -webkit-border-radius: 3px;-moz-border-radius: 3px; border-radius: 3px; }
+        .span-line { display: block; padding: 5px 10px; border-bottom: 1px solid orange; }
     </style>
 
     <!--[if lte IE 9]>
@@ -246,22 +169,6 @@
                                                                 </div>
                                                             </div>
                                                             <hr/>
-                                                            <%--<div class="row group">
-                                                                <div class="col-sm-1 col-xs-12 group-head">选购热点：</div>
-                                                                <div class="col-sm-10 col-xs-12 group-body">
-                                                                    <ul>
-                                                                        <li>Kingston/金士顿</li>
-                                                                        <li>Kingston/金士顿</li>
-                                                                        <li>Kingston/金士顿</li>
-                                                                        <li>Kingston/金士顿</li>
-                                                                        <li>Kingston/金士顿</li>
-                                                                    </ul>
-                                                                </div>
-                                                                <div class="col-sm-1 col-xs-12 group-foot">
-                                                                    <button class="select-multi">多选</button>
-                                                                </div>
-                                                            </div>
-                                                            <hr/>--%>
                                                             <div class="row group-lowest">
                                                                 <div class="col-sm-1 col-xs-12 group-head">综合筛选：</div>
                                                                 <div class="col-sm-11 col-xs-12 group-body">
@@ -329,13 +236,14 @@
                                                     <table id="product-table" class="table  table-bordered table-hover">
                                                         <thead>
                                                         <tr>
+                                                            <th>序号</th>
                                                             <th class="center">
                                                                 <label class="pos-rel">
                                                                     <input type="checkbox" class="ace" />
                                                                     <span class="lbl"></span>
                                                                 </label>
                                                             </th>
-                                                            <th>编号</th>
+                                                            <th>商品编号</th>
                                                             <th>产品名称</th>
                                                             <th>产品规格</th>
                                                             <th>品牌</th>

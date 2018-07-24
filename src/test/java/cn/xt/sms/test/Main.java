@@ -18,7 +18,7 @@ public class Main {
 
 //        Long startTime = System.currentTimeMillis();
 //        for (int i=0; i<100000; i++) {
-//            Enterprise enterprise = new Enterprise();
+//            Supplier enterprise = new Supplier();
 //        }
 //        System.out.println("实例化100000个Enterprise耗时:" + (System.currentTimeMillis() - startTime) + "毫秒!");
 //        //13ms

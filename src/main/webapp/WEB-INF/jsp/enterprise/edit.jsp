@@ -1,4 +1,4 @@
-<%@ page import="cn.xt.sms.entity.Enterprise" %>
+<%@ page import="cn.xt.sms.entity.Supplier" %>
 <%@ page import="cn.xt.sms.entity.Cooperation" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
@@ -10,7 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
-    Enterprise ep = (Enterprise) request.getAttribute("enterprise");
+    Supplier ep = (Supplier) request.getAttribute("supplier");
     List<Cooperation> cooperationList = new ArrayList<Cooperation>();
     if (ep != null) {
         if (ep.getCooperationList() != null && ep.getCooperationList().size() > 0) {
@@ -378,7 +378,7 @@
     }
     jQuery(function($) {
         //$.getJSON("${pageContext.request.contextPath}/statics/json/defined_field.json", function(data) {
-        $.post("${pageContext.request.contextPath}/enterprise/getUserDefinedFieldName", function(data) {
+        $.post("${pageContext.request.contextPath}/supplier/getUserDefinedFieldName", function(data) {
             $("#main-box").find(".overview").eq(0).append(<jsp:include page="${pageContext.request.contextPath}/common/other-form.jsp" />);
             /*渲染日期时间框 必须在html文档加载完成后渲染*/
             if (!ace.vars['old_ie']) {
@@ -411,7 +411,7 @@
         }, "json");
 
         /*页面加载前,使用ajax加载下拉框数据*/
-        $.post("${pageContext.request.contextPath}/enterprise/getTradeGroup", function(data) {
+        $.post("${pageContext.request.contextPath}/supplier/getTradeGroup", function(data) {
             var tradeGroupHtml = "";
             $.each(data.rows, function(index, item) {
                 tradeGroupHtml += "<option value='"+ item.id +"'>"+ item.name +"</option>";
@@ -454,7 +454,7 @@
             /*对于id为fullName的元素需要进行唯一校验*/
             /*再查询是否已存在企业名*/
             if ($this.val() != this.getAttribute("placeholder")) {
-                $.get("${pageContext.request.contextPath}/enterprise/isUnique", {"fullName": $this.val()}, function(data) {
+                $.get("${pageContext.request.contextPath}/supplier/isUnique", {"fullName": $this.val()}, function(data) {
                     if (data == "true") {
                         /*如果有 移除success,warning样式 添加error样式*/
                         $this.closest(".form-group").removeClass("has-success").addClass("has-error");
@@ -568,11 +568,11 @@
 
         /*数据提交，给提交按钮绑定事件*/
         $("#submit").click(function() {
-            if ($("#enterpriseId").val()) {
+            if ($("#supplierId").val()) {
                 /*获取参数信息*/
                 var data_object = {};
                 /*第一步：设置必要参数*/
-                setDataObject("#enterpriseId", "id", data_object);
+                setDataObject("#supplierId", "id", data_object);
                 setDataObject("#uCCcode", "uCCcode", data_object);
                 setDataObject("#fullName", "fullName", data_object);
                 setDataObject("#type", "type", data_object);
@@ -624,13 +624,13 @@
                 setDataObject("#userDefinedFieldFive", "userDefinedFieldFive", data_object);
 
                 /*发送请求*/
-                $.post("${pageContext.request.contextPath}/enterprise/update", data_object, function(data) {
+                $.post("${pageContext.request.contextPath}/supplier/update", data_object, function(data) {
                     if(data == "success") {
                         BootstrapDialog.show({
                             title: '提示',
                             message: '修改成功!',
                             onhide: function() {
-                                location.href = "${pageContext.request.contextPath}/enterprise/getEnterpriseById?id="+ $("#enterpriseId").val();
+                                location.href = "${pageContext.request.contextPath}/supplier/getEnterpriseById?id="+ $("#supplierId").val();
                             }
                         });
                     } else {

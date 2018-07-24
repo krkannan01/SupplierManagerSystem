@@ -12,9 +12,9 @@ import java.util.List;
  * @author xietao.x@qq.com
  */
 @Data
-public class Enterprise {
+public class Supplier {
 
-    private Integer identify;//标识ID
+    private String no;//供应商编号
     private Integer id;//ID
     private String fullName;//
     private String simpleName;//
@@ -55,20 +55,20 @@ public class Enterprise {
 
     private List<Cooperation> cooperationList;
 
-    public Enterprise() {
+    public Supplier() {
     }
 
-    public Enterprise(String fullName) {
+    public Supplier(String fullName) {
         this.fullName = fullName;
     }
 
-    public Enterprise(Integer identify, Date userDefinedFieldFive, String website, Contact contactId, String mainProduct,
-                      Date foundDate, String type, String registeredCapital, String businessDeadlineGo, String businessDeadlineTo,
-                      String registerDepartment, Date approvalDate, String registerState, String address, String operateRange,
-                      String exceptionInfo, String dangerInfo, String comment, String userDefinedFieldOne, String userDefinedFieldTwo,
-                      String userDefinedFieldThree, String userDefinedFieldFour, Integer id, String fullName, String simpleName,
-                      String UCCcode, String legalRepresentative, TradeGroup tradeGroupId, Date enterDate, Float level, List<Cooperation> cooperationList) {
-        this.identify = identify;
+    public Supplier(String no, Date userDefinedFieldFive, String website, Contact contactId, String mainProduct,
+                    Date foundDate, String type, String registeredCapital, String businessDeadlineGo, String businessDeadlineTo,
+                    String registerDepartment, Date approvalDate, String registerState, String address, String operateRange,
+                    String exceptionInfo, String dangerInfo, String comment, String userDefinedFieldOne, String userDefinedFieldTwo,
+                    String userDefinedFieldThree, String userDefinedFieldFour, Integer id, String fullName, String simpleName,
+                    String UCCcode, String legalRepresentative, TradeGroup tradeGroupId, Date enterDate, Float level, List<Cooperation> cooperationList) {
+        this.no = no;
         this.userDefinedFieldFive = userDefinedFieldFive;
         this.website = website;
         this.contactId = contactId;

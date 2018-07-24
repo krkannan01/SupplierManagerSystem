@@ -135,19 +135,19 @@ jQuery(function($){
     var pageSize = $("#pageSize");
 
     var defaultParams = {};
-    initParam(defaultParams);
+    initParam();
 
     /*参数初始化方法*/
-    function initParam(params) {
+    function initParam() {
 
-        params = {
-            "currentPage": null, //关键字参数
-            "pageSize": 1, //当前页参数
-            "keywords": 10 //每页条数参数
+        defaultParams = {
+            currentPage: 1, //关键字参数
+            pageSize: 10, //当前页参数
+            keywords: null //每页条数参数
         };
-        keywords.val(params.currentPage);
-        currentPage.val(params.pageSize);
-        pageSize.val(params.keywords);
+        keywords.val(defaultParams.keywords);
+        currentPage.val(defaultParams.currentPage);
+        pageSize.val(defaultParams.pageSize);
     }
 
     //获取分页对象
@@ -256,6 +256,7 @@ jQuery(function($){
     /*发送请求方法*/
     function sendRequest(param) {
         if (!param) param = defaultParams;
+        console.log(param);
 
         /*显示加载图标*/
         showLoad();
@@ -326,55 +327,32 @@ jQuery(function($){
                 var comment = item.comment ? item.comment : "";
 
                 content += "<tr>" +
-                    "<td class='center trbox'>" +
-                    "<label class='pos-rel'>" +
-                    "<input type='checkbox' class='ace' data-id='"+ item.id +"' />" +
-                    "<span class='lbl'></span>" +
-                    "</label>" +
-                    "</td>" +
-
-                    "<td>" + startNo++ + "</td>" +
-
+                    "<td class='center'>" + startNo++ + "</td>" +
+                    "<td class='center trbox'> <label class='pos-rel'> <input type='checkbox' class='ace' data-id='"+ item.id +"' /> <span class='lbl'></span> </label> </td>" +
+                    "<td class='center' style='color: green;'>" + item.no + "</td>" +
                     "<td>" + item.name + "</td>" +
-
                     "<td>" + size + "</td>" +
                     "<td>"+ brand +"</td>" +
-
-                    "<td class='technical-param'>" +
-                    "<a href='javascript:void(0);' data-trigger='hover' data-placement='auto top' data-toggle='popover' data-content='"+ item.technicalParam +"'>" +
-                    simple_technical_param +
-                    "</a>" +
-                    "</td>" +
-
+                    "<td class='technical-param'> <a href='javascript:void(0);' data-trigger='hover' data-placement='auto top' data-toggle='popover' data-content='"+ item.technicalParam +"'>" +
+                        simple_technical_param + "</a> </td>" +
                     "<td>"+ unitprice +"</td>" +
-
-                    "<td>" +
-                    comment +
-                    "</td>" +
-
+                    "<td>" + comment + "</td>" +
                     "<td>"+ item.enterpriseId.fullName +"</td>" +
                     "<td>"+ item.groupId.name +"</td>" +
                     "<td>" +
-                    "<div class='btn-group'>" +
-
-                    "<shiro:hasAnyPermission name='admin,updateProduct'>" +
-                    "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'>" +
-                    "<i class='ace-icon fa fa-pencil bigger-120'></i>修改" +
-                    "</button>" +
-                    "</shiro:hasAnyPermission>" +
-
-                    "<shiro:hasAnyPermission name='admin,deleteProduct'>" +
-                    "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'>" +
-                    "<i class='ace-icon fa fa-trash-o bigger-120'></i>删除" +
-                    "</button>" +
-                    "</shiro:hasAnyPermission>" +
-
-                    "</div>" +
+                        "<div class='btn-group'>" +
+                            "<shiro:hasAnyPermission name='admin,updateProduct'>" +
+                            "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-pencil bigger-120'></i>修改 </button>" +
+                            "</shiro:hasAnyPermission>" +
+                            "<shiro:hasAnyPermission name='admin,deleteProduct'>" +
+                            "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>" +
+                            "</shiro:hasAnyPermission>" +
+                        "</div>" +
                     "</td>" +
                     "</tr>";
             });
         } else {
-            content += "<tr><td colspan='10'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+            content += "<tr><td colspan='12'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
         }
         $("#product-table > tbody").html(content);
 
@@ -498,17 +476,17 @@ jQuery(function($){
                 // 验证下拉框
                 if ($id == "group" || $id == "enterprise") {
                     if ($this.val() < 1) {
-                        mShow("提示","请选择分组项");
+                        $.modalMsg("请选择分组项","warning");
                         return;
                     }
                 } else if ($this.attr("id") == "unitprice") {
                     if (!re.test($this.val())) {
-                        mShow("提示","单价格式有误");
+                        $.modalMsg("单价格式有误","warning");
                         return;
                     }
                 } else {
                     if (!$this.val()) {
-                        mShow("提示","请填写必填项");
+                        $.modalMsg("请填写必填项","warning");
                         return;
                     }
                 }
@@ -527,11 +505,11 @@ jQuery(function($){
             if (enterprise.val() > 0) product_data["enterpriseId.id"] = enterprise.val();
             $.post($ctx + "/product/insertProduct", product_data, function(data) {
                 if (data == "success") {
-                    mShow("信息", "新增成功");
+                    $.modalMsg("新增成功", "success");
                     $("#product-form-modal").modal("hide");
                     sendRequest();
                 } else {
-                    mShow("信息", "新增失败");
+                    $.modalMsg("新增失败", "error");
                 }
             }, "text");
         });
@@ -546,27 +524,17 @@ jQuery(function($){
     //单行删除
     $("#product-table").delegate(".deleteProduct", "click", function() {
         var this_ = this;
-        BootstrapDialog.confirm({
-            title: '提示',
-            message: '你确定要删除这条数据吗?',
-            type: BootstrapDialog.TYPE_WARNING, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-            closable: true, // <-- Default value is false
-            draggable: false, // <-- Default value is false
-            btnCancelLabel: '取消', // <-- Default value is 'Cancel',
-            btnOKLabel: '确定', // <-- Default value is 'OK',
-            btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
-            callback: function(result) {
-                if(result) {
-                    var id = this_.getAttribute("data-id");
-                    $.post($ctx + "/product/deleteProduct", {id: id}, function(data) {
-                        if (data == "success") {
-                            mShow("信息", "删除成功");
-                            sendRequest();
-                        } else {
-                            mShow("信息", "删除失败");
-                        }
-                    }, "text");
-                }
+        $.modalConfirm("你确定要删除这条数据吗?", function (isOk) {
+            if (isOk) {
+                var id = this_.getAttribute("data-id");
+                $.post($ctx + "/product/deleteProduct", {id: id}, function(data) {
+                    if (data == "success") {
+                        $.modalMsg("删除成功", "success");
+                        sendRequest();
+                    } else {
+                        $.modalMsg("删除失败", "error");
+                    }
+                }, "text");
             }
         });
     });
@@ -574,44 +542,27 @@ jQuery(function($){
     //多行删除
     $("#allDelete").click(function() {
         if ($("#product-table > tbody > tr > td input[type=checkbox]:checked").length < 1) {
-            /*bootbox.dialog({
-                message: "请选中要删除的数据!",
-                buttons: {
-                    "danger" : {
-                        "label" : "确定",
-                        "className" : "btn-sm btn-warning"
-                    }
-                }
-            });*/
             $.modalMsg("请选中要删除的数据!", "success");
             return;
         }
-        BootstrapDialog.confirm({
-            title: '提示',
-            message: '你确定要删除选中的数据吗?',
-            type: BootstrapDialog.TYPE_WARNING, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-            closable: true, // <-- Default value is false
-            draggable: false, // <-- Default value is false
-            btnCancelLabel: '取消', // <-- Default value is 'Cancel',
-            btnOKLabel: '确定', // <-- Default value is 'OK',
-            btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
-            callback: function(result) {
-                if(result) {
-                    var ids = "";
-                    $("#product-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
-                        if (element.checked) {
-                            ids += element.getAttribute("data-id")+",";
-                        }
-                    });
-                    $.post($ctx + "/product/multiDeleteProduct", {ids: ids}, function(data) {
-                        if (data == "success") {
-                            mShow("信息", "删除成功");
-                            sendRequest();
-                        } else {
-                            mShow("信息", "删除失败");
-                        }
-                    }, "text");
-                }
+        var ids = "";
+        var idLength = 0;
+        $("#product-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
+            if (element.checked) {
+                ids += element.getAttribute("data-id")+",";
+                idLength ++;
+            }
+        });
+        $.modalConfirm("你确定要删除选中的" + idLength + "行数据吗?", function(isOk) {
+            if (isOk) {
+                $.post($ctx + "/product/multiDeleteProduct", {ids: ids}, function(data) {
+                    if (data == "success") {
+                        $.modalMsg("删除成功", "success");
+                        sendRequest();
+                    } else {
+                        $.modalMsg("删除失败", "error");
+                    }
+                }, "text");
             }
         });
     });
@@ -685,7 +636,7 @@ jQuery(function($){
                     /*3):绑定确定事件*/
                     $("#confirm").click(function() {
                         if (unitprice.val() && !re.test(unitprice.val())) {
-                            mShow("提示", "单价格式有误,请重新填写", BootstrapDialog.TYPE_DANGER);
+                            $.modalMsg("单价格式有误,请重新填写", "error");
                             return;
                         }
                         var product_data = {};
@@ -701,11 +652,11 @@ jQuery(function($){
                         if (enterprise.val() > 0) product_data["enterpriseId.id"] = enterprise.val();
                         $.post($ctx + "/product/updateProduct", product_data, function(data) {
                             if (data == "success") {
-                                mShow("信息", "修改成功");
+                                $.modalMsg("修改成功", "success");
                                 sendRequest();
                                 $("#product-form-modal").modal("hide");
                             } else {
-                                mShow("信息", "修改失败", BootstrapDialog.TYPE_DANGET);
+                                $.modalMsg("修改失败", "error");
                             }
                         }, "text");
                     });
@@ -799,13 +750,13 @@ jQuery(function($){
         /*3):绑定确定事件*/
         $("#product-group-form-modal #confirm-two").click(function() {
             if (!name.val()) {
-                mShow("提示","请填写必填项");
+                $.modalMsg("请填写必填项","warning");
                 return;
             }
 
             if (product_group_unique(name.val())) {
                 convert_error(name, "分组名称已存在");
-                mShow("提示","分组名称已存在",BootstrapDialog.TYPE_DANGER);
+                $.modalMsg("分组名称已存在","error");
                 return;
             }
 
@@ -816,11 +767,11 @@ jQuery(function($){
             $.get($ctx + "/productGroup/insertProductGroup", product_group_data, function(data) {
                 if (data == "success") {
                     $("#product-group-form-modal").modal("hide");
-                    mShow("信息", "新增成功");
+                    $.modalMsg("新增成功", "success");
                     /*重新加载tree*/
                     reLoadData();
                 } else {
-                    mShow("信息", "新增失败");
+                    $.modalMsg("新增失败", "error");
                 }
             }, "text");
         });
@@ -833,27 +784,17 @@ jQuery(function($){
     }
     /*删除节点*/
     function delete_node(id, name, $item) {
-        BootstrapDialog.confirm({
-            title: '提示',
-            message: '确定删除【'+ name +'】节点及其子节点吗?',
-            type: BootstrapDialog.TYPE_WARNING, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-            closable: true, // <-- Default value is false
-            draggable: false, // <-- Default value is false
-            btnCancelLabel: '取消', // <-- Default value is 'Cancel',
-            btnOKLabel: '确定', // <-- Default value is 'OK',
-            btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
-            callback: function(result) {
-                if(result) {
-                    $.get($ctx + "/productGroup/deleteProductGroup", {id: id}, function(data) {
-                        if (data == "success") {
-                            if ($item.is("li")) $item.remove();
-                            else $item.closest("li").remove();
-                            mShow("信息", "删除成功");
-                        } else {
-                            mShow("信息", "删除失败");
-                        }
-                    }, "text");
-                }
+        $.modalConfirm("确定删除【" + name + "】节点及其子节点吗?", function(isOk) {
+            if (isOk) {
+                $.get($ctx + "/productGroup/deleteProductGroup", {id: id}, function(data) {
+                    if (data == "success") {
+                        if ($item.is("li")) $item.remove();
+                        else $item.closest("li").remove();
+                        $.modalMsg("删除成功", "success");
+                    } else {
+                        $.modalMsg("删除失败", "error");
+                    }
+                }, "text");
             }
         });
     }
@@ -893,7 +834,7 @@ jQuery(function($){
                         if ($name.val() && $name.val() != name) {
                             if (product_group_unique($name.val())) {
                                 convert_error($name, "分组名称已存在");
-                                mShow("提示","分组名称已存在",BootstrapDialog.TYPE_DANGER);
+                                $.modalMsg("分组名称已存在","error");
                                 return;
                             }
                             product_group_data["name"] = $name.val();
@@ -903,15 +844,15 @@ jQuery(function($){
                             $.get($ctx + "/productGroup/updateProductGroup", product_group_data, function(data) {
                                 if (data == "success") {
                                     $("#product-group-form-modal").modal("hide");
-                                    mShow("信息", "修改成功");
+                                    $.modalMsg("修改成功", "success");
                                     reLoadData();
                                 } else {
-                                    mShow("信息", "修改失败");
+                                    $.modalMsg("修改失败", "error");
                                 }
                             }, "text");
                         } else {
                             $("#product-group-form-modal").modal("hide");
-                            mShow("信息", "没有做任何更改");
+                            $.modalMsg("没有做任何更改", "success");
                         }
                     });
 
@@ -1062,7 +1003,17 @@ jQuery(function($){
                 });
                 this.on("success",function(file,data){
                     //上传成功触发的事件
-                    alert(data);
+                    if (data.msg) {
+                        var list = data.msg.split("\n");
+                        var msgHtml = "";
+                        msgHtml += "<span class='span-block'>" + list[0] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[1] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[2] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[3] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[4] + "</span>";
+                        $.modalAlert(msgHtml, "success");
+                    }
+                    console.log("ok");
                 });
                 this.on("error",function (file,data) {
                     //上传失败触发的事件

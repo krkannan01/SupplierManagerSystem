@@ -361,7 +361,7 @@
                             setDataObject("#userDefinedFieldFive", "userDefinedFieldFive", data_object);
 
                             /*第五步：发送请求*/
-                            $.post("${pageContext.request.contextPath}/enterprise/insert", data_object, function(data) {
+                            $.post("${pageContext.request.contextPath}/supplier/insert", data_object, function(data) {
                                 if(data == "success") {
                                     $(".step-content > .step-pane[data-step='5'] > .green.none").removeClass("none").next().addClass("none");
                                     next.removeAttr("disabled");
@@ -393,10 +393,10 @@
         }
 
         /*页面加载前,使用ajax加载下拉框数据*/
-        $.post("${pageContext.request.contextPath}/enterprise/getTradeGroup", function(data) {
+        $.get("${pageContext.request.contextPath}/supplier/getTradeGroup", function(data) {
             var tradeGroupHtml = "";
-            if (data.rows != null && data.rows.length > 0) {
-                $.each(data.rows, function(index, item) {
+            if (data != null && data.length > 0) {
+                $.each(data, function(index, item) {
                     tradeGroupHtml += "<option value='"+ item.id +"'>"+ item.name +"</option>";
                 });
             }
@@ -426,7 +426,7 @@
                     if ($this.val()) {
                         /*如果值不为空*/
                         /*再查询是否已存在企业名*/
-                        $.get("${pageContext.request.contextPath}/enterprise/isUnique", {"fullName": $this.val()}, function(data) {
+                        $.get("${pageContext.request.contextPath}/supplier/isUnique", {"fullName": $this.val()}, function(data) {
                             if (data == "true") {
                                 /*如果有 移除success,warning样式 添加error样式*/
                                 convert_error($this, "企业名称已存在");
@@ -560,7 +560,7 @@
         /*获取预定义的字段名称数据*/
         //暂时不采用json文件
         //$.getJSON("${pageContext.request.contextPath}/statics/json/defined_field.json", function(data) {
-        $.post("${pageContext.request.contextPath}/enterprise/getUserDefinedFieldName", function(data) {
+        $.post("${pageContext.request.contextPath}/supplier/getUserDefinedFieldName", function(data) {
             /*初始化时生成其他信息表单*/
             $(".step-pane[data-step=4]").html(<jsp:include page="${pageContext.request.contextPath}/common/other-form.jsp" />);
 

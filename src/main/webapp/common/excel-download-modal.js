@@ -11,10 +11,9 @@ function excel_download(type, defaultParams) {
                 $min_value.closest(".row").next().text("开始点不能小于结束点");
                 return;
             }
-            var url = $ctx + "/" + lower_type + "/exportExcel?start=" + $min_value.val() + "&end=" +
-                $max_value.val();
+            var url = $ctx + "/" + lower_type + "/exportExcel?start=" + $min_value.val() + "&end=" + $max_value.val();
             if (document.getElementById("hand-condition").checked) {
-                url += "&" + lower_type + "condition=" + JSON.stringify(defaultParams);
+                url += urlEncode(defaultParams);
             }
             location.href = url;
             $min_value.closest(".row").next().text("");

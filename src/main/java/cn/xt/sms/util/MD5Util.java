@@ -8,16 +8,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5Util {
 	public static String EncoderByMd5(String str) {
-		//È·¶¨¼ÆËã·½·¨
+		//ç¡®å®šè®¡ç®—æ–¹æ³•
 		MessageDigest md5=null;
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		//¼ÓÃÜ×Ö·û
+		//åŠ å¯†å­—ç¬¦
 		BASE64Encoder base64en = new BASE64Encoder();
-		// ¼ÓÃÜºóµÄ×Ö·û´®
+		// åŠ å¯†åçš„å­—ç¬¦ä¸²
 		String newstr="";
 		try {
 			newstr = base64en.encode(md5.digest(str.getBytes("utf-8")));

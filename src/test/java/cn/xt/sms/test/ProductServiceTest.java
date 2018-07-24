@@ -68,7 +68,7 @@ public class ProductServiceTest {
         product.setTechnicalParam("testTechnicalParam");
         product.setUnitprice(0.0F);
         product.setGroupId(new ProductGroup(19, null, null));
-        System.out.println(productService.insertProduct(product));
+//        System.out.println(productService.insertProduct(product));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ProductServiceTest {
         File f = new File("C:\\Users\\Administrator\\Desktop\\项目资源\\材料信息模板.xlsx");
         Workbook wb = WorkbookFactory.create(f);
         Sheet sheet = wb.getSheetAt(0);
-        productMiddleService.getProductFormExcel(sheet);
+//        productMiddleService.getProductFormExcel(sheet);
     }
 
 }

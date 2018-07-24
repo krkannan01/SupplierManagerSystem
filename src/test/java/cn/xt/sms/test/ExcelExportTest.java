@@ -1,8 +1,8 @@
 package cn.xt.sms.test;
 
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Cooperation;
-import cn.xt.sms.entity.Enterprise;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.service.IEnterpriseService;
 import cn.xt.sms.service.IProductService;
@@ -62,53 +62,53 @@ public class ExcelExportTest {
             row.getCell(i).setCellStyle(util.styles[tags[i]]);
         }
 
-        List<Enterprise> enterpriseList = enterpriseService.getEnterpriseList(1, 100, null);
+        List<Supplier> supplierList = enterpriseService.getEnterpriseList(1, 100, null);
 
-        if (enterpriseList != null && enterpriseList.size() > 0) {
+        if (supplierList != null && supplierList.size() > 0) {
 
-            for (Enterprise enterprise : enterpriseList) {
+            for (Supplier supplier : supplierList) {
                 row = sheet.createRow(rowPointer++);
                 row.setHeightInPoints(18.5f); //设置行高
                 int cellPointer = 0;
 
-                row.createCell(cellPointer++).setCellValue(enterprise.getIdentify());
-                row.createCell(cellPointer++).setCellValue(enterprise.getUCCcode());
-                row.createCell(cellPointer++).setCellValue(enterprise.getFullName());
-                row.createCell(cellPointer++).setCellValue(enterprise.getType());
-                row.createCell(cellPointer++).setCellValue(enterprise.getLegalRepresentative());
-                row.createCell(cellPointer++).setCellValue(enterprise.getWebsite());
-                row.createCell(cellPointer++).setCellValue(enterprise.getSimpleName());
-                row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(enterprise.getFoundDate()));
-                row.createCell(cellPointer++).setCellValue(enterprise.getRegisteredCapital());
-                row.createCell(cellPointer++).setCellValue(enterprise.getRegisterDepartment());
-                row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(enterprise.getApprovalDate()));
-                row.createCell(cellPointer++).setCellValue(enterprise.getRegisterState());
-                row.createCell(cellPointer++).setCellValue(enterprise.getMainProduct());
-                row.createCell(cellPointer++).setCellValue(enterprise.getBusinessDeadlineGo());
-                row.createCell(cellPointer++).setCellValue(enterprise.getBusinessDeadlineTo());
-                row.createCell(cellPointer++).setCellValue(enterprise.getLevel());
-                row.createCell(cellPointer++).setCellValue(enterprise.getTradeGroupId().getName());
-                row.createCell(cellPointer++).setCellValue(enterprise.getAddress());
-                row.createCell(cellPointer++).setCellValue(enterprise.getOperateRange());
-                row.createCell(cellPointer++).setCellValue(enterprise.getExceptionInfo());
-                row.createCell(cellPointer++).setCellValue(enterprise.getDangerInfo());
-                row.createCell(cellPointer++).setCellValue(enterprise.getComment());
+                row.createCell(cellPointer++).setCellValue(supplier.getNo());
+                row.createCell(cellPointer++).setCellValue(supplier.getUCCcode());
+                row.createCell(cellPointer++).setCellValue(supplier.getFullName());
+                row.createCell(cellPointer++).setCellValue(supplier.getType());
+                row.createCell(cellPointer++).setCellValue(supplier.getLegalRepresentative());
+                row.createCell(cellPointer++).setCellValue(supplier.getWebsite());
+                row.createCell(cellPointer++).setCellValue(supplier.getSimpleName());
+                row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(supplier.getFoundDate()));
+                row.createCell(cellPointer++).setCellValue(supplier.getRegisteredCapital());
+                row.createCell(cellPointer++).setCellValue(supplier.getRegisterDepartment());
+                row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(supplier.getApprovalDate()));
+                row.createCell(cellPointer++).setCellValue(supplier.getRegisterState());
+                row.createCell(cellPointer++).setCellValue(supplier.getMainProduct());
+                row.createCell(cellPointer++).setCellValue(supplier.getBusinessDeadlineGo());
+                row.createCell(cellPointer++).setCellValue(supplier.getBusinessDeadlineTo());
+                row.createCell(cellPointer++).setCellValue(supplier.getLevel());
+                row.createCell(cellPointer++).setCellValue(supplier.getTradeGroupId().getName());
+                row.createCell(cellPointer++).setCellValue(supplier.getAddress());
+                row.createCell(cellPointer++).setCellValue(supplier.getOperateRange());
+                row.createCell(cellPointer++).setCellValue(supplier.getExceptionInfo());
+                row.createCell(cellPointer++).setCellValue(supplier.getDangerInfo());
+                row.createCell(cellPointer++).setCellValue(supplier.getComment());
 
-                if (enterprise.getContactId() != null) {
-                    row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getNameMaster());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getNameSlave());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getPhoneNumberMaster());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getPhoneNumberSlave());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getComment());
+                if (supplier.getContactId() != null) {
+                    row.createCell(cellPointer++).setCellValue(supplier.getContactId().getNameMaster());
+                    row.createCell(cellPointer++).setCellValue(supplier.getContactId().getNameSlave());
+                    row.createCell(cellPointer++).setCellValue(supplier.getContactId().getPhoneNumberMaster());
+                    row.createCell(cellPointer++).setCellValue(supplier.getContactId().getPhoneNumberSlave());
+                    row.createCell(cellPointer++).setCellValue(supplier.getContactId().getComment());
                 }
 
-                row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldOne());
-                row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldTwo());
-                row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldThree());
-                row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldFour());
-                row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldFive());
+                row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldOne());
+                row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldTwo());
+                row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldThree());
+                row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldFour());
+                row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldFive());
 
-                List<Cooperation> cooperationList = enterprise.getCooperationList();
+                List<Cooperation> cooperationList = supplier.getCooperationList();
                 if (cooperationList != null && cooperationList.size() > 0) {
                     for (Cooperation cooperation : cooperationList) {
                         row.createCell(cellPointer++).setCellValue(cooperation.getProjectName());
@@ -173,7 +173,7 @@ public class ExcelExportTest {
                 row.createCell(cellPointer++).setCellValue(product.getUnitprice());
                 row.createCell(cellPointer++).setCellValue(product.getTechnicalParam());
                 row.createCell(cellPointer++).setCellValue(product.getComment());
-                row.createCell(cellPointer++).setCellValue(product.getEnterpriseId().getFullName());
+                row.createCell(cellPointer++).setCellValue(product.getSupplierId().getFullName());
                 row.createCell(cellPointer++).setCellValue(product.getGroupId().getName());
             }
         }

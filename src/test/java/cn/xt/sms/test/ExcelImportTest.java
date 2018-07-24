@@ -1,6 +1,8 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.entity.Enterprise;
+import cn.xt.sms.entity.Supplier;
+import cn.xt.sms.entity.Supplier;
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.service.IEnterpriseService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
@@ -29,9 +31,9 @@ public class ExcelImportTest {
 
     @Test
     public void excelImport() throws IOException, InvalidFormatException {
-        List<Enterprise> enterpriseList = ExcelImport.excelImport();
-        for (Enterprise enterprise: enterpriseList) {
-            enterpriseService.insertEnterprise(enterprise);
+        List<Supplier> supplierList = ExcelImport.excelImport();
+        for (Supplier supplier : supplierList) {
+            /*enterpriseService.insertEnterprise(supplier);*/
         }
     }
 }

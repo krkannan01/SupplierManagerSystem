@@ -1,8 +1,10 @@
 package cn.xt.sms.service.middle;
 
-import cn.xt.sms.condition.EnterpriseCondition;
+import cn.xt.sms.condition.SupplierCondition;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import javax.servlet.ServletContext;
 
 /**
  * @author xietao.x@qq.com
@@ -14,10 +16,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 public interface IEnterpriseMiddleService {
 
     /*读取企业信息Excel文档并批量插入*/
-    String getEnterpriseFormExcel(Sheet sheet);
+    String getEnterpriseFormExcel(ServletContext context, Sheet sheet);
 
     /*读取数据并导出Excel*/
-    void setEnterpriseToExcel(Workbook wb, Integer start, Integer end, EnterpriseCondition enterpriseCondition);
+    void setEnterpriseToExcel(Workbook wb, Integer start, Integer end, SupplierCondition supplierCondition);
 
     /*批量删除*/
     String mutliDeleteEnterprise(String ids);

@@ -1,3 +1,29 @@
+// URLS
+const get_trade_group_path = $ctx + "/enterprise/getTradeGroup";
+const get_enterprise_by_id_two_path = $ctx + "/enterprise/getEnterpriseById2";
+const get_enterprise_by_id_path = $ctx + "/enterprise/getEnterpriseById";
+const mutli_delete_path = $ctx + "/enterprise/mutliDelete";
+const to_search_supplier_path = $ctx + "/enterprise/toSearchSupplier";
+const search_path = $ctx + "/enterprise/search";
+const delete_path = $ctx + "/enterprise/delete";
+const import_excel_path = $ctx + "/enterprise/importExcel";
+
+/*查看供应商详情，在弹出层展示*/
+function showSupplierDetail(id) {
+    layer.open({
+        type: 2,
+        area: ['1200px', '800px'],
+        fix: false,
+        //不固定
+        maxmin: true,
+        shade: 0.4,
+        title: "供应商详情",
+        content: get_enterprise_by_id_two_path + "?id=" + id,
+        btn: ['确定']
+    });
+}
+
+
 jQuery(function($) {
 
     var CATEGORY = {
@@ -9,7 +35,7 @@ jQuery(function($) {
     };
 
     /*加载企业分组信息*/
-    $.get($ctx + "/enterprise/getTradeGroup",function(data) {
+    $.get(get_trade_group_path,function(data) {
         /*设置默认显示数据*/
         var tradeGroupHtml = "<div class='alert alert-danger' style='margin: 0 auto;padding: 5px;width: 36%;'>系统提示:没有分组</div>";
         if (data) {
@@ -38,29 +64,29 @@ jQuery(function($) {
     var pageSize = $("#pageSize");
 
     var defaultParams = {};
-    initParam(defaultParams);
+    initParam();
 
     /*参数初始化方法*/
-    function initParam(params) {
+    function initParam() {
 
-        params = {
-            "operateRange": null, //经营范围参数
-            "uccCode": null, //主营产品参数
-            "fullName": null, //全称参数
-            "groups": null, //分组参数
-            "unionSearch": false, //是否交集查询
-            "sort": null, //排序的字段
-            "sorted": "desc", //排序的顺序
-            "includeException": false, //不包含异常信息参数
-            "categoryId": null, //供应商种类
-            "currentPage": 1, //当前页参数
-            "pageSize": 10 //每页条数参数
+        defaultParams = {
+            operateRange: null, //经营范围参数
+            uccCode: null, //主营产品参数
+            fullName: null, //全称参数
+            groups: null, //分组参数
+            unionSearch: false, //是否交集查询
+            sort: null, //排序的字段
+            sorted: "desc", //排序的顺序
+            includeException: false, //不包含异常信息参数
+            categoryId: null, //供应商种类
+            currentPage: 1, //当前页参数
+            pageSize: 10 //每页条数参数
         };
-        operateRange.val(params.operateRange);
-        uccCode.val(params.uccCode);
-        fullName.val(params.fullName);
-        currentPage.val(params.currentPage);
-        pageSize.val(params.pageSize);
+        operateRange.val(defaultParams.operateRange);
+        uccCode.val(defaultParams.uccCode);
+        fullName.val(defaultParams.fullName);
+        currentPage.val(defaultParams.currentPage);
+        pageSize.val(defaultParams.pageSize);
         sort.removeClass("active").removeClass("active-up").removeClass("active-down");
     }
 
@@ -78,7 +104,8 @@ jQuery(function($) {
         "pageSize": pageSize,//页面容量
     });
     //绑定分页事件
-    pagination.maxPrev.click(function () {
+    pagination.bindGoPage(defaultParams, sendRequest);
+    /*pagination.maxPrev.click(function () {
         pagination.goPage(pagination.click_max_prev(), defaultParams, sendRequest);
     });
     pagination.prev.click(function () {
@@ -89,79 +116,10 @@ jQuery(function($) {
     });
     pagination.maxNext.click(function () {
         pagination.goPage(pagination.click_max_next(), defaultParams, sendRequest);
-    });
-
-    /*全选*/
-    $('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
-        var th_checked = this.checked;//checkbox inside "TH" table header
-
-        $(this).closest('table').find('tbody > tr').each(function(){
-            var row = this;
-            if(th_checked) $(row).addClass("success").find('input[type=checkbox]').eq(0).prop('checked', true);
-            else $(row).removeClass("success").find('input[type=checkbox]').eq(0).prop('checked', false);
-        });
-
-    });
-
-    /*复选框单击事件*/
-    $('#simple-table').delegate('tbody .trbox', 'click', function(event){
-        var doc = $(this).find("input[type=checkbox]").get(0);
-        if (doc.checked) {
-            doc.checked = false;
-            $(this).closest("tr").removeClass("success");
-            $("#simple-table").find("thead input[type=checkbox]").prop("checked", false);
-        } else {
-            doc.checked = true;
-            $(this).closest("tr").addClass("success");
-            handleIsAllSelect("#simple-table");
-        }
-        // 阻止事件冒泡和默认行为
-        event.stopPropagation();
-        event.preventDefault();
-    });
-
-
-    /*行单击事件*/
-    $('#simple-table').delegate('tbody > tr', 'click', function(){
-        // 全部取消选中
-        $("#simple-table").find('tbody input[type=checkbox]').each(function(index, item) {
-            item.checked = false;
-            $(item).closest("tr").removeClass("success");
-        });
-        // 被点击行选中
-        var box = $(this).find("input[type=checkbox]").get(0);
-        box.checked = true;
-        $(this).addClass("success");
-        // 处理是否全选
-        handleIsAllSelect("#simple-table");
-    });
-
-    /*分组项的单击事件*/
-    /*$("#member-tab").delegate(groups, "click", function (){
-        var isSupportMutliChecked = $("#isSupportMutliChecked").get(0);
-        if (!isSupportMutliChecked.checked) {
-            $(groups).each(function(index, element) {
-                if($(element).hasClass("select"))
-                    $(element).removeClass("select");
-            });
-        }
-        $(this).toggleClass("select");
-        var idArr = "";
-        var temp = 0;
-        $(groups).each(function(index, element) {
-            if($(element).hasClass("select")) {
-                idArr += element.getAttribute("data-groupId")+",";
-            }
-        });
-        defaultParams.groups = idArr;
-        sendRequest();
     });*/
 
-    /*添加排除筛选的单击事件，修改参数并发送请求*/
-    /*notIncludeException.click(function() {
-        defaultParams.includeException = $(this).get(0).checked;
-        sendRequest();
-    });*/
+    // 初始化表格复选框选择事件
+    initTableCheckbox();
 
     // BEGIN 分类树组件定义 //
     loadData();
@@ -176,12 +134,6 @@ jQuery(function($) {
         console.log(selected_ids_str);
         defaultParams.groups = selected_ids_str;
         sendRequest();
-        // defaultParams.groupIds = selected_ids_str;
-        // $("#brandIds").html(get_brand_by_group_ids(selected_ids_str));
-        // var $group = $("#brandIds").closest(".group");
-        // init_group($group);
-        // set_single_selection($group, defaultParams, sendRequest);
-        // sendRequest();
     };
 
     function loadData(requestData) {
@@ -221,7 +173,7 @@ jQuery(function($) {
     function getProductGroupData(requestData) {
         var responseData;
         $.ajax({
-            url: $ctx + "/enterprise/getTradeGroup",
+            url: get_trade_group_path,
             data: requestData,
             type: "GET",
             async: false,
@@ -371,7 +323,7 @@ jQuery(function($) {
 
     /*重载*/
     $("#reload").click(function() {
-        location.href = $ctx + "/enterprise/toSearchSupplier";
+        location.href = to_search_supplier_path;
     });
 
     /*删除选中行*/
@@ -381,30 +333,32 @@ jQuery(function($) {
             return;
         }
 
-        $.modalConfirm("你将删除选中的所有企业的数据，确定吗？", function() {
-            // 获取选中的id
-            var ids = "";
-            $("#simple-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
-                if (element.checked) {
-                    ids += element.getAttribute("data-id")+",";
-                }
-            });
-            // 设置ajax配置
-            var config = {
-                url: $ctx + "/enterprise/mutliDelete",
-                type: "post",
-                dataType: "text",
-                data: {"ids": ids},
-                success: function(result) {
-                    result = result == "success" ? {code: "success", msg: "删除成功"} : {code: "error", msg: "删除失败"};
-                    $.modalMsg(result.msg, result.code);
-                    /*全选框重置*/
-                    //$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).get(0).checked = false;
-                    sendRequest();
-                }
-            };
-            // 发送ajax请求
-            $.ajax(config);
+        $.modalConfirm("你将删除选中的所有企业的数据，确定吗？", function(isOk) {
+            if (isOk) {
+                // 获取选中的id
+                var ids = "";
+                $("#simple-table > tbody > tr > td input[type='checkbox']").each(function(index, element) {
+                    if (element.checked) {
+                        ids += element.getAttribute("data-id")+",";
+                    }
+                });
+                // 设置ajax配置
+                var config = {
+                    url: mutli_delete_path,
+                    type: "post",
+                    dataType: "text",
+                    data: {"ids": ids},
+                    success: function(result) {
+                        result = result == "success" ? {code: "success", msg: "删除成功"} : {code: "error", msg: "删除失败"};
+                        $.modalMsg(result.msg, result.code);
+                        /*全选框重置*/
+                        //$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).get(0).checked = false;
+                        sendRequest();
+                    }
+                };
+                // 发送ajax请求
+                $.ajax(config);
+            }
         });
     });
 
@@ -426,16 +380,24 @@ jQuery(function($) {
 
     /*绑定信用级别排序事件*/
     sort.click(function() {
+        // 未激活排序状态 -> 降序排序状态
         if (!$(this).hasClass("active")) {
-            $(this).addClass("active").addClass("active-down");
+            $(this).attr("class", "sort-level active active-down");
             defaultParams.sort = "level";
-        } else {
+        }
+        else {
+            // 降序 -> 升序
             if ($(this).hasClass("active-down")) {
-                $(this).removeClass("active-down").addClass("active-up");
-                defaultParams.sorted = "asc"
-            } else {
+                $(this).attr("class", "sort-level active active-up");
+                defaultParams.sorted = "asc";
+            }
+            // 升序 -> 取消激活
+            else {
                 $(this).removeClass("active-up").addClass("active-down");
-                defaultParams.sorted = "desc";
+                $(this).attr("class", "sort-level");
+                // 恢复默认
+                defaultParams.sort = null;
+                defaultParams.sorted = null;
             }
         }
         sendRequest();
@@ -461,6 +423,7 @@ jQuery(function($) {
         sendRequest();
     }
 
+
     /*发送请求方法*/
     function sendRequest(param) {
         if (!param) param = defaultParams;
@@ -471,7 +434,7 @@ jQuery(function($) {
         var table_data = null;
         var success = false;
         $.ajax({
-            url: $ctx + "/enterprise/search",
+            url: search_path,
             type: "GET",
             dataType: "JSON",
             data: param,
@@ -552,6 +515,7 @@ jQuery(function($) {
             box.append("<span class='filter-tab' style='background: #0099CC;'>第" + pagination.start.html() + "页到第" + pagination.end.html() + "页</span>");
     }
 
+
     /*根据新数据重新渲染表格*/
     function render(data) {
         var content = "";
@@ -570,15 +534,6 @@ jQuery(function($) {
             /*拼接字符串*/
             $.each(data.rows, function (index, item) {
 
-                /*var websiteHtml = "<span class='red'>无</span>";
-                if (item.website) {
-                    var temp_website = item.website;
-                    if (item.website.indexOf("http://") == -1) {
-                        temp_website = "http://" + item.website;
-                    }
-                    websiteHtml = "<a href='" + temp_website + "'>" + temp_website + "</a>";
-                }*/
-
                 // 设置搜索时匹配部分高亮显示 针对 uccCode fullName
                 var uccCodeHtml = item.uCCcode;
                 if (defaultParams.uccCode) {
@@ -592,94 +547,55 @@ jQuery(function($) {
                     fullNameHtml = fullNameHtml.replace(rule, "<span style='color: red;'>" + defaultParams.fullName + "</span>")
                 }
 
-                var fullNameHtml = convert_href_html(fullNameHtml, false, $ctx + '/enterprise/getEnterpriseById?id=' + item.id, 'table-a');
+
+                var fullNameHtml = convert_href_html(fullNameHtml, false, "javascript: showSupplierDetail(" + item.id + ");", 'table-a');
                 var websiteHtml = convert_href_html(item.website, true, item.website, 'table-a');
 
                 var color = colorArray[Math.floor(Math.random() * colorArray.length)];
                 var tradeGroupIdHtml = "<span class='label label-sm" + color + "'>" + item.tradeGroupId.name + "</span>"
 
                 content += "<tr>" +
-                    "<td class='center trbox'>" +
-                    "<label class='pos-rel'>" +
-                    "<input type='checkbox' data-id='" + item.id + "' class='ace' />" +
-                    "<span class='lbl'></span>" +
-                    "</label>" +
-                    "</td>" +
-                    "<td class='center'>" +
-                    "<label>"+ startNo++ +"</label>" +
-                    "</td>" +
+                    "<td class='center'>" + startNo++ + "</td>" +
+                    "<td class='center trbox'> <label class='pos-rel'> <input type='checkbox' data-id='" + item.id + "' class='ace' /> <span class='lbl'></span> </label> </td>" +
+                    "<td class='center' style='color: green;'>" + item.no + "</td>" +
                     "<td>"+ fullNameHtml +"</a></td>" +
                     "<td>"+ websiteHtml +"</a></td>" +
                     "<td>" + uccCodeHtml + "</td>" +
                     "<td><div class='rating inline' data-score='"+ item.level +"'></div></td>" +
                     "<td>" + item.mainProduct + "</td>" +
-
-                    "<td>" +
-                    tradeGroupIdHtml +
-                    "</td>" +
+                    "<td>" + tradeGroupIdHtml + "</td>" +
 
                     "<td>" +
                     "<div class='hidden-sm hidden-xs action-buttons'>" +
-                    "<a class='blue' href= '" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"' target='view_window' title='查看详情'>" +
-                    "<i class='ace-icon fa fa-search-plus bigger-130'></i>" +
-                    "</a>" +
-
+                    "<a class='blue' href= '" + get_enterprise_by_id_path + "?id="+ item.id +"' target='view_window' title='查看详情'> <i class='ace-icon fa fa-search-plus bigger-130'></i> </a>" +
                     "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
-                    "<a class='green' href= '" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' target='view_window' title='编辑'>" +
-                    "<i class='ace-icon fa fa-pencil bigger-130'></i>" +
-                    "</a>" +
+                        "<a class='green' href= '" + get_enterprise_by_id_two_path + "?id="+ item.id +"&action=edit' target='view_window' title='编辑'> <i class='ace-icon fa fa-pencil bigger-130'></i> </a>" +
                     "</shiro:hasAnyPermission>" +
-
                     "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
-                    "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'>" +
-                    "<i class='ace-icon fa fa-trash-o bigger-130'></i>" +
-                    "</a>" +
-                    "</div>" +
+                        "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-130'></i> </a>" +
                     "</shiro:hasAnyPermission>" +
-
+                    "</div>" +
                     "<div class='hidden-md hidden-lg'>" +
-                    "<div class='inline pos-rel'>" +
-                    "<button class='btn btn-minier btn-yellow dropdown-toggle' data-toggle='dropdown' data-position='auto'>" +
-                    "<i class='ace-icon fa fa-caret-down icon-only bigger-120'></i>" +
-                    "</button>" +
+                        "<div class='inline pos-rel'>" +
+                            "<button class='btn btn-minier btn-yellow dropdown-toggle' data-toggle='dropdown' data-position='auto'> <i class='ace-icon fa fa-caret-down icon-only bigger-120'></i> </button>" +
+                            "<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'> " +
+                                "<li> <a href='" + get_enterprise_by_id_path + "?id="+ item.id +"' class='tooltip-info showDetails' data-rel='tooltip' title='查看详情' data-id='"+ item.id +"'> " +
+                                    "<span class='blue'> <i class='ace-icon fa fa-search-plus bigger-120'></i> </span> </a> </li>" +
 
-                    "<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close'>" +
-                    "<li>" +
-                    "<a href='" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"' class='tooltip-info showDetails' data-rel='tooltip' title='查看详情' data-id='"+ item.id +"'>" +
-                    "<span class='blue'>" +
-                    "<i class='ace-icon fa fa-search-plus bigger-120'></i>" +
-                    "</span>" +
-                    "</a>" +
-                    "</li>" +
+                                "<li> <shiro:hasAnyPermission name='admin,updateEnterprise'> <a href='" + get_enterprise_by_id_path + "?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
+                                    "<span class='green'> <i class='ace-icon fa fa-pencil-square-o bigger-120'></i> </span> </a> </shiro:hasAnyPermission> </li>" +
 
-                    "<li>" +
-                    "<shiro:hasAnyPermission name='admin,updateEnterprise'>" +
-                    "<a href='" + $ctx + "/enterprise/getEnterpriseById?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
-                    "<span class='green'>" +
-                    "<i class='ace-icon fa fa-pencil-square-o bigger-120'></i>" +
-                    "</span>" +
-                    "</a>" +
-                    "</li>" +
-                    "</shiro:hasAnyPermission>" +
-
-                    "<li>" +
-                    "<shiro:hasAnyPermission name='admin,deleteEnterprise'>" +
-                    "<a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
-                    "<span class='red'>" +
-                    "<i class='ace-icon fa fa-trash-o bigger-120'></i>" +
-                    "</span>" +
-                    "</a>" +
-                    "</shiro:hasAnyPermission>" +
-
-                    "</li>" +
-                    "</ul>" +
-                    "</div>" +
+                                "<li> <shiro:hasAnyPermission name='admin,deleteEnterprise'> <a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
+                                    "<span class='red'> <i class='ace-icon fa fa-trash-o bigger-120'></i> </span> </a> </shiro:hasAnyPermission> </li>" +
+                            "</ul>" +
+                        "</div>" +
                     "</div>" +
                     "</td>" +
+
                     "</tr>";
             });
         } else {
-            content += "<tr><td colspan='9'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+            content += "<tr><td colspan='100'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
         }
         $("#simple-table > tbody").html(content);
 
@@ -704,22 +620,25 @@ jQuery(function($) {
 
     }
 
+
     /*删除信息操作*/
     $("#simple-table").delegate(".deleteDetails", "click", function() {
         var id = this.getAttribute("data-id");
-        $.modalConfirm("你将删除跟该企业有关的所有数据，确定吗？", function() {
-            var config = {
-                url: $ctx + "/enterprise/delete",
-                type: "post",
-                dataType: "text",
-                data: {"id": id},
-                success: function(result) {
-                    result = result == "success" ? {code: "success", msg: "删除成功"} : {code: "error", msg: "删除失败"};
-                    $.modalMsg(result.msg, result.code);
-                    sendRequest();
-                }
-            };
-            $.ajax(config);
+        $.modalConfirm("你将删除跟该企业有关的所有数据，确定吗？", function(isOk) {
+            if (isOk) {
+                var config = {
+                    url: delete_path,
+                    type: "post",
+                    dataType: "text",
+                    data: {"id": id},
+                    success: function(result) {
+                        result = result == "success" ? {code: "success", msg: "删除成功"} : {code: "error", msg: "删除失败"};
+                        $.modalMsg(result.msg, result.code);
+                        sendRequest();
+                    }
+                };
+                $.ajax(config);
+            }
         });
     });
 
@@ -735,7 +654,7 @@ jQuery(function($) {
 
     try {
         var upload_dropzone = new Dropzone("#upload-excel", {
-            url: $ctx + "/enterprise/importExcel",//文件提交地址
+            url: import_excel_path,//文件提交地址
             method:"post",  //也可用put
             paramName:"upload", //默认为file
             maxFiles:1,//一次性上传的文件数量上限
@@ -759,7 +678,17 @@ jQuery(function($) {
                 });
                 this.on("success",function(file,data){
                     //上传成功触发的事件
-                    alert(data);
+                    sendRequest();
+                    if (data.msg) {
+                        var list = data.msg.split("\n");
+                        var msgHtml = "";
+                        msgHtml += "<span class='span-block'>" + list[0] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[1] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[2] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[3] + "</span>";
+                        msgHtml += "<span class='span-line'>" + list[4] + "</span>";
+                        $.modalAlert(msgHtml, "success");
+                    }
                     console.log('ok');
                 });
                 this.on("error",function (file,data) {

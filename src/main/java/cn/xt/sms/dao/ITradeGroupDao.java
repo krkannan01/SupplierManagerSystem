@@ -24,6 +24,6 @@ public interface ITradeGroupDao {
     List<TradeGroup> getTradeGroup(@Param("categoryId") Integer categoryId);
 
     /*根据Name查询Id*/
-    Integer selectIdByName();
+    Integer selectIdByName(String name);
 
 }

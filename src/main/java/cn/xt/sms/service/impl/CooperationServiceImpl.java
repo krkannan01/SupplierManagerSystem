@@ -29,8 +29,8 @@ public class CooperationServiceImpl implements ICooperationService {
     }
 
     @Override
-    public List<Integer> selectIdByEnterpriseId(Integer enterpriseId) {
-        return cooperationDao.selectIdByEnterpriseId(enterpriseId);
+    public List<Integer> selectIdBySupplierId(Integer supplierId) {
+        return cooperationDao.selectIdBySupplierId(supplierId);
     }
 
     @Override

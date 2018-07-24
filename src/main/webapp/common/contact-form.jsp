@@ -1,4 +1,4 @@
-<%@ page import="cn.xt.sms.entity.Enterprise" %>
+<%@ page import="cn.xt.sms.entity.Supplier" %>
 <%@ page import="cn.xt.sms.entity.Contact" %>
 <%--
   @author xietao.x@qq.com
@@ -7,7 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String id="",nameMaster="",nameSlave="",comment="",phoneNumberMaster="",phoneNumberSlave="";
-    Enterprise ep = (Enterprise) request.getAttribute("enterprise");
+    Supplier ep = (Supplier) request.getAttribute("supplier");
     if (ep != null) {
         if (ep.getContactId() != null) {
             Contact contact = ep.getContactId();

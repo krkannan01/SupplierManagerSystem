@@ -90,9 +90,9 @@
 
 <div class="col-sm-12">
   <div class="form-group has-warning">
-    <label for="enterprise" class="col-sm-2 control-label no-padding-right">供应商：</label>
+    <label for="supplier" class="col-sm-2 control-label no-padding-right">供应商：</label>
     <div class="col-sm-7">
-      <select class="chosen-select form-control" id="enterprise" data-placeholder="">
+      <select class="chosen-select form-control" id="supplier" data-placeholder="">
         <option value="0"></option>
       </select>
     </div>

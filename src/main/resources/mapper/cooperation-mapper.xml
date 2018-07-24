@@ -5,13 +5,13 @@
     SELECT `contact_id` FROM `table_cooperation` WHERE `id` = #{id}
   </select>
 
-  <select id="selectIdByEnterpriseId" parameterType="integer" resultType="integer">
-    SELECT `id` FROM `table_cooperation` WHERE `enterprise_id` = #{id}
+  <select id="selectIdBySupplierId" parameterType="integer" resultType="integer">
+    SELECT `id` FROM `table_cooperation` WHERE `supplier_id` = #{id}
   </select>
 
   <insert id="insertCooperation" parameterType="Cooperation">
-    INSERT INTO `table_cooperation` (`project_name`,`product_name`,`contact_id`,`enterprise_id`)
-    VALUES (#{projectName},#{productName},#{contactId.id},#{enterpriseId})
+    INSERT INTO `table_cooperation` (`project_name`,`product_name`,`contact_id`,`supplier_id`)
+    VALUES (#{projectName},#{productName},#{contactId.id},#{supplierId})
   </insert>
 
   <update id="updateCooperation" parameterType="Cooperation">

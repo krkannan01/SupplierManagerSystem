@@ -1,11 +1,10 @@
 package cn.xt.sms.dao;
 
+import cn.xt.sms.condition.SupplierCondition;
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.result.MapResult;
-import cn.xt.sms.entity.Enterprise;
-import cn.xt.sms.condition.EnterpriseCondition;
 import cn.xt.sms.entity.UserDefinedFieldName;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -13,35 +12,35 @@ import java.util.List;
  *
  * @author xietao.x@qq.com
  */
-public interface IEnterpriseDao {
+public interface ISupplierDao {
 
     /*根据id查询ContactId*/
     Integer selectContactIdById(Integer id);
 
     /*添加企业信息*/
-    Integer addEnterprise(Enterprise enterprise);
+    Integer addEnterprise(Supplier supplier);
 
     /*删除企业信息*/
     Integer deleteEnterprise(Integer id);
 
     /*更新企业信息*/
-    Integer updateEnterprise(Enterprise enterprise);
+    Integer updateEnterprise(Supplier supplier);
 
     /*查询所有Enterprise信息【所有字段】*/
-    List<Enterprise> selectEnterprise(@Param("pageSize") Integer pageSize,
-                                      @Param("offset") Integer offset,
-                                      @Param("enterpriseCondition") EnterpriseCondition enterpriseCondition);
+    List<Supplier> selectEnterprise(@Param("pageSize") Integer pageSize,
+                                    @Param("offset") Integer offset,
+                                    @Param("supplierCondition") SupplierCondition supplierCondition);
 
     /*查询所有Enterprise信息【部分字段】*/
-    List<Enterprise> selectSimpleEnterprise(@Param("pageSize") Integer pageSize,
-                                      @Param("offset") Integer offset,
-                                      @Param("enterpriseCondition") EnterpriseCondition enterpriseCondition);
+    List<Supplier> selectSimpleEnterprise(@Param("pageSize") Integer pageSize,
+                                          @Param("offset") Integer offset,
+                                          @Param("supplierCondition") SupplierCondition supplierCondition);
 
     /*查询对应条件下的Enterprise记录数量信息*/
-    Integer selectEnterpriseCount(EnterpriseCondition enterpriseCondition);
+    Integer selectEnterpriseCount(SupplierCondition supplierCondition);
 
     /*根据id查询对应Enterprise信息*/
-    Enterprise getEnterpriseById(Integer id);
+    Supplier getEnterpriseById(Integer id);
 
     /*查询用户自定义字段名称信息*/
     UserDefinedFieldName getUserDefinedFieldName();
@@ -54,5 +53,8 @@ public interface IEnterpriseDao {
 
     /*获取所有企业的id和name信息*/
     List<MapResult> getEnterpriseIdAndName();
+
+    /*获取供应商目前最大的编号*/
+    String getMaxNo();
 
 }

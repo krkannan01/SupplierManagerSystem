@@ -25,7 +25,7 @@
             <ul class="submenu">
                 <shiro:hasAnyPermission name="admin,searchEnterprise">
                     <li class="${"Supplier-Search".equals(active) ? "active":""}">
-                        <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/enterprise/toSearchSupplier';">
+                        <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toSearchSupplier';">
                             <i class="menu-icon fa fa-caret-right"></i>
                             查询供应商信息
                         </a>
@@ -36,7 +36,7 @@
 
                 <shiro:hasAnyPermission name="admin,insertEnterprise">
                     <li class="${"Supplier-Insert".equals(active) ? "active":""}">
-                        <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/enterprise/toAddSupplier';">
+                        <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toAddSupplier';">
                             <i class="menu-icon fa fa-caret-right"></i>
                             新增供应商信息
                         </a>

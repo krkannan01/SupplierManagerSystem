@@ -4,6 +4,8 @@ import cn.xt.sms.condition.ProductCondition;
 import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.entity.ProductBrand;
+import cn.xt.sms.result.SimpleResponse;
+import cn.xt.sms.result.SimpleResponse.ResponseCode;
 import cn.xt.sms.service.IProductBrandService;
 import cn.xt.sms.service.IProductService;
 import cn.xt.sms.service.middle.IProductMiddleService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +62,8 @@ public class ProductController {
     @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
     @RequestMapping(value = "/insertProduct", method = RequestMethod.POST)
     @ResponseBody
-    public String insertProduct(Product product) {
-        return productService.insertProduct(product);
+    public String insertProduct(HttpServletRequest request, Product product) {
+        return productService.insertProduct(request.getServletContext(), product);
     }
 
     @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
@@ -109,7 +112,7 @@ public class ProductController {
     @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     @ResponseBody
-    public String importExcel(MultipartFile upload) {
+    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
             //解析excel
             //1.读取文件输入流
@@ -119,17 +122,17 @@ public class ProductController {
             //3.打开需要解析的Sheet工作表
             Sheet sheet = wb.getSheetAt(0);
             //4.遍历工作表对象（本质是个行的集合）,读取每一行
-            String message = productMiddleService.getProductFormExcel(sheet);
+            String message = productMiddleService.getProductFormExcel(request.getServletContext(), sheet);
             //关流
             is.close();
 
             //解析成功
-            return message;
+            return new SimpleResponse(ResponseCode.SUCCESS, message);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "解析失败";
+        return new SimpleResponse(ResponseCode.SUCCESS, "解析失败");
     }
 
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)

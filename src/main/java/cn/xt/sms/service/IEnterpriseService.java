@@ -1,11 +1,12 @@
 package cn.xt.sms.service;
 
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.result.MapResult;
-import cn.xt.sms.entity.Enterprise;
-import cn.xt.sms.condition.EnterpriseCondition;
+import cn.xt.sms.condition.SupplierCondition;
 import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.UserDefinedFieldName;
 
+import javax.servlet.ServletContext;
 import java.util.List;
 
 /**
@@ -15,28 +16,28 @@ import java.util.List;
 public interface IEnterpriseService {
 
     /*查询企业信息*/
-    MyResult<Enterprise> getEnterpriseList(EnterpriseCondition enterpriseCondition, Integer currentPage, Integer pageSize);
+    MyResult<Supplier> getEnterpriseList(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize);
 
     /*查询导出数据*/
-    List<Enterprise> getEnterpriseList(Integer pageSize, Integer offset, EnterpriseCondition enterpriseCondition);
+    List<Supplier> getEnterpriseList(Integer pageSize, Integer offset, SupplierCondition supplierCondition);
 
     /*查询记录条数*/
-    Integer getEnterpriseCount(EnterpriseCondition enterpriseCondition);
+    Integer getEnterpriseCount(SupplierCondition supplierCondition);
 
     /*根据id查询ContactId*/
     Integer selectContactIdById(Integer id);
 
     /*添加企业信息*/
-    String insertEnterprise(Enterprise enterprise);
+    String insertEnterprise(ServletContext context, Supplier supplier);
 
     /*删除企业信息*/
     String deleteEnterprise(Integer id);
 
     /*更新企业信息*/
-    String updateEnterprise(Enterprise enterprise);
+    String updateEnterprise(Supplier supplier);
 
     /*根据id查询对应Enterprise信息*/
-    Enterprise getEnterpriseById(Integer id);
+    Supplier getEnterpriseById(Integer id);
 
     /*获取用户自定义字段名称信息*/
     UserDefinedFieldName getUserDefinedFieldName();
@@ -49,5 +50,8 @@ public interface IEnterpriseService {
 
     /*获取所有企业的id和name信息*/
     List<MapResult> getEnterpriseIdAndName();
+
+    /*查询供应商中的最大编号*/
+    String getMaxNo();
 
 }

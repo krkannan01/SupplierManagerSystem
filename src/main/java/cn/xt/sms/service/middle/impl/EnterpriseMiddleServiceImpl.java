@@ -1,9 +1,9 @@
 package cn.xt.sms.service.middle.impl;
 
-import cn.xt.sms.condition.EnterpriseCondition;
+import cn.xt.sms.condition.SupplierCondition;
 import cn.xt.sms.entity.Contact;
 import cn.xt.sms.entity.Cooperation;
-import cn.xt.sms.entity.Enterprise;
+import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.exception.NullCellValueException;
 import cn.xt.sms.service.IEnterpriseService;
@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,17 +38,17 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
     private ITradeGroupService tradeGroupService;
 
     @Override
-    public String getEnterpriseFormExcel(Sheet sheet) {
+    public String getEnterpriseFormExcel(ServletContext context, Sheet sheet) {
         //设置根据内容自动调整列宽
         sheet.autoSizeColumn(256 * 30);
         int index = 0;
-        List<Enterprise> enterpriseList = new ArrayList<Enterprise>();
+        List<Supplier> supplierList = new ArrayList<Supplier>();
         for (Row row: sheet) {
             if (row.getRowNum() == 0) continue;
             index++;
             int pointer = 1;
             System.out.println("\n" + ansi().eraseScreen().render("@|blue --------\t正在读取第"+ index +"条记录\t--------|@"));
-            Enterprise enterprise = null;
+            Supplier supplier = null;
             try {
                 // 统一社会信用代码 (String)
                 String uCCcode = POIUtil.getStringValue(row.getCell(pointer++), "统一社会信用代码");
@@ -92,29 +93,29 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 // 备注
                 String comment = POIUtil.getStringValue(row.getCell(pointer++));
 
-                enterprise = new Enterprise();
+                supplier = new Supplier();
 
-                enterprise.setUCCcode(uCCcode);
-                enterprise.setFullName(fullName);
-                enterprise.setType(type);
-                enterprise.setLegalRepresentative(legalRepresentative);
-                enterprise.setWebsite(website);
-                enterprise.setSimpleName(simpleName);
-                enterprise.setFoundDate(foundDate);
-                enterprise.setRegisteredCapital(registeredCapital);
-                enterprise.setApprovalDate(approvalDate);
-                enterprise.setRegisterDepartment(registerDepartment);
-                enterprise.setRegisterState(registerState);
-                enterprise.setMainProduct(mainProduct);
-                enterprise.setBusinessDeadlineGo(businessDeadlineGo != null ? POIUtil.FORMAT2.format(businessDeadlineGo):"");
-                enterprise.setBusinessDeadlineTo(businessDeadlineTo != null ? POIUtil.FORMAT2.format(businessDeadlineTo):"");
-                enterprise.setLevel(level);
-                enterprise.setTradeGroupId(new TradeGroup(null, tradeGroup, null));
-                enterprise.setAddress(address);
-                enterprise.setOperateRange(operateRange);
-                enterprise.setExceptionInfo(exceptionInfo);
-                enterprise.setDangerInfo(dangerInfo);
-                enterprise.setComment(comment);
+                supplier.setUCCcode(uCCcode);
+                supplier.setFullName(fullName);
+                supplier.setType(type);
+                supplier.setLegalRepresentative(legalRepresentative);
+                supplier.setWebsite(website);
+                supplier.setSimpleName(simpleName);
+                supplier.setFoundDate(foundDate);
+                supplier.setRegisteredCapital(registeredCapital);
+                supplier.setApprovalDate(approvalDate);
+                supplier.setRegisterDepartment(registerDepartment);
+                supplier.setRegisterState(registerState);
+                supplier.setMainProduct(mainProduct);
+                supplier.setBusinessDeadlineGo(businessDeadlineGo != null ? POIUtil.FORMAT2.format(businessDeadlineGo):"");
+                supplier.setBusinessDeadlineTo(businessDeadlineTo != null ? POIUtil.FORMAT2.format(businessDeadlineTo):"");
+                supplier.setLevel(level);
+                supplier.setTradeGroupId(new TradeGroup(null, tradeGroup, null));
+                supplier.setAddress(address);
+                supplier.setOperateRange(operateRange);
+                supplier.setExceptionInfo(exceptionInfo);
+                supplier.setDangerInfo(dangerInfo);
+                supplier.setComment(comment);
 
                 System.out.println(ansi().eraseScreen().render("@|green --------\t信息读取成功\t--------|@"));
 
@@ -144,11 +145,11 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 contact.setPhoneNumberSlave(phoneNumberSlave);
                 contact.setComment(comment);
 
-                enterprise.setContactId(contact);
+                supplier.setContactId(contact);
 
             } catch (NullCellValueException ncve) {
                 pointer = tempPointer + 5;
-                enterprise.setContactId(new Contact(null, "无", null, null, null, null));
+                supplier.setContactId(new Contact(null, "无", null, null, null, null));
                 System.out.println(ansi().eraseScreen().render("@|yellow \t--------\t联系人信息为空\t--------|@"));
             }
 
@@ -163,11 +164,11 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
             // 自定义属性5
             Date userDefinedFieldFive = POIUtil.getDateValue(row.getCell(pointer++));
 
-            enterprise.setUserDefinedFieldOne(userDefinedFieldOne);
-            enterprise.setUserDefinedFieldTwo(userDefinedFieldTwo);
-            enterprise.setUserDefinedFieldThree(userDefinedFieldThree);
-            enterprise.setUserDefinedFieldFour(userDefinedFieldFour);
-            enterprise.setUserDefinedFieldFive(userDefinedFieldFive);
+            supplier.setUserDefinedFieldOne(userDefinedFieldOne);
+            supplier.setUserDefinedFieldTwo(userDefinedFieldTwo);
+            supplier.setUserDefinedFieldThree(userDefinedFieldThree);
+            supplier.setUserDefinedFieldFour(userDefinedFieldFour);
+            supplier.setUserDefinedFieldFive(userDefinedFieldFive);
 
             List<Cooperation> cooperationList = new ArrayList<Cooperation>();
             for (int i=0; i<2; i++) {
@@ -217,17 +218,17 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 }
                 cooperationList.add(cooperation);
             }
-            if (cooperationList.size() > 0) enterprise.setCooperationList(cooperationList);
-            enterpriseList.add(enterprise);
+            if (cooperationList.size() > 0) supplier.setCooperationList(cooperationList);
+            supplierList.add(supplier);
         }
         int success = 0;
-        for (Enterprise enterprise : enterpriseList) {
+        for (Supplier supplier : supplierList) {
             try {
-                if (enterpriseService.getIdByFullName(enterprise.getFullName()) != null) {
+                if (enterpriseService.getIdByFullName(supplier.getFullName()) != null) {
                     System.out.print(ansi().eraseScreen().render("\n@|red \t供应商名已存在，跳过该项\t|@\n"));
                 } else {
-                    handleTradeGroup(enterprise);
-                    enterpriseService.insertEnterprise(enterprise);
+                    handleTradeGroup(supplier);
+                    enterpriseService.insertEnterprise(context, supplier);
                     success++;
                 }
             } catch (Exception e) {
@@ -235,11 +236,11 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 continue;
             }
         }
-        return "解析完成\n共"+index+"条记录\n成功"+success+"条记录\n名称冲突"+(enterpriseList.size()-success)+"条记录\n信息不全"+(index-enterpriseList.size())+"条记录";
+        return "解析完成\n共"+index+"条记录\n成功"+success+"条记录\n名称冲突"+(supplierList.size()-success)+"条记录\n信息不全"+(index- supplierList.size())+"条记录";
     }
 
     @Override
-    public void setEnterpriseToExcel(Workbook wb, Integer start, Integer end, EnterpriseCondition enterpriseCondition) {
+    public void setEnterpriseToExcel(Workbook wb, Integer start, Integer end, SupplierCondition supplierCondition) {
         Sheet sheet = wb.createSheet("供应商信息");
 
         int rowPointer = 0;
@@ -268,54 +269,56 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 pageSize = end - offset;
             }
 
-            List<Enterprise> enterpriseList = enterpriseService.getEnterpriseList(pageSize, offset, enterpriseCondition);
+            List<Supplier> supplierList = enterpriseService.getEnterpriseList(pageSize, offset, supplierCondition);
             offset += pageSize;
 
-            if (enterpriseList != null && enterpriseList.size() > 0) {
+            if (supplierList != null && supplierList.size() > 0) {
 
-                for (Enterprise enterprise : enterpriseList) {
+                for (int i = 0; i < supplierList.size(); i ++) {
+                    Supplier supplier = supplierList.get(i);
+
                     row = sheet.createRow(rowPointer++);
                     row.setHeightInPoints(18.5f); //设置行高
                     int cellPointer = 0;
 
-                    row.createCell(cellPointer++).setCellValue(enterprise.getIdentify());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUCCcode());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getFullName());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getType());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getLegalRepresentative());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getWebsite());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getSimpleName());
-                    row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(enterprise.getFoundDate()));
-                    row.createCell(cellPointer++).setCellValue(enterprise.getRegisteredCapital());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getRegisterDepartment());
-                    row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(enterprise.getApprovalDate()));
-                    row.createCell(cellPointer++).setCellValue(enterprise.getRegisterState());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getMainProduct());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getBusinessDeadlineGo());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getBusinessDeadlineTo());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getLevel());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getTradeGroupId().getName());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getAddress());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getOperateRange());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getExceptionInfo());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getDangerInfo());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getComment());
+                    row.createCell(cellPointer++).setCellValue(i + 1);
+                    row.createCell(cellPointer++).setCellValue(supplier.getUCCcode());
+                    row.createCell(cellPointer++).setCellValue(supplier.getFullName());
+                    row.createCell(cellPointer++).setCellValue(supplier.getType());
+                    row.createCell(cellPointer++).setCellValue(supplier.getLegalRepresentative());
+                    row.createCell(cellPointer++).setCellValue(supplier.getWebsite());
+                    row.createCell(cellPointer++).setCellValue(supplier.getSimpleName());
+                    row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(supplier.getFoundDate()));
+                    row.createCell(cellPointer++).setCellValue(supplier.getRegisteredCapital());
+                    row.createCell(cellPointer++).setCellValue(supplier.getRegisterDepartment());
+                    row.createCell(cellPointer++).setCellValue(POIUtil.FORMAT2.format(supplier.getApprovalDate()));
+                    row.createCell(cellPointer++).setCellValue(supplier.getRegisterState());
+                    row.createCell(cellPointer++).setCellValue(supplier.getMainProduct());
+                    row.createCell(cellPointer++).setCellValue(supplier.getBusinessDeadlineGo());
+                    row.createCell(cellPointer++).setCellValue(supplier.getBusinessDeadlineTo());
+                    row.createCell(cellPointer++).setCellValue(supplier.getLevel());
+                    row.createCell(cellPointer++).setCellValue(supplier.getTradeGroupId().getName());
+                    row.createCell(cellPointer++).setCellValue(supplier.getAddress());
+                    row.createCell(cellPointer++).setCellValue(supplier.getOperateRange());
+                    row.createCell(cellPointer++).setCellValue(supplier.getExceptionInfo());
+                    row.createCell(cellPointer++).setCellValue(supplier.getDangerInfo());
+                    row.createCell(cellPointer++).setCellValue(supplier.getComment());
 
-                    if (enterprise.getContactId() != null) {
-                        row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getNameMaster());
-                        row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getNameSlave());
-                        row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getPhoneNumberMaster());
-                        row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getPhoneNumberSlave());
-                        row.createCell(cellPointer++).setCellValue(enterprise.getContactId().getComment());
+                    if (supplier.getContactId() != null) {
+                        row.createCell(cellPointer++).setCellValue(supplier.getContactId().getNameMaster());
+                        row.createCell(cellPointer++).setCellValue(supplier.getContactId().getNameSlave());
+                        row.createCell(cellPointer++).setCellValue(supplier.getContactId().getPhoneNumberMaster());
+                        row.createCell(cellPointer++).setCellValue(supplier.getContactId().getPhoneNumberSlave());
+                        row.createCell(cellPointer++).setCellValue(supplier.getContactId().getComment());
                     }
 
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldOne());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldTwo());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldThree());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldFour());
-                    row.createCell(cellPointer++).setCellValue(enterprise.getUserDefinedFieldFive());
+                    row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldOne());
+                    row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldTwo());
+                    row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldThree());
+                    row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldFour());
+                    row.createCell(cellPointer++).setCellValue(supplier.getUserDefinedFieldFive());
 
-                    List<Cooperation> cooperationList = enterprise.getCooperationList();
+                    List<Cooperation> cooperationList = supplier.getCooperationList();
                     if (cooperationList != null && cooperationList.size() > 0) {
                         for (Cooperation cooperation : cooperationList) {
                             row.createCell(cellPointer++).setCellValue(cooperation.getProjectName());
@@ -355,8 +358,8 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
     }
 
     /*处理下企业信息中的TradeGroup,因为从Excel读取出来的是Name字符串,所以要将它转换为Id*/
-    private void handleTradeGroup(Enterprise enterprise) {
-        enterprise.getTradeGroupId().setId(tradeGroupService.selectIdByNameOrInsert(enterprise.getTradeGroupId().getName()));
+    private void handleTradeGroup(Supplier supplier) {
+        supplier.getTradeGroupId().setId(tradeGroupService.selectIdByNameOrInsert(supplier.getTradeGroupId().getName()));
     }
 
 }

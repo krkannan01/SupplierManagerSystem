@@ -1,9 +1,9 @@
-<%@ page import="cn.xt.sms.entity.Enterprise" %>
+<%@ page import="cn.xt.sms.entity.Supplier" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   String one="",two="",three="",four="",five="";
-  Enterprise ep = (Enterprise) request.getAttribute("enterprise");
+  Supplier ep = (Supplier) request.getAttribute("supplier");
   if (ep != null) {
       if (ep.getUserDefinedFieldOne() != null) one = ep.getUserDefinedFieldOne();
       if (ep.getUserDefinedFieldTwo() != null) two = ep.getUserDefinedFieldTwo();

@@ -13,8 +13,8 @@ public interface ICooperationService {
     /*根据id查询ContactId*/
     Integer selectContactIdById(Integer id);
 
-    /*根据enterpriseId查询id*/
-    List<Integer> selectIdByEnterpriseId(Integer enterpriseId);
+    /*根据suppliereId查询id*/
+    List<Integer> selectIdBySupplierId(Integer suppliereId);
 
     /*删除合作情况信息*/
     Integer deleteCooperation(Integer id);

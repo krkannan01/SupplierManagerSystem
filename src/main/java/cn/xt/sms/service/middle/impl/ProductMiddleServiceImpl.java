@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
     private IEnterpriseService enterpriseService;
 
     @Override
-    public String getProductFormExcel(Sheet sheet) {
+    public String getProductFormExcel(ServletContext context, Sheet sheet) {
         int index = 0;
         List<Product> productList = new ArrayList<Product>();
         for (Row row: sheet) {
@@ -71,7 +72,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                 product.setUnitprice(unitprise);
                 product.setTechnicalParam(technicalParam);
                 product.setComment(comment);
-                product.setEnterpriseId(new Enterprise(enterprise));
+                product.setSupplierId(new Supplier(enterprise));
                 product.setGroupId(new ProductGroup(group));
 
                 System.out.println(ansi().eraseScreen().render("@|green --------\t信息读取成功\t--------|@"));
@@ -87,12 +88,12 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
         for (Product product : productList) {
             try {
                 //判断供应商是否存在
-                Integer enterpriseId = enterpriseService.getIdByFullName(product.getEnterpriseId().getFullName());
+                Integer enterpriseId = enterpriseService.getIdByFullName(product.getSupplierId().getFullName());
                 if (enterpriseId != null) {
-                    product.getEnterpriseId().setId(enterpriseId);
+                    product.getSupplierId().setId(enterpriseId);
                     //根据名称与供应商判断是否重复
                     if (!productService.isUnique(product)) {
-                        productService.insertFromExcelProduct(product);
+                        productService.insertFromExcelProduct(context, product);
                         success++;
                     } else {
                         System.out.println(ansi().eraseScreen().render("\n@|red \t材料名称与供应商都重复，跳过此行!\t\n"));
@@ -155,7 +156,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                     row.createCell(cellPointer++).setCellValue(product.getUnitprice());
                     row.createCell(cellPointer++).setCellValue(product.getTechnicalParam());
                     row.createCell(cellPointer++).setCellValue(product.getComment());
-                    row.createCell(cellPointer++).setCellValue(product.getEnterpriseId().getFullName());
+                    row.createCell(cellPointer++).setCellValue(product.getSupplierId().getFullName());
                     row.createCell(cellPointer++).setCellValue(product.getGroupId().getName());
                 }
             }
@@ -170,7 +171,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
         for (int i=0; i<temp.length; i++) {
             try {
                 id = Integer.valueOf(temp[i]);
-                enterpriseService.deleteEnterprise(id);
+                productService.deleteProduct(id);
             } catch(Exception e) {
                 log.error("删除材料信息出现异常!\t" + e.getMessage());
                 continue;

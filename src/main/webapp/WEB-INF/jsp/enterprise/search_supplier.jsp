@@ -77,6 +77,14 @@
         /*显示查询条件的样式*/
         #show-filter { padding: 2px 10px; color: #999999; border: 1px solid #e8e8e8; line-height: 2; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; }
         .filter-tab { margin-right: 24px; padding: 2px 10px; background: #9595A8; color: white; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; }
+
+        .span-block { display: block; padding: 5px 10px; background: #B8C2B8; -webkit-border-radius: 3px;-moz-border-radius: 3px; border-radius: 3px; }
+        .span-line { display: block; padding: 5px 10px; border-bottom: 1px solid orange; }
+
+        .widget-header { background: #f7f7f7; background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #EEEEEE 100%); background-image: -o-linear-gradient(top, #FFFFFF 0%, #EEEEEE 100%);
+            background-image: linear-gradient(to bottom, #FFFFFF 0%, #EEEEEE 100%); background-repeat: repeat-x; }
+
+        .tree-label { display: block; -ms-text-overflow: ellipsis; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
     </style>
 
     <!-- ace settings handler -->
@@ -149,7 +157,8 @@
                             <div class="row">
                                 <div class="col-sm-12 col-xs-6">
                                     <div class="widget-box transparent" id="recent-box" style="background-color: #EFF3F8;">
-                                        <div class="widget-header">
+                                        <div class="widget-header" style="background: #f7f7f7; background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #EEEEEE 100%); background-image: -o-linear-gradient(top, #FFFFFF 0%, #EEEEEE 100%);
+            background-image: linear-gradient(to bottom, #FFFFFF 0%, #EEEEEE 100%); background-repeat: repeat-x;">
                                             <%--<h4 class="widget-title lighter smaller" style="dispaly: inline;float: left;">
                                                 <span class="label label-pink label-lg arrowed-left">条件筛选</span>
                                             </h4>--%>
@@ -172,7 +181,7 @@
                         <!-- div.dataTables_borderWrap -->
                         <div>
                             <div style="float: left; width: 15%; margin-top: 5px; border-top: 1px dashed orange; border-right: 1px dashed orange;">
-                                <ul id="enterprise-group-tree"></ul>
+                                <ul id="supplier-group-tree"></ul>
                             </div>
                             <div style="float: right; width: 84%;">
                             <div class="row filter-box">
@@ -236,27 +245,20 @@
                             </div>
                             <table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-bottom:0">
                                 <thead>
-                                <tr>
-                                    <th class="center">
-                                        <label class="pos-rel">
-                                            <input type="checkbox" class="ace" />
-                                            <span class="lbl"></span>
-                                        </label>
-                                    </th>
-                                    <th>序号</th>
-                                    <th>供应商名称</th>
-                                    <th>网站</th>
-                                    <th>统一社会信息代码</th>
-                                    <th class="sort-level">信用级别<i class="menu-icon fa fa-acret-right"/><i class="menu-icon fa fa-acret-down"/></th>
-                                    <th>主营产品</th>
-                                    <th>分组</th>
-                                    <th width="100">操作</th>
-                                </tr>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
+                                        <th>供应商编号</th>
+                                        <th>供应商名称</th>
+                                        <th>网站</th>
+                                        <th>统一社会信息代码</th>
+                                        <th class="sort-level">信用级别<i class="menu-icon fa fa-acret-right"/><i class="menu-icon fa fa-acret-down"/></th>
+                                        <th>主营产品</th>
+                                        <th>分组</th>
+                                        <th width="100">操作</th>
+                                    </tr>
                                 </thead>
-
-                                <tbody>
-
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                             <label id="loadAnimate" style="z-index: 2; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
                             <div class="" style="background-color: #EFF3F8; padding: 5px;">

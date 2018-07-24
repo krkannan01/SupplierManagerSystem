@@ -80,4 +80,22 @@ function Pagination(props) {
         params.currentPage = val;
         callback();
     }
+
+}
+
+/*绑定分页事件*/
+Pagination.prototype.bindGoPage = function(defaultParams, sendRequest) {
+    var self = this;
+    self.maxPrev.click(function () {
+        self.goPage(self.click_max_prev(), defaultParams, sendRequest);
+    });
+    self.prev.click(function () {
+        self.goPage(self.click_prev(), defaultParams, sendRequest);
+    });
+    self.next.click(function () {
+        self.goPage(self.click_next(), defaultParams, sendRequest);
+    });
+    self.maxNext.click(function () {
+        self.goPage(self.click_max_next(), defaultParams, sendRequest);
+    });
 }

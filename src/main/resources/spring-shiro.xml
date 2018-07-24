@@ -19,7 +19,7 @@
                             /login/** = anon
                             /statics/** = anon
                             /common/** = anon
-                            /enterprise/** = authc
+                            /supplier/** = authc
                             /tradeGroup/** = authc
                             /** = anon
                      </value>

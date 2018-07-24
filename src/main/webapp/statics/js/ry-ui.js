@@ -5,22 +5,25 @@
 $(function(){
 	// 消息窗体
 	$.modalMsg = function(content, type) {
-	    if (type != undefined) {
-	        var icon = "";
-	        if (type == 'warning') {
-	            icon = 0;
-	        }
-	        else if (type == 'success') {
-	            icon = 1;
-	        }
-	        else if (type == 'error') {
-	            icon = 2;
-	        }
-	        layer.msg(content, { icon: icon, time: 2000, shift: 0 });
-	        $(".layui-layer-msg").find('i.' + icon).parents('.layui-layer-msg').addClass('layui-layer-msg-' + type);
-	    } else {
-	        layer.msg(content);
-	    }
+	    $.modalMsg(content, type, 2000);
+	}
+	$.modalMsg = function(content, type, time) {
+        if (type != undefined) {
+            var icon = "";
+            if (type == 'warning') {
+                icon = 0;
+            }
+            else if (type == 'success') {
+                icon = 1;
+            }
+            else if (type == 'error') {
+                icon = 2;
+            }
+            layer.msg(content, { icon: icon, time: time, shift: 0 });
+            $(".layui-layer-msg").find('i.' + icon).parents('.layui-layer-msg').addClass('layui-layer-msg-' + type);
+        } else {
+            layer.msg(content);
+        }
 	}
 	// 弹出窗体
 	$.modalAlert = function(content, type) {
@@ -51,7 +54,7 @@ $(function(){
 	    }, function () {
 	        callBack(true);
 	    }, function () {
-	        // callBack(false)
+	        callBack(false)
 	    });
 	}
 	// 关闭窗体

@@ -27,14 +27,11 @@ public class UserServiceImpl implements IUserService {
     /*获取所有用户信息，除超级管理员外*/
     @Override
     public MyResult<User> getUserList(String keywords, Integer currentPage, Integer pageSize) {
-        Integer offset = null;
         /*计算偏移量*/
-        if (currentPage != null && pageSize != null) {
-            offset = (currentPage - 1) * pageSize;
-            if (offset < 0) {
-                offset = 0;
-            }
-        }
+        pageSize = pageSize == null ? 10:pageSize;
+        Integer offset = currentPage == null ? 0:(currentPage-1)*pageSize;
+        offset = offset < 0 ? 0:offset;
+
         MyResult<User> userResult = new MyResult<User>();
         Integer count = userDao.selectUserCount(keywords);
 

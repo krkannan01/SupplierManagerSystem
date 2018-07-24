@@ -5,8 +5,6 @@ package cn.xt.sms.service;
  * @Date: 2018/7/14
  * @Description:
  */
-public class ISupplierCategoryService {
-
-
+public interface ISupplierCategoryService {
 
 }

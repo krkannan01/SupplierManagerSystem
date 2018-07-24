@@ -37,7 +37,7 @@ function layer_show(title, content, w, h, type) {
     });
 }
 
-function layer_showAuto(title, url,) {
+function layer_showAuto(title, url) {
 	layer_show(title, url, '', '', 2);
 }
 

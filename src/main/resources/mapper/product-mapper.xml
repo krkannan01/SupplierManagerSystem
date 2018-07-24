@@ -4,6 +4,7 @@
 
   <resultMap id="ProductMap" type="Product">
     <id column="tp_id" property="id"/>
+    <result column="tp_no" property="no"/>
     <result column="tp_name" property="name"/>
     <result column="tp_size" property="size"/>
     <result column="tp_technical_param" property="technicalParam"/>
@@ -14,7 +15,7 @@
       <id column="tpb_id" property="id"/>
       <result column="tpb_name" property="name"/>
     </association>
-    <association property="enterpriseId" javaType="Enterprise">
+    <association property="supplierId" javaType="Supplier">
       <id column="te_id" property="id"/>
       <result column="te_full_name" property="fullName"/>
     </association>
@@ -29,10 +30,30 @@
     FROM `table_product` tp
     LEFT JOIN `table_product_group` tpg ON tp.`group_id` = tpg.`id`
     LEFT JOIN `table_product_brand` tpb ON tp.`brand_id` = tpb.`id`
-    LEFT JOIN `table_enterprise` te ON tp.`enterprise_id` = te.`id`
+    LEFT JOIN `table_supplier` te ON tp.`supplier_id` = te.`id`
     <where>
+      1 = 1
+      <if test="keywords != null and keywords != ''">
+        AND tp.`name` LIKE '%' #{keywords} '%' OR tp.`no` LIKE '%' #{keywords} '%'
+        OR tpb.`id` IN
+        <foreach collection="brandIds" item="brand_id" open="(" close=")" separator=",">
+          #{brand_id}
+        </foreach>
+      </if>
+      <if test="supplierId != null and supplierId != ''">
+        AND te.`id` = #{supplierId}
+      </if>
+      <if test="supplier != null and supplier !=''">
+        AND te.`full_name` LIKE '%' #{supplier} '%'
+      </if>
+      <if test="priceMin != null">
+        AND tp.`unitprice` &gt; #{priceMin}
+      </if>
+      <if test="priceMax != null">
+        AND tp.`unitprice` &lt; #{priceMax}
+      </if>
       <if test="groupIds != null and groupIds.size > 0">
-        tpg.`id` IN
+        AND tpg.`id` IN
         <foreach collection="groupIds" item="group_id" open="(" close=")" separator=",">
           #{group_id}
         </foreach>
@@ -43,31 +64,42 @@
           #{brand_id}
         </foreach>
       </if>
-      <if test="enterprise != null and enterprise !=''">
-        AND te.`full_name` LIKE '%' #{enterprise} '%'
-      </if>
-      <if test="priceMin != null">
-        AND tp.`unitprice` &gt; #{priceMin}
-      </if>
-      <if test="priceMax != null">
-        AND tp.`unitprice` &lt; #{priceMax}
-      </if>
     </where>
   </select>
 
   <select id="selectProductList" resultMap="ProductMap">
-    SELECT tp.`id` `tp_id`, tp.`name` `tp_name`, tp.`size` tp_size, tp.`technical_param` tp_technical_param, tp.`unit` tp_unit, tp.`unitprice` tp_unitprice, tp.`comment` tp_comment,
+    SELECT tp.`id` `tp_id`, tp.`no` `tp_no`, tp.`name` `tp_name`, tp.`size` tp_size, tp.`technical_param` tp_technical_param, tp.`unit` tp_unit, tp.`unitprice` tp_unitprice, tp.`comment` tp_comment,
           tpg.`id` `tpg_id`,tpg.`name` `tpg_name`,
           tpb.`id` `tpb_id`, tpb.`name` `tpb_name`,
           te.`id` `te_id`, te.`full_name` `te_full_name`
     FROM `table_product` tp
     LEFT JOIN `table_product_group` tpg ON tp.`group_id` = tpg.`id`
     LEFT JOIN `table_product_brand` tpb ON tp.`brand_id` = tpb.`id`
-    LEFT JOIN `table_enterprise` te ON tp.`enterprise_id` = te.`id`
+    LEFT JOIN `table_supplier` te ON tp.`supplier_id` = te.`id`
     <where>
       <if test="productCondition != null">
+        1 = 1
+        <if test="productCondition.keywords != null and productCondition.keywords != ''">
+          AND tp.`name` LIKE '%' #{productCondition.keywords} '%' OR tp.`no` LIKE '%' #{productCondition.keywords} '%'
+          OR tpb.`id` IN
+          <foreach collection="productCondition.brandIds" item="brand_id" open="(" close=")" separator=",">
+            #{brand_id}
+          </foreach>
+        </if>
+        <if test="productCondition.supplierId != null and productCondition.supplierId != ''">
+          AND te.`id` = #{productCondition.supplierId}
+        </if>
+        <if test="productCondition.supplier != null and productCondition.supplier !=''">
+          AND te.`full_name` LIKE '%' #{productCondition.supplier} '%'
+        </if>
+        <if test="productCondition.priceMin != null">
+          AND tp.`unitprice` &gt; #{productCondition.priceMin}
+        </if>
+        <if test="productCondition.priceMax != null">
+          AND tp.`unitprice` &lt; #{productCondition.priceMax}
+        </if>
         <if test="productCondition.groupIds != null and productCondition.groupIds.size > 0">
-          tpg.`id` IN
+          AND tpg.`id` IN
           <foreach collection="productCondition.groupIds" item="group_id" open="(" close=")" separator=",">
             #{group_id}
           </foreach>
@@ -78,28 +110,19 @@
             #{brand_id}
           </foreach>
         </if>
-        <if test="productCondition.enterprise != null and productCondition.enterprise !=''">
-          AND te.`full_name` LIKE '%' #{productCondition.enterprise} '%'
-        </if>
-        <if test="productCondition.priceMin != null">
-          AND tp.`unitprice` &gt; #{productCondition.priceMin}
-        </if>
-        <if test="productCondition.priceMax != null">
-          AND tp.`unitprice` &lt; #{productCondition.priceMax}
-        </if>
       </if>
     </where>
     <if test="offset != null and pageSize != null">LIMIT #{offset},#{pageSize}</if>
   </select>
 
   <insert id="insertProduct" parameterType="Product">
-    INSERT INTO `table_product`	(`name`,`brand_id`,`size`,`technical_param`,`unit`,`unitprice`,`comment`,`group_id`,`enterprise_id`)
-    VALUE (#{name},
+    INSERT INTO `table_product`	(`name`,`no`,`brand_id`,`size`,`technical_param`,`unit`,`unitprice`,`comment`,`group_id`,`supplier_id`)
+    VALUE (#{name},#{no},
     <choose>
       <when test="brandId != null">#{brandId.id}</when>
       <otherwise>NULL</otherwise>
     </choose>
-    , #{size}, #{technicalParam}, #{unit}, #{unitprice}, #{comment}, #{groupId.id}, #{enterpriseId.id})
+    , #{size}, #{technicalParam}, #{unit}, #{unitprice}, #{comment}, #{groupId.id}, #{supplierId.id})
   </insert>
 
   <delete id="deleteProduct" parameterType="integer">
@@ -118,7 +141,7 @@
       <if test="unitprice != null">,`unitprice` = #{unitprice}</if>
       <if test="comment != null and comment != ''">,`comment` = #{comment}</if>
       <if test="groupId != null and groupId.id > 0">,`group_id` = #{groupId.id}</if>
-      <if test="enterpriseId != null and enterpriseId.id > 0">,`enterprise_id` = #{enterpriseId.id}</if>
+      <if test="supplierId != null and supplierId.id > 0">,`supplier_id` = #{supplierId.id}</if>
     WHERE `id` = #{id}
   </update>
 
@@ -130,12 +153,16 @@
       FROM `table_product` tp
       LEFT JOIN `table_product_group` tpg ON tp.`group_id` = tpg.`id`
       LEFT JOIN `table_product_brand` tpb ON tp.`brand_id` = tpb.`id`
-      LEFT JOIN `table_enterprise` te ON tp.`enterprise_id` = te.`id`
+      LEFT JOIN `table_supplier` te ON tp.`supplier_id` = te.`id`
       WHERE tp.`id` = #{id}
   </select>
   
-  <select id="existsByNameAndEnterprise" parameterType="Product" resultType="integer">
-    SELECT count(`id`) FROM `table_product` WHERE `name` = #{name} AND `enterprise_id` = #{enterpriseId.id}
+  <select id="existsByNameAndSupplier" parameterType="Product" resultType="integer">
+    SELECT count(`id`) FROM `table_product` WHERE `name` = #{name} AND `supplier_id` = #{supplierId.id}
+  </select>
+
+  <select id="getMaxNo" resultType="string">
+    SELECT max(`no`) FROM `table_product`;
   </select>
 
 </mapper>

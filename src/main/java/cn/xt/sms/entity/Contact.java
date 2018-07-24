@@ -1,5 +1,6 @@
 package cn.xt.sms.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -28,6 +29,7 @@ public class Contact {
         this.comment = comment;
     }
 
+    @JSONField(serialize = false)
     public boolean isNotNull() {
         return !(id==null && nameMaster==null && nameSlave==null && phoneNumberMaster==null && phoneNumberSlave==null && comment==null);
     }

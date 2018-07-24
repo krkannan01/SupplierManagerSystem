@@ -2,21 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.xt.sms.dao.ISupplierCategoryDao" >
 
+  <!-- 表名 -->
+  <sql id="table-name">`table_supplier_category`</sql>
+  
   <select id="selectSupplierCategoryList" resultType="SupplierCategory">
-    SELECT `id`, `name`, `description` FROM `table_category`;
+    SELECT `id`, `name`, `description` FROM <include refid="table-name"></include>;
   </select>
 
   <insert id="insertSupplierCategory" parameterType="SupplierCategory">
-    INSERT INTO `table_category` (`id`, `name`, `description`)
+    INSERT INTO <include refid="table-name"></include> (`id`, `name`, `description`)
     VALUES (#{id},#{name},#{description});
   </insert>
 
   <delete id="deleteSupplierCategory" parameterType="integer">
-    DELETE FROM `table_category` WHERE `id` = #{id};
+    DELETE FROM <include refid="table-name"></include> WHERE `id` = #{id};
   </delete>
 
   <update id="updateSupplierCategory" parameterType="SupplierCategory">
-    UPDATE `table_category`
+    UPDATE <include refid="table-name"></include>
     <set>
       `id` = #{id},
       <if test="name != null and name != ''">`name` = #{name},</if>

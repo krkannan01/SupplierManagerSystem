@@ -114,7 +114,7 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
 
     @Override
     public Integer selectIdByNameOrInsert(String name) {
-        Integer id = tradeGroupDao.selectIdByName();
+        Integer id = tradeGroupDao.selectIdByName(name);
         if (id == null) {
             TradeGroup tradeGroup = new TradeGroup(null, name, null);
             insert(tradeGroup);

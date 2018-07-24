@@ -1,5 +1,6 @@
 package cn.xt.sms.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -26,6 +27,7 @@ public class Cooperation {
         this.enterpriseId = enterpriseId;
     }
 
+    @JSONField(serialize = false)
     public boolean isNotNull() {
         return !(id==null && projectName==null && productName==null && contactId==null && enterpriseId==null);
     }

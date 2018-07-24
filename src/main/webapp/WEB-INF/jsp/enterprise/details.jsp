@@ -2,7 +2,7 @@
   @author xietao.x@qq.com
   Created by 2018/3/21
 --%>
-<%@ page import="cn.xt.sms.entity.Enterprise" %>
+<%@ page import="cn.xt.sms.entity.Supplier" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -11,7 +11,7 @@
     String foundDate = "",approvalDate = "",udfFive = "";
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-    Enterprise ep = (Enterprise) request.getAttribute("enterprise");
+    Supplier ep = (Supplier) request.getAttribute("supplier");
     if (ep.getFoundDate() != null)
         foundDate = sdf.format(ep.getFoundDate());
     if (ep.getApprovalDate() != null)
@@ -59,43 +59,16 @@
     <![endif]-->
 
     <style type="text/css">
-        body {
-            margin-bottom: 135px;
-        }
+        body{margin-bottom:135px}
         /*左边距设置为10px*/
-        .l10 {
-            font-size: 15px;
-            margin-left: 10px;
-            margin-right: 5px;
-            color: #266eb6;
-        }
+        .l10{font-size:15px;margin-left:10px;margin-right:5px;color:#266eb6}
         /*字体大小设置为15px*/
-        .f15 {
-            font-size: 15px;
-            color: #666666;
-            margin-left: 2px;
-        }
-        .overview dt {
-            display: inline-block;
-            font-weight: bold !important;
-            line-height: 25px;
-            padding-left: 10px;
-            position: relative;
-        }
-        .overview dd {
-            display: inline;
-            line-height: 25px;
-            margin-left: 10px;
-        }
-        .overview dl {
-            display: inline;
-        }
+        .f15{font-size:15px;color:#666;margin-left:2px}
+        .overview dt{display:inline-block;font-weight:700!important;line-height:25px;padding-left:10px;position:relative}
+        .overview dd{display:inline;line-height:25px;margin-left:10px}
+        .overview dl{display:inline}
         /*虚线分界线样式*/
-        .demarcation {
-            height:1px;
-            border:none;
-            border-top:1px dashed orange;
-        }
+        .demarcation{height:1px;border:none;border-top:1px dashed orange}
     </style>
 
     <!-- ace settings handler -->
@@ -160,12 +133,12 @@
                         <table>
                             <tr>
                                 <td rowspan="5"><img src="${pageContext.request.contextPath}/statics/img/yyzz.jpg" /></td>
-                                <td><h3 class="title" style="margin: 10px;">${enterprise.fullName}</h3></td>
-                                <td><span class="label label-success" title="${enterprise.registerState}">${enterprise.registerState}</span></td>
+                                <td><h3 class="title" style="margin: 10px;">${supplier.fullName}</h3></td>
+                                <td><span class="label label-success" title="${supplier.registerState}">${supplier.registerState}</span></td>
                             </tr>
-                            <tr><td colspan="2"><i class="fa fa-barcode l10"></i><b>统一社会信用代码</b> : <span class="f15"><%=((Enterprise)request.getAttribute("enterprise")).getUCCcode()%></span></td></tr>
-                            <tr><td colspan="2"><i class="fa fa-user l10"></i><b>法定代表人</b> : <span class="f15">${enterprise.legalRepresentative}</span></td></tr>
-                            <tr><td colspan="2"><i class="fa fa-cog l10"></i><b>登记机关</b> : <span class="f15">${enterprise.registerDepartment}</span></td></tr>
+                            <tr><td colspan="2"><i class="fa fa-barcode l10"></i><b>统一社会信用代码</b> : <span class="f15"><%=((Supplier)request.getAttribute("supplier")).getUCCcode()%></span></td></tr>
+                            <tr><td colspan="2"><i class="fa fa-user l10"></i><b>法定代表人</b> : <span class="f15">${supplier.legalRepresentative}</span></td></tr>
+                            <tr><td colspan="2"><i class="fa fa-cog l10"></i><b>登记机关</b> : <span class="f15">${supplier.registerDepartment}</span></td></tr>
                             <tr><td colspan="2"><i class="fa fa-calendar l10"></i><b>成立日期</b> : <span class="f15"><%=foundDate%></span></td></tr>
                         </table>
                     </div>
@@ -185,46 +158,46 @@
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>统一社会信用代码：</dt>
-                                <dd><%=((Enterprise)request.getAttribute("enterprise")).getUCCcode()%></dd>
+                                <dd><%=((Supplier)request.getAttribute("supplier")).getUCCcode()%></dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>企业名称：</dt>
-                                <dd>${enterprise.fullName}</dd>
+                                <dd>${supplier.fullName}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>企业类型：</dt>
-                                <dd>${enterprise.type}</dd>
+                                <dd>${supplier.type}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>法定代表人：</dt>
-                                <dd>${enterprise.legalRepresentative}</dd>
+                                <dd>${supplier.legalRepresentative}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>公司网站：</dt>
-                                <dd>${enterprise.website}</dd>
+                                <dd>${supplier.website}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>公司简称：</dt>
-                                <dd>${enterprise.simpleName}</dd>
+                                <dd>${supplier.simpleName}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>注册资本：</dt>
-                                <dd>${enterprise.registeredCapital}</dd>
+                                <dd>${supplier.registeredCapital}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
@@ -237,20 +210,20 @@
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>营业期限自：</dt>
-                                <dd>${enterprise.businessDeadlineGo}</dd>
+                                <dd>${supplier.businessDeadlineGo}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>营业期限至：</dt>
-                                <dd>${enterprise.businessDeadlineTo}</dd>
+                                <dd>${supplier.businessDeadlineTo}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>登记机关：</dt>
-                                <dd>${enterprise.registerDepartment}</dd>
+                                <dd>${supplier.registerDepartment}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
@@ -263,54 +236,54 @@
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>登记状态：</dt>
-                                <dd>${enterprise.registerState}</dd>
+                                <dd>${supplier.registerState}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>主营产品：</dt>
-                                <dd>${enterprise.mainProduct}</dd>
+                                <dd>${supplier.mainProduct}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>分组：</dt>
-                                <dd>${enterprise.tradeGroupId.name}</dd>
+                                <dd>${supplier.tradeGroupId.name}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt>信用级别：</dt>
-                                <dd><div class="rating inline" style="margin-top: 3px;" id="level" data-score="${enterprise.level}"></div></dd>
+                                <dd><div class="rating inline" style="margin-top: 3px;" id="level" data-score="${supplier.level}"></div></dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-12">
                             <dl>
                                 <dt>住所：</dt>
-                                <dd>${enterprise.address}</dd>
+                                <dd>${supplier.address}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-12">
                             <dl>
                                 <dt>经营范围：</dt>
-                                <dd>${enterprise.operateRange}</dd>
+                                <dd>${supplier.operateRange}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-12">
                             <dl>
                                 <dt>经营异常信息：</dt>
-                                <dd>${enterprise.exceptionInfo}</dd>
+                                <dd>${supplier.exceptionInfo}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-12">
                             <dl>
                                 <dt>违法失信信息：</dt>
-                                <dd>${enterprise.dangerInfo}</dd>
+                                <dd>${supplier.dangerInfo}</dd>
                             </dl>
                         </div>
 
@@ -318,37 +291,37 @@
                             <hr class="demarcation" />
                         </div>
 
-                        <c:if test="${enterprise.contactId != null}">
+                        <c:if test="${supplier.contactId != null}">
                             <div class="col-sm-6 col-xs-12">
                                 <dl>
                                     <dt>主要联系人名称：</dt>
-                                    <dd>${enterprise.contactId.nameMaster}</dd>
+                                    <dd>${supplier.contactId.nameMaster}</dd>
                                 </dl>
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <dl>
                                     <dt>次要联系人名称：</dt>
-                                    <dd>${enterprise.contactId.nameSlave}</dd>
+                                    <dd>${supplier.contactId.nameSlave}</dd>
                                 </dl>
                             </div>
 
                             <div class="col-sm-6 col-xs-12">
                                 <dl>
                                     <dt>主要联系方式：</dt>
-                                    <dd>${enterprise.contactId.phoneNumberMaster}</dd>
+                                    <dd>${supplier.contactId.phoneNumberMaster}</dd>
                                 </dl>
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <dl>
                                     <dt>次要联系方式：</dt>
-                                    <dd>${enterprise.contactId.phoneNumberSlave}</dd>
+                                    <dd>${supplier.contactId.phoneNumberSlave}</dd>
                                 </dl>
                             </div>
 
                             <div class="col-sm-6 col-xs-12">
                                 <dl>
                                     <dt>备注：</dt>
-                                    <dd>${enterprise.contactId.comment}</dd>
+                                    <dd>${supplier.contactId.comment}</dd>
                                 </dl>
                             </div>
                         </c:if>
@@ -360,26 +333,26 @@
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt><span class="userDefinedFieldName">自定义1</span>：</dt>
-                                <dd>${enterprise.userDefinedFieldOne}</dd>
+                                <dd>${supplier.userDefinedFieldOne}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt><span class="userDefinedFieldName">自定义2</span>：</dt>
-                                <dd>${enterprise.userDefinedFieldTwo}</dd>
+                                <dd>${supplier.userDefinedFieldTwo}</dd>
                             </dl>
                         </div>
 
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt><span class="userDefinedFieldName">自定义3</span>：</dt>
-                                <dd>${enterprise.userDefinedFieldThree}</dd>
+                                <dd>${supplier.userDefinedFieldThree}</dd>
                             </dl>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <dl>
                                 <dt><span class="userDefinedFieldName">自定义4</span>：</dt>
-                                <dd>${enterprise.userDefinedFieldFour}</dd>
+                                <dd>${supplier.userDefinedFieldFour}</dd>
                             </dl>
                         </div>
 
@@ -401,8 +374,8 @@
                     </div>
 
                     <c:choose>
-                        <c:when test="${enterprise.cooperationList != null and enterprise.cooperationList.size() > 0}">
-                            <c:forEach items="${enterprise.cooperationList}" var="cooperation" varStatus="index">
+                        <c:when test="${supplier.cooperationList != null and supplier.cooperationList.size() > 0}">
+                            <c:forEach items="${supplier.cooperationList}" var="cooperation" varStatus="index">
                                 <div class="col-sm-12"><div class="space-10"></div></div>
 
                                 <div class="col-sm-12 overview" style="border: 1px dashed yellow">
@@ -477,7 +450,7 @@
     <div style="position: fixed; opacity: 0.9; width: 100%; bottom: 0; background-color: #EEEEEE; z-index: 9;">
         <div style="margin: 18px auto 0; width: 20%;">
             <shiro:hasAnyPermission name="admin,updateEnterprise">
-                <button class="btn btn-warning" style="width: 40%;" onclick="javascript: location.href = '${pageContext.request.contextPath}/enterprise/getEnterpriseById?action=edit&id=${enterprise.id}';">
+                <button class="btn btn-warning" style="width: 40%;" onclick="javascript: location.href = '${pageContext.request.contextPath}/supplier/getEnterpriseById?action=edit&id=${supplier.id}';">
                     编辑
                 </button>
             </shiro:hasAnyPermission>
@@ -515,7 +488,7 @@
 <script type="text/javascript">
     jQuery(function($) {
         //$.getJSON("${pageContext.request.contextPath}/statics/json/defined_field.json", function(data) {
-        $.post("${pageContext.request.contextPath}/enterprise/getUserDefinedFieldName", function(data) {
+        $.post("${pageContext.request.contextPath}/supplier/getUserDefinedFieldName", function(data) {
             if (data) {
                 var userDefinedFieldName = $(".userDefinedFieldName");
                 userDefinedFieldName.eq(0).html(data.userDefinedFieldOneName);
@@ -548,7 +521,7 @@
     }
 
     function exec() {
-        location.href = "${pageContext.request.contextPath}/enterprise/toSearchSupplier?uccCode="+$("#nav-search-input").val();
+        location.href = "${pageContext.request.contextPath}/supplier/toSearchSupplier?uccCode="+$("#nav-search-input").val();
     }
 
 </script>

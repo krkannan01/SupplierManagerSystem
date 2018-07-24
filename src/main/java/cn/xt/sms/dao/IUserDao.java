@@ -1,7 +1,6 @@
 package cn.xt.sms.dao;
 
 import cn.xt.sms.entity.User;
-import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
