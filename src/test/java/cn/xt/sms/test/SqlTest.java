@@ -23,7 +23,7 @@ public class SqlTest {
         //3.通过数据库的连接操作数据库，实现增删改查（使用Statement类）
         Statement st=conn.createStatement();
         //查询出所有ID
-        ResultSet resultSet = st.executeQuery("SELECT `id` FROM `table_enterprise` ORDER BY `enter_date`;");
+        ResultSet resultSet = st.executeQuery("SELECT `id` FROM `table_supplier` ORDER BY `enter_date`;");
         int no = 1;
         String noStr = "1";
         StringBuffer buffer = new StringBuffer("");
@@ -33,7 +33,7 @@ public class SqlTest {
                 System.out.println(Render.renderInfo("当前执行ID：" + id));
                 noStr = LocalDateTime.now().getYear() + String.format("%04d", no ++);
                 System.out.println(Render.renderInfo("当前执行编号：" + noStr));
-                buffer.append("UPDATE `table_enterprise` SET `no` = " + noStr + " WHERE `id` = " + id + ";");
+                buffer.append("UPDATE `table_supplier` SET `no` = " + noStr + " WHERE `id` = " + id + ";");
             }
             resultSet.close();
             //根据ID修改NO

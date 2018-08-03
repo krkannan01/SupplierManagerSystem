@@ -21,78 +21,31 @@ jQuery(function($) {
         pageSize.val(defaultParams.pageSize);
     }
 
-    //获取分页对象
-    var pagination = new Pagination({
-        "maxPrev": $("#maxPrev"),//第一页
-        "prev": $("#prev"),//上一页
-        "next": $("#next"),//下一页
-        "maxNext": $("#maxNext"),//最后一页
-        "maxPage": $("#maxPage"),//最大页数
-        "start": $("#start"),//记录起点
-        "end": $("#end"),//记录结束点
-        "maxCount": $("#maxCount"),//最大记录数
-        "currentPage": currentPage,//当前页数
-        "pageSize": pageSize,//页面容量
-    });
-    //绑定分页事件
-    pagination.maxPrev.click(function () {
-        pagination.goPage(pagination.click_max_prev(), defaultParams, sendRequest);
-    });
-    pagination.prev.click(function () {
-        pagination.goPage(pagination.click_prev(), defaultParams, sendRequest);
-    });
-    pagination.next.click(function () {
-        pagination.goPage(pagination.click_next(), defaultParams, sendRequest);
-    });
-    pagination.maxNext.click(function () {
-        pagination.goPage(pagination.click_max_next(), defaultParams, sendRequest);
+    // 获取表格对象
+    var table = new Table({
+        params: defaultParams,
+        table: $("#simple-table"),
+        dataUrl: $ctx + "/user/search",
+        render: render,
+        buttons: "<div class='col-sm-3 col-xs-12'>" +
+        "    <shiro:hasAnyPermission name='admin,deleteUser'>" +
+        "        <button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
+        "            <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
+        "        </button>" +
+        "    </shiro:hasAnyPermission>" +
+        "    <button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
+        "        <i class='ace-icon fa fa-bolt'></i> 刷新" +
+        "    </button>" +
+        "    <shiro:hasAnyPermission name='admin,insertUser'>" +
+        "        <button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px;'>" +
+        "            <i class='ace-icon fa fa-plus'></i> 新增" +
+        "        </button>" +
+        "    </shiro:hasAnyPermission>" +
+        "</div>"
     });
 
-
-    /*全选*/
-    $('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
-        var th_checked = this.checked;//checkbox inside "TH" table header
-
-        $(this).closest('table').find('tbody > tr').each(function(){
-            var row = this;
-            if(th_checked) $(row).addClass("success").find('input[type=checkbox]').eq(0).prop('checked', true);
-            else $(row).removeClass("success").find('input[type=checkbox]').eq(0).prop('checked', false);
-        });
-
-    });
-
-    /*复选框单击事件*/
-    $('#simple-table').delegate('tbody .trbox', 'click', function(event){
-        var doc = $(this).find("input[type=checkbox]").get(0);
-        if (doc.checked) {
-            doc.checked = false;
-            $(this).closest("tr").removeClass("success");
-            $("#simple-table").find("thead input[type=checkbox]").prop("checked", false);
-        } else {
-            doc.checked = true;
-            $(this).closest("tr").addClass("success");
-            handleIsAllSelect("#simple-table");
-        }
-        // 阻止事件冒泡和默认行为
-        event.stopPropagation();
-        event.preventDefault();
-    });
-
-
-    /*行单击事件*/
-    $('#simple-table').delegate('tbody > tr.simple-row', 'click', function(){
-        // 全部取消选中
-        $("#simple-table").find('tbody input[type=checkbox]').each(function(index, item) {
-            item.checked = false;
-            $(item).closest("tr").removeClass("success");
-        });
-        // 被点击行选中
-        var box = $(this).find("input[type=checkbox]").get(0);
-        box.checked = true;
-        $(this).addClass("success");
-        // 处理是否全选
-        handleIsAllSelect("#simple-table");
-    });
+    // 初始化表格复选框选择事件
+    initTableCheckbox("#simple-table", "tbody > tr.simple-row");
 
 
     /*绑定显示详情页面*/
@@ -106,7 +59,7 @@ jQuery(function($) {
 
     /*刷新*/
     $("#refursh").click(function() {
-        sendRequest();
+        table.load();
     });
 
     /*删除选中行*/
@@ -130,29 +83,13 @@ jQuery(function($) {
                         $.modalMsg("删除成功", "success");
                         /*全选框重置*/
                         $('#simple-table > thead > tr > th input[type=checkbox]').eq(0).get(0).checked = false;
-                        sendRequest();
+                        table.load();
                     } else {
                         $.modalMsg("删除失败，可能是权限不足!", "error");
                     }
                 }, 'text');
             }
         })
-    });
-
-    /*渲染每页条数框*/
-    pageSize.ace_spinner({value:10,min:5,max:100,step:5, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
-        .closest('.ace-spinner')
-        .on('changed.fu.spinbox', function(){
-            /*检查页码状态，设置参数，发送请求*/
-            defaultParams.pageSize = pageSize.val();
-            sendRequest();
-        });
-
-    /*绑定当前页输入框的改变事件*/
-    currentPage.on("change", function() {
-        /*设置参数，发送请求*/
-        defaultParams.currentPage = currentPage.val();
-        sendRequest();
     });
 
     /*页面初始化时加载数据*/
@@ -167,224 +104,112 @@ jQuery(function($) {
         defaultParams.pageSize = pageSizeParam;
         pageSize.val(pageSizeParam);
     }
-    sendRequest();
+    table.load();
 
-    /*发送请求方法*/
-    function sendRequest(param) {
-        if (!param) param = defaultParams;
 
-        var load = $("#loadAnimate");
-        var prev = load.prev();
+    /*根据新数据重新渲染表格*/
+    function render(data) {
+        var content = "";
+        if (data.rows != null && data.rows.length > 0) {
 
-        /*显示加载图标*/
-        load.css("display", "block");
-        prev.css("display", "none");
+            // 1. 检查页码
+            table.pagination.maxCount.html(data.count);
+            table.pagination.checkPageState();
 
-        $.ajax({
-            url: $ctx + "/user/search",
-            type: "POST",
-            dataType: "JSON",
-            data: param,
-            async: false,
-            success: function (data) {
-                var content = "";
-                if (data.rows != null && data.rows.length > 0) {
-
-                    $.each(data.rows, function(index, item) {
-                        /*已知 birthday lastOnlineTime*/
-                        var birthday = item.birthday,lastOnlineTime = item.lastOnlineTime;
-                        /*计算生日，年龄, 最后在线时间, 状态的显示文本*/
-                        var realName = item.realName != null ? item.realName:"秘密";
-                        var born = item.birthday != null ? item.birthday.substring(5):"秘密";
-                        var age = item.birthday != null ? (new Date().getFullYear()-item.birthday.substring(0,4)):"秘密";
-                        var lastOnlineHourBefore = null;
-                        if (item.online != null && item.online == 1) {
-                            lastOnlineHourBefore = "<b class='green'>当前在线</b>";
-                        } else if (item.lastOnlineTime != null) {
-                            var now = new Date();
-                            var temp = new Date(item.lastOnlineTime);
-                            var milliseconds = now.getTime() - temp.getTime();
-                            var hours = Math.floor(milliseconds/3600000);
-                            if (hours == 0) {
-                                lastOnlineHourBefore = Math.floor(milliseconds/60000) + "分钟前"
-                            } else {
-                                lastOnlineHourBefore = (hours > 24 ? Math.floor(hours/24) + "天":"") + hours%24 + "小时前";
-                            }
-                        }
-                        var phoneNumber = item.phoneNumber ? "<b class='green'>"+item.phoneNumber+"</b>":"<b class='orange'>无</b>";
-                        var state = "<span class='label label-sm"+ (item.state == 1 ? " label-warning'>已启用":"'>已禁用") +"</span>"
-                        var location = item.location == undefined ? "":item.location;
-                        var aboutMe = item.aboutMe == undefined ? "":item.aboutMe;
-
-                        content += "<tr class='simple-row'>" +
-                            "<td class='center trbox'>" +
-                            "<label class='pos-rel'>" +
-                            "<input type='checkbox' class='ace' data-id='"+ item.id +"'/>" +
-                            "<span class='lbl'></span>" +
-                            "</label>" +
-                            "</td>" +
-
-                            "<td class='center'>" +
-                            "<div class='action-buttons'>" +
-                            "<a href='#' class='green bigger-140 show-details-btn' title='查看详情'>" +
-                            "<i class='ace-icon fa fa-angle-double-down'></i>" +
-                            "<span class='sr-only'>详情</span>" +
-                            "</a>" +
-                            "</div>" +
-                            "</td>" +
-
-                            "<td>"+ item.username +"</td>" +
-                            "<td>"+ item.level +"</td>" +
-                            "<td>"+ phoneNumber +"</td>" +
-                            "<td class='hidden-480'>"+ lastOnlineHourBefore +"</td>" +
-
-                            "<td class='hidden-480'>" +
-                            state +
-                            "</td>" +
-
-                            "<td>" +
-                            "<div class='btn-group'>" +
-
-                            "<shiro:hasAnyPermission name='admin,updateUser'>" +
-                            "<button class='btn btn-xs btn-info updateUser' data-id='"+ item.id +"'>" +
-                            "<i class='ace-icon fa fa-pencil bigger-120'></i>修改" +
-                            "</button>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "<shiro:hasAnyPermission name='admin,deleteUser'>" +
-                            "<button class='btn btn-xs btn-warning deleteUser' data-id='"+ item.id +"'>" +
-                            "<i class='ace-icon fa fa-trash-o bigger-120'></i>删除" +
-                            "</button>" +
-                            "</shiro:hasAnyPermission>" +
-
-                            "</div>" +
-                            "</td>" +
-                            "</tr>" +
-
-                            "<tr class='detail-row'>" +
-                            "<td colspan='8'>" +
-                            "<div class='table-detail'>" +
-                            "<div class='row'>" +
-                            "<div class='col-xs-12 col-sm-2'>" +
-                            "<div class='text-center'>" +
-                            "<img height='150' class='thumbnail inline no-margin-bottom' alt='头像' style='width: 136px; height: 150px;' src='" + $ctx + "/statics/"+ (item.headImg ? "headImg/"+item.headImg:"assets/avatars/profile-pic.jpg") +"' />" +
-                            "<br />" +
-                            "<div class='width-80 label label-info label-xlg arrowed-in arrowed-in-right'>" +
-                            "<div class='inline position-relative'>" +
-                            "<a class='user-title-label' href='#'>" +
-                            "<i class='ace-icon fa fa-circle light-green'></i>" +
-                            "&nbsp;" +
-                            "<span class='white'>"+ item.username +"</span>" +
-                            "</a>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='col-xs-12 col-sm-5'>" +
-                            "<div class='space visible-xs'></div>" +
-
-                            "<div class='profile-user-info profile-user-info-striped'>" +
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 生日 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ born +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 姓名 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ realName +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 位置 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<i class='fa fa-map-marker light-orange bigger-110'></i>" +
-                            "<span> "+ location +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 年龄 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ age +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 创建时间 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ item.createTime +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 上次在线 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ lastOnlineTime +"</span>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<div class='profile-info-row'>" +
-                            "<div class='profile-info-name'> 关于我 </div>" +
-
-                            "<div class='profile-info-value'>" +
-                            "<span>"+ aboutMe +"</span>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-
-                            "<shiro:hasAnyPermission name='admin,updateUser'>" +
-                        "<div class='col-xs-12 col-sm-5'>" +
-                        "<div class='space visible-xs'></div>" +
-                        "<div class='widget-box widget-color-blue2'>" +
-                        "<div class='widget-header'>" +
-                        "<h4 class='widget-title lighter smaller'>权限分配</h4>" +
-                        "</div>" +
-
-                        "<div class='widget-body'>" +
-                        "<div class='widget-main padding-8'>" +
-                        "<div style='text-align: center;'><button class='btn btn-sm btn-info' id='load-privilege'><i class='ace-icon fa fa-refresh'></i>加载权限数据</button></div>" +
-                        "<div><i class='ace-icon fa fa-refresh fa-spin blue hidden'></i></div>" +
-                        "<ul id='tree"+ item.id +"' data-id='"+ item.id +"'></ul>" +
-                        "<div class='btn-group'>" +
-                        "<button class='btn btn-sm btn-warning hidden'><i class='ace-icon fa fa-cloud-upload'></i>提交更改</button >" +
-                        "<button class='btn btn-sm btn-success hidden'><i class='ace-icon fa fa-share'></i>取消更改</button>" +
-                        "</div>" +
-                        "</div>" +
-                        "</div>" +
-                        "</div>" +
-                        "</div>" +
-                        "</shiro:hasAnyPermission>" +
-
-                        "</div>" +
-                        "</div>" +
-                        "</td>" +
-                        "</tr>";
-                    });
-                } else {
-                    content += "<tr><td colspan='8'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+            $.each(data.rows, function(index, item) {
+                /*已知 birthday lastOnlineTime*/
+                var birthday = item.birthday,lastOnlineTime = item.lastOnlineTime;
+                /*计算生日，年龄, 最后在线时间, 状态的显示文本*/
+                var realName = item.realName != null ? item.realName:"秘密";
+                var born = item.birthday != null ? item.birthday.substring(5):"秘密";
+                var age = item.birthday != null ? (new Date().getFullYear()-item.birthday.substring(0,4)):"秘密";
+                var lastOnlineHourBefore = null;
+                if (item.online != null && item.online == 1) {
+                    lastOnlineHourBefore = "<b class='green'>当前在线</b>";
+                } else if (item.lastOnlineTime != null) {
+                    var now = new Date();
+                    var temp = new Date(item.lastOnlineTime);
+                    var milliseconds = now.getTime() - temp.getTime();
+                    var hours = Math.floor(milliseconds/3600000);
+                    if (hours == 0) {
+                        lastOnlineHourBefore = Math.floor(milliseconds/60000) + "分钟前"
+                    } else {
+                        lastOnlineHourBefore = (hours > 24 ? Math.floor(hours/24) + "天":"") + hours%24 + "小时前";
+                    }
                 }
-                $("#simple-table > tbody").html(content);
+                var phoneNumber = item.phoneNumber ? "<b class='green'>"+item.phoneNumber+"</b>":"<b class='orange'>无</b>";
+                var state = "<span class='label label-sm"+ (item.state == 1 ? " label-warning'>已启用":"'>已禁用") +"</span>"
+                var location = item.location == undefined ? "":item.location;
+                var aboutMe = item.aboutMe == undefined ? "":item.aboutMe;
 
-                pagination.maxCount.html(data.count);
-                pagination.checkPageState();
+                content += "<tr class='simple-row'>" +
+                    "<td class='center trbox'> <label class='pos-rel'> <input type='checkbox' class='ace' data-id='"+ item.id +"'/> <span class='lbl'></span> </label> </td>" +
+                    "<td class='center'> <div class='action-buttons'> <a href='#' class='green bigger-140 show-details-btn' title='查看详情'> <i class='ace-icon fa fa-angle-double-down'></i>" +
+                        "<span class='sr-only'>详情</span> </a> </div> </td>" +
+                    "<td>"+ item.username +"</td>" +
+                    "<td>"+ item.level +"</td>" +
+                    "<td>"+ phoneNumber +"</td>" +
+                    "<td class='hidden-480'>"+ lastOnlineHourBefore +"</td>" +
+                    "<td class='hidden-480'>" + state + "</td>" +
+                    "<td> <div class='btn-group'>" +
+                        "<shiro:hasAnyPermission name='admin,updateUser'>" +
+                            "<button class='btn btn-xs btn-info updateUser' data-id='"+ item.id +"'> <i class='ace-icon fa fa-pencil bigger-120'></i> 修改 </button>" +
+                        "</shiro:hasAnyPermission>" +
+                        "<shiro:hasAnyPermission name='admin,deleteUser'>" +
+                            "<button class='btn btn-xs btn-warning deleteUser' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-120'></i> 删除 </button>" +
+                        "</shiro:hasAnyPermission> </div> </td>" +
+                    "</tr>" +
 
-                /*隐藏加载图标*/
-                load.css("display", "none");
-                prev.css("display", "block");
-            }
-        });
+                    "<tr class='detail-row'>" +
+                    "<td colspan='8'> <div class='table-detail'> <div class='row'> <div class='col-xs-12 col-sm-2'> <div class='text-center'>" +
+                        "<img height='150' class='thumbnail inline no-margin-bottom' alt='头像' style='width: 136px; height: 150px;' src='" + $ctx + "/statics/"+ (item.headImg ? "headImg/"+item.headImg:"assets/avatars/profile-pic.jpg") +"' />" +
+                        "<br /> <div class='width-80 label label-info label-xlg arrowed-in arrowed-in-right'> <div class='inline position-relative'> <a class='user-title-label' href='#'> <i class='ace-icon fa fa-circle light-green'></i>" +
+                        "&nbsp; <span class='white'>"+ item.username +"</span> </a> </div> </div> </div> </div>" +
+                        "<div class='col-xs-12 col-sm-5'> <div class='space visible-xs'></div> <div class='profile-user-info profile-user-info-striped'>" +
+
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 生日 </div> <div class='profile-info-value'> <span>"+ born +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 姓名 </div> <div class='profile-info-value'> <span>"+ realName +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 位置 </div> <div class='profile-info-value'> <i class='fa fa-map-marker light-orange bigger-110'></i> <span> "+ location +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 年龄 </div> <div class='profile-info-value'> <span>"+ age +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 创建时间 </div> <div class='profile-info-value'> <span>"+ item.createTime +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 上次在线 </div> <div class='profile-info-value'> <span>"+ lastOnlineTime +"</span> </div> </div>" +
+                            "<div class='profile-info-row'> <div class='profile-info-name'> 关于我 </div> <div class='profile-info-value'> <span>"+ aboutMe +"</span> </div> </div>" +
+                        "</div>" +
+                    "</div>" +
+
+                    "<shiro:hasAnyPermission name='admin,updateUser'>" +
+                    "<div class='col-xs-12 col-sm-5'>" +
+                    "<div class='space visible-xs'></div>" +
+                    "<div class='widget-box widget-color-blue2'>" +
+                    "<div class='widget-header'>" +
+                    "<h4 class='widget-title lighter smaller'>权限分配</h4>" +
+                    "</div>" +
+
+                    "<div class='widget-body'>" +
+                    "<div class='widget-main padding-8'>" +
+                    "<div style='text-align: center;'><button class='btn btn-sm btn-info' id='load-privilege'><i class='ace-icon fa fa-refresh'></i>加载权限数据</button></div>" +
+                    "<div><i class='ace-icon fa fa-refresh fa-spin blue hidden'></i></div>" +
+                    "<ul id='tree"+ item.id +"' data-id='"+ item.id +"'></ul>" +
+                    "<div class='btn-group'>" +
+                    "<button class='btn btn-sm btn-warning hidden'><i class='ace-icon fa fa-cloud-upload'></i>提交更改</button >" +
+                    "<button class='btn btn-sm btn-success hidden'><i class='ace-icon fa fa-share'></i>取消更改</button>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</shiro:hasAnyPermission>" +
+
+                    "</div>" +
+                    "</div>" +
+                    "</td>" +
+                    "</tr>";
+            });
+        } else {
+            content += "<tr><td colspan='8'><div class='alert alert-warning' style='padding: 5px;margin-bottom: 0;text-align: center;'>没有信息</div></td></tr>";
+        }
+        $("#simple-table > tbody").html(content);
+
     }
 
     /*删除信息操作*/
@@ -395,7 +220,7 @@ jQuery(function($) {
                 $.post($ctx + "/user/delete", {"id": id}, function(data) {
                     if (data == "success") {
                         $.modalMsg("删除成功!", "success");
-                        sendRequest();
+                        table.load();
                     } else {
                         $.modalMsg("删除失败，可能是权限不足!", "error");
                     }
@@ -417,7 +242,7 @@ jQuery(function($) {
 
     function exec() {
         defaultParams.keywords = keywords.val();
-        sendRequest();
+        table.load();
     }
 
     /*记录改动的元素的data-value值*/
@@ -586,7 +411,7 @@ jQuery(function($) {
             $.post($ctx + "/user/updateUserPrivilege",{id: tree.attr("data-id"), privilegeIds: update_data_str}, function(data) {
                 if (data == "success") {
                     $.modalMsg("提交成功!", "success");
-                    sendRequest();
+                    table.load();
                     update_data = [];
                 } else {
                     $.modalMsg("提交失败，可能是权限不足!", "error");
@@ -640,7 +465,7 @@ jQuery(function($) {
                 /*重置表单*/
                 $("#insert-user-cancel").click();
                 /*重载数据*/
-                sendRequest();
+                table.load();
             } else if (data == "fail") {
                 $.modalMsg("添加失败","error");
             } else {
@@ -765,7 +590,7 @@ jQuery(function($) {
                     $.post($ctx + "/user/updateCoreUser", user_data, function(data) {
                         if (data == "success") {
                             $.modalMsg("修改成功", "success");
-                            sendRequest();
+                            table.load();
                         } else {
                             $.modalMsg("修改失败", "error");
                         }

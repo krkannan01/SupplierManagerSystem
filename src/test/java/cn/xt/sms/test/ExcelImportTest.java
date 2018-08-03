@@ -1,13 +1,12 @@
 package cn.xt.sms.test;
 
 import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -22,18 +21,18 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 public class ExcelImportTest {
 
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
 
     @Test
     public void excelImport() throws IOException, InvalidFormatException {
         List<Supplier> supplierList = ExcelImport.excelImport();
         for (Supplier supplier : supplierList) {
-            /*enterpriseService.insertEnterprise(supplier);*/
+            /*supplierService.insertSupplier(supplier);*/
         }
     }
 }

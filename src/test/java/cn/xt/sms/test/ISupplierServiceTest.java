@@ -2,14 +2,14 @@ package cn.xt.sms.test;
 
 import cn.xt.sms.condition.SupplierCondition;
 import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.result.MapResult;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.dto.MapDTO;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Contact;
 import cn.xt.sms.entity.Cooperation;
 import cn.xt.sms.entity.TradeGroup;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.ITradeGroupService;
-import cn.xt.sms.service.middle.IEnterpriseMiddleService;
+import cn.xt.sms.service.middle.ISupplierMiddleService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -35,16 +36,16 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 public class ISupplierServiceTest {
 
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
     @Autowired
     private ITradeGroupService tradeGroupService;
     @Autowired
-    private IEnterpriseMiddleService enterpriseMiddleService;
+    private ISupplierMiddleService supplierMiddleService;
 
     private ApplicationContext applicationContext;
 
@@ -59,21 +60,21 @@ public class ISupplierServiceTest {
     }
 
     @Test
-    public void testGetEnterpriseList() throws Exception {
-//        SupplierCondition enterpriseCondition = new SupplierCondition();
+    public void testGetSupplierList() throws Exception {
+//        SupplierCondition supplierCondition = new SupplierCondition();
 //        List<Integer> groups = new ArrayList<Integer>();
 //        groups.add(1);
-//        enterpriseCondition.setGroups(groups);
-//        MyResult enterpriseResult = enterpriseService.getEnterpriseList(enterpriseCondition, 1, 10);
+//        supplierCondition.setGroups(groups);
+//        DataResponse supplierResult = supplierService.getSupplierList(supplierCondition, 1, 10);
         SupplierCondition condition = new SupplierCondition();
         condition.setSort("level");
         condition.setSorted("desc");
-        MyResult enterpriseResult = enterpriseService.getEnterpriseList(condition, 1, 10);
+        List<Supplier> supplierList = supplierService.getSupplierList(condition, 1, 10).getRows();
         System.out.println("123");
     }
 
     @Test
-    public void testInsertEnterprise() throws Exception {
+    public void testInsertSupplier() throws Exception {
 
         /*添加企业
         * 第一步：先添加联系人信息
@@ -119,25 +120,25 @@ public class ISupplierServiceTest {
 
         supplier.setCooperationList(cooperationList);
 
-        /*enterpriseService.insertEnterprise(, supplier);*/
+        /*supplierService.insertSupplier(, supplier);*/
     }
 
     @Test
-    public void testDeleteEnterprise() throws Exception {
+    public void testDeleteSupplier() throws Exception {
         /*删除企业信息*/
-        Integer enterpriseId = 23;
+        Integer supplierId = 23;
         /*第一步：先删除项目合作联系人信息*/
-//        contactDao.deleteCooperationContactByEnterpriseId(supplierId);
+//        contactDao.deleteCooperationContactBySupplierId(supplierId);
 //        /*第二步：删除项目合作信息*/
-//        cooperationDao.deleteCooperationByEnterpriseId(supplierId);
+//        cooperationDao.deleteCooperationBySupplierId(supplierId);
 //        /*第三步：删除企业联系人信息*/
-//        contactDao.deleteContactByEnterpriseId(supplierId);
+//        contactDao.deleteContactBySupplierId(supplierId);
         /*第四部：删除企业信息*/
-        enterpriseService.deleteEnterprise(enterpriseId);
+        supplierService.deleteSupplier(supplierId);
     }
 
     @Test
-    public void testUpdateEnterprise() throws Exception {
+    public void testUpdateSupplier() throws Exception {
         /*传入企业信息id，合作项目id*/
         List<Cooperation> cooperationList = new ArrayList<Cooperation>();
 //        cooperationList.add(new Cooperation(8,"修改测试1",null,new Contact(41,"修改测试1", null, null, null),null));
@@ -152,7 +153,7 @@ public class ISupplierServiceTest {
 //        supplier.setContactId(contact);
 
         /*第一步：修改企业信息*/
-        enterpriseService.updateEnterprise(supplier);
+        supplierService.updateSupplier(supplier);
         /*第二步：修改联系人信息*/
 //        contactDao.updateContact(supplier.getContactId());
 //        /*修改多条合作信息*/
@@ -168,19 +169,19 @@ public class ISupplierServiceTest {
     @Test
     public void testIsUnique() throws Exception {
         String fullName = "测试全称1";
-        System.out.println(enterpriseService.getIdByFullName(fullName) != null);
+        System.out.println(supplierService.getIdByFullName(fullName) != null);
     }
 
     @Test
     public void testGetTradeGroup() throws Exception {
-        /*MyResult<TradeGroup> result = tradeGroupService.getTradeGroup();*/ // DISCARD
+        /*DataResponse<TradeGroup> result = tradeGroupService.getTradeGroup();*/ // DISCARD
         System.out.println("123");
     }
 
 
     @Test
-    public void testGetEnterpriseIdAndName() {
-        List<MapResult> map = enterpriseService.getEnterpriseIdAndName();
+    public void testGetSupplierIdAndName() {
+        List<MapDTO> map = supplierService.getSupplierIdAndName();
         System.out.println(map);
     }
 
@@ -189,10 +190,10 @@ public class ISupplierServiceTest {
         File f = new File("C:\\Users\\Administrator\\Desktop\\项目资源\\模板.xlsx");
         Workbook wb = WorkbookFactory.create(f);
         Sheet sheet = wb.getSheetAt(0);
-        /*enterpriseMiddleService.getEnterpriseFormExcel(sheet);*/
-        System.out.println("\n\n" + enterpriseMiddleService);
-        System.out.println(enterpriseMiddleService.getClass());
-        System.out.println(enterpriseMiddleService.getClass().getName());
+        /*supplierMiddleService.getSupplierFormExcel(sheet);*/
+        System.out.println("\n\n" + supplierMiddleService);
+        System.out.println(supplierMiddleService.getClass());
+        System.out.println(supplierMiddleService.getClass().getName());
 
 
 

@@ -1,16 +1,18 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.RestGetMapping;
+import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.SupplierCondition;
 import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.result.MapResult;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.enums.ResponseCode;
+import cn.xt.sms.dto.MapDTO;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.entity.UserDefinedFieldName;
-import cn.xt.sms.result.SimpleResponse;
-import cn.xt.sms.result.SimpleResponse.ResponseCode;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.response.SimpleResponse;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.ITradeGroupService;
-import cn.xt.sms.service.middle.IEnterpriseMiddleService;
+import cn.xt.sms.service.middle.ISupplierMiddleService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.Logical;
@@ -33,122 +35,112 @@ import java.util.List;
  * @date 2018/3/13
  */
 @Controller
-@RequestMapping("/enterprise")
+@RequestMapping("/supplier")
 public class SupplierController {
 
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
     @Autowired
     private ITradeGroupService tradeGroupService;
     @Autowired
-    private IEnterpriseMiddleService enterpriseMiddleService;
+    private ISupplierMiddleService supplierMiddleService;
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    @ResponseBody
-    public MyResult<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session) {
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestGetMapping("/search")
+    public DataResponse<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session) {
         session.setAttribute("currentPage", currentPage);
         session.setAttribute("pageSize", pageSize);
-        return enterpriseService.getEnterpriseList(supplierCondition, currentPage, pageSize);
+        return supplierService.getSupplierList(supplierCondition, currentPage, pageSize);
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/getEnterpriseCount", method = RequestMethod.POST)
-    @ResponseBody
-    public Integer searchEnterpriseCount(SupplierCondition supplierCondition) {
-        return enterpriseService.getEnterpriseCount(supplierCondition);
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestPostMapping("/getSupplierCount")
+    public Integer searchSupplierCount(SupplierCondition supplierCondition) {
+        return supplierService.getSupplierCount(supplierCondition);
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/getUserDefinedFieldName", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestPostMapping("/getUserDefinedFieldName")
     public UserDefinedFieldName getUserDefinedFieldName() {
-        return enterpriseService.getUserDefinedFieldName();
+        return supplierService.getUserDefinedFieldName();
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/getEnterpriseIdAndName", method = RequestMethod.POST)
-    @ResponseBody
-    public List<MapResult> getEnterpriseIdAndName() {
-        return enterpriseService.getEnterpriseIdAndName();
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestGetMapping("/getSupplierIdAndName")
+    public List<MapDTO> getSupplierIdAndName() {
+        return supplierService.getSupplierIdAndName();
     }
 
-    @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RestPostMapping("/insert")
     public String insert(HttpServletRequest request, Supplier supplier) {
-        return enterpriseService.insertEnterprise(request.getServletContext(), supplier);
+        return supplierService.insertSupplier(request.getServletContext(), supplier);
     }
 
-    @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
-    @RequestMapping(value ="/isUnique", method = RequestMethod.GET)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RestGetMapping("/isUnique")
     public boolean isUnique(String fullName) {
-        return enterpriseService.getIdByFullName(fullName) != null;
+        return supplierService.getIdByFullName(fullName) != null;
     }
 
-    @RequiresPermissions(value = {"admin","deleteEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","deleteSupplier"},logical = Logical.OR)
+    @RestPostMapping("/delete")
     public String delete(Integer id) {
-        return enterpriseService.deleteEnterprise(id);
+        return supplierService.deleteSupplier(id);
     }
 
-    @RequiresPermissions(value = {"admin","deleteEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/mutliDelete", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","deleteSupplier"},logical = Logical.OR)
+    @RestPostMapping("/mutliDelete")
     public String mutliDelete(String ids) {
-        return enterpriseMiddleService.mutliDeleteEnterprise(ids);
+        return supplierMiddleService.mutliDeleteSupplier(ids);
     }
 
-    @RequiresPermissions(value = {"admin","updateEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","updateSupplier"},logical = Logical.OR)
+    @RestPostMapping("/update")
     public String update(Supplier supplier) {
-        return enterpriseService.updateEnterprise(supplier);
+        return supplierService.updateSupplier(supplier);
     }
 
     /*查询分组信息*/
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/getTradeGroup", method = RequestMethod.GET)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestGetMapping("/getTradeGroup")
     public List<TradeGroup> getTradeGroup(@RequestParam(required = false, defaultValue = "0") Integer parentId,
                                           Integer categoryId) {
         return tradeGroupService.getTradeGroup(parentId, categoryId);
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping("/getEnterpriseById")
-    public String getEnterpriseById(Integer id, String action, HttpServletRequest request) {
-        Supplier supplier = enterpriseService.getEnterpriseById(id);
-        request.setAttribute("enterprise", supplier);
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequestMapping("/getSupplierById")
+    public String getSupplierById(Integer id, String action, HttpServletRequest request) {
+        Supplier supplier = supplierService.getSupplierById(id);
+        request.setAttribute("supplier", supplier);
         return action == null ? "details":action;
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping("/getEnterpriseById2")
-    public String getEnterpriseById2(Integer id, HttpServletRequest request) {
-        Supplier supplier = enterpriseService.getEnterpriseById(id);
-        request.setAttribute("enterprise", supplier);
-        return "enterprise/detail_iframe";
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequestMapping("/getSupplierById2")
+    public String getSupplierById2(Integer id, HttpServletRequest request) {
+        Supplier supplier = supplierService.getSupplierById(id);
+        request.setAttribute("supplier", supplier);
+        return "supplier/detail_iframe";
     }
 
-    /*转到detail_iframe页面*/
-//    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-//    @RequestMapping("/toDetailIframe")
-//    public String toDetailIframe() {
-//        return "detail_iframe";
-//    }
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @GetMapping("/toSupplierDetailProduct")
+    public String toSupplierDetailProduct(Integer id, HttpServletRequest request) {
+        request.setAttribute("id", id);
+        return "supplier/detail_iframe_product";
+    }
 
-//    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-//    @RequestMapping(value = "/getEnterpriseJsonById", method = RequestMethod.GET)
-//    @ResponseBody
-//    public Supplier getEnterpriseJsonById(Integer id) {
-//        return enterpriseService.getEnterpriseById(id);
-//    }
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @GetMapping("/toSupplierDetailDocument")
+    public String toSupplierDetailDocument(Integer id, HttpServletRequest request) {
+        request.setAttribute("id", id);
+        return "supplier/detail_iframe_document";
+    }
 
     /*转到serach_supplier页面*/
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
     @RequestMapping("/toSearchSupplier")
     public String toSearchSupplier(String uccCode, HttpServletRequest request, HttpSession session) {
         if (uccCode != null && uccCode != "") {
@@ -156,20 +148,19 @@ public class SupplierController {
         }
         request.setAttribute("currentPage", session.getAttribute("currentPage"));
         request.setAttribute("pageSize", session.getAttribute("pageSize"));
-        return "enterprise/search_supplier";
+        return "supplier/search_supplier";
     }
 
-    /*转到add_supplier页面*/
-    @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
+    /*跳转到add_supplier页面*/
+    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
     @RequestMapping("/toAddSupplier")
     public String toAddSupplier(HttpSession session) {
-        return "enterprise/add_supplier";
+        return "supplier/add_supplier";
     }
 
     /*excel文件导入*/
-    @RequiresPermissions(value = {"admin","insertEnterprise"},logical = Logical.OR)
-    @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RestPostMapping("/importExcel")
     public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
             //解析excel
@@ -180,7 +171,7 @@ public class SupplierController {
             //3.打开需要解析的Sheet工作表
             Sheet sheet = wb.getSheetAt(0);
             //4.遍历工作表对象（本质是个行的集合）,读取每一行
-            String message = enterpriseMiddleService.getEnterpriseFormExcel(request.getServletContext(), sheet);
+            String message = supplierMiddleService.getSupplierFormExcel(request.getServletContext(), sheet);
             //关流
             is.close();
 
@@ -193,13 +184,12 @@ public class SupplierController {
         return new SimpleResponse(ResponseCode.ERROR, "解析错误");
     }
 
-    @RequiresPermissions(value = {"admin","searchEnterprise"},logical = Logical.OR)
-    @RequestMapping("/exportExcel")
-    @ResponseBody
+    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RestGetMapping("/exportExcel")
     public String exportExcel(HttpServletResponse response, Integer start, Integer end, SupplierCondition supplierCondition) {
         Workbook wb = new XSSFWorkbook();
 
-        enterpriseMiddleService.setEnterpriseToExcel(wb, start, end, supplierCondition);
+        supplierMiddleService.setSupplierToExcel(wb, start, end, supplierCondition);
 
         //转码，防止文件名中文乱码
         String fileName = "供应商信息.xlsx";
@@ -233,10 +223,10 @@ public class SupplierController {
     }
 
     /*转到edit页面*/
-    @RequiresPermissions(value = {"admin","updateEnterprise"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin","updateSupplier"},logical = Logical.OR)
     @RequestMapping("/toEdit")
     public String toEdit(HttpSession session) {
-        return "enterprise/edit";
+        return "supplier/edit";
     }
 
 }

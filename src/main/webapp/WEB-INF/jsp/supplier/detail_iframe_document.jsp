@@ -8,7 +8,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>供应商商品信息 - 供应商管理系统</title>
+    <title>供应商文档信息 - 供应商管理系统</title>
 
     <meta name="description" content="overview &amp; stats" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -106,26 +106,37 @@
                             </span>
                         </form>
                     </div>
-                    <table id="product-table" class="table table-bordered table-hover">
+                    <table id="file-table" class="table table-bordered table-hover">
                         <thead>
                         <tr style="background: -webkit-linear-gradient(top, #A4E0F5, #F2F2F2);
                                                                        background:    -moz-linear-gradient(top, #A4E0F5, #F2F2F2);
                                                                        background:      -o-linear-gradient(top, #A4E0F5, #F2F2F2);
                                                                        background:         linear-gradient(top, #A4E0F5, #F2F2F2);">
-                            <th>序号</th>
-                            <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
-                            <th>产品编号</th>
-                            <th>产品名称</th>
-                            <th>产品规格</th>
-                            <th>品牌</th>
-                            <th>技术参数</th>
-                            <th>价格-单位</th>
-                            <th>备注</th>
-                            <th>所属分组</th>
-                            <th>操作</th>
+                            <th width="5%">序号</th>
+                            <th width="5%" class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
+                            <th class="sort-name" style="background: inherit;">名称</th>
+                            <th width="20%">类型</th>
+                            <th>描述</th>
+                            <th>附件</th>
+                            <th width="10%">操作</th>
                         </tr>
                         </thead>
-                        <tbody></tbody>
+
+                        <tr>
+                        <tr>
+                            <td>1</td>
+                            <td class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </td>
+                            <td>营业执照</td>
+                            <td>税务登记证</td>
+                            <td></td>
+                            <td>yyzz.jpg</td>
+                            <td>
+                                <shiro:hasAnyPermission name='admin,deleteFile'>
+                                    <button class='btn btn-xs btn-round btn-danger deleteProduct' data-id='1'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>
+                                </shiro:hasAnyPermission>
+                            </td>
+                        </tr>
+                        </tbody>
                     </table>
                 </div>
             </div><!-- /.page-content -->
@@ -136,29 +147,6 @@
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 </a>
-
-<!-- 材料信息表单 -->
-<div class="modal fade" id="product-form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width: 60%;">
-        <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h4 class="modal-title green">
-                </h4>
-            </div>
-            <div class="modal-body">
-                <jsp:include page="${pageContext.request.contextPath}/common/product-form.jsp"/>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-white" data-dismiss="modal">
-                    取消
-                </button>
-                <button type="button" class="btn btn-warning btn-white" id="confirm">
-                    确定
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <!-- basic scripts -->
 
@@ -221,7 +209,7 @@
     var $currentPage = "<%=request.getAttribute("currentPage")%>";
     var $pageSize = "<%=request.getAttribute("pageSize")%>";
 </script>
-<script src="${pageContext.request.contextPath}/statics/js/project/detail_iframe_product.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/project/supplier/detail_iframe_document.js"></script>
 
 <!-- the following scripts are used in demo only for onpage help and you don't need them -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace.onpage-help.css" />

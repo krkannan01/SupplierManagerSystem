@@ -61,7 +61,7 @@
     </collection>
   </resultMap>
 
-  <resultMap id="MyMap" type="cn.xt.sms.result.MapResult">
+  <resultMap id="MyMap" type="cn.xt.sms.dto.MapDTO">
     <result column="id" property="key"/>
     <result column="name" property="value"/>
   </resultMap>
@@ -164,13 +164,15 @@
             </choose>
             <if test="supplierCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
 
-            ORDER BY `no` DESC
+            ORDER BY
             <if test="supplierCondition.sort != null and supplierCondition.sort != ''">
-            ,`${supplierCondition.sort}`
-            <if test="supplierCondition.sorted != null and supplierCondition.sorted != ''">
-              ${supplierCondition.sorted}
+            `${supplierCondition.sort}`
+              <if test="supplierCondition.sorted != null and supplierCondition.sorted != ''">
+                ${supplierCondition.sorted}
+              </if>
+              ,
             </if>
-          </if>
+            `no` DESC
           </where>
         </when>
         <otherwise>
@@ -197,14 +199,14 @@
             <if test="supplierCondition.categoryId != null">
               AND `category_id` = #{supplierCondition.categoryId}
             </if>
-            /*按分组查询*/
+            <!-- 按分组查询 -->
             <if test="supplierCondition.groups != null and supplierCondition.groups.size() > 0">
               AND
               <foreach collection="supplierCondition.groups" item="group" separator="or" open="(" close=")">
                 `trade_group_id` = #{group}
               </foreach>
             </if>
-            /*按经营范围查询*/
+            <!-- 按经营范围查询 -->
             <if test="supplierCondition.operateRange != null and supplierCondition.operateRange != ''">AND `operate_range` LIKE '%' #{supplierCondition.operateRange} '%'</if>
 
             <choose>
@@ -219,14 +221,15 @@
             </choose>
             <if test="supplierCondition.includeException">AND `exception_info` IS NULL AND `danger_info` IS NULL</if>
 
-            ORDER BY `no` DESC
+            ORDER BY
             <if test="supplierCondition.sort != null and supplierCondition.sort != ''">
-              ,`${supplierCondition.sort}`
+              `${supplierCondition.sort}`
               <if test="supplierCondition.sorted != null and supplierCondition.sorted != ''">
                 ${supplierCondition.sorted}
               </if>
+              ,
             </if>
-
+            `no` DESC
           </if>
         </where>
       </when>

@@ -834,25 +834,25 @@
 							/*禁用下一步按钮*/
 							next.attr("disabled", "false");
 							/*第一步：获取基本信息*/
-							var enterprise_data = {};
-							enterprise_data.uCCcode = $("#uCCcode").val();
-							enterprise_data.fullName = $("#fullName").val();
-							enterprise_data.type = $("#type").val();
-							enterprise_data.legalRepresentative = $("#legalRepresentative").val();
-							enterprise_data.website = $("#website").val();
-							enterprise_data.simpleName = $("#simpleName").val();
-							enterprise_data.foundDate = $("#foundDate").val();
-							enterprise_data.registeredCapital = $("#registeredCapital").val();
-							enterprise_data.registerDepartment = $("#registerDepartment").val();
-							enterprise_data.approvalDate = $("#approvalDate").val();
-							enterprise_data.registerState = $("#registerState").val();
-							enterprise_data.mainProduct = $("#mainProduct").val();
-							enterprise_data.businessDeadlineGo = $("#businessDeadlineGo").val();
-							enterprise_data.businessDeadlineTo = $("#businessDeadlineTo").val();
-							enterprise_data.address = $("#address").val();
-							enterprise_data.operateRange = $("#operateRange").val();
-							enterprise_data.exceptionInfo = $("#exceptionInfo").val();
-							enterprise_data.dangerInfo = $("#dangerInfo").val();
+							var supplier_data = {};
+							supplier_data.uCCcode = $("#uCCcode").val();
+							supplier_data.fullName = $("#fullName").val();
+							supplier_data.type = $("#type").val();
+							supplier_data.legalRepresentative = $("#legalRepresentative").val();
+							supplier_data.website = $("#website").val();
+							supplier_data.simpleName = $("#simpleName").val();
+							supplier_data.foundDate = $("#foundDate").val();
+							supplier_data.registeredCapital = $("#registeredCapital").val();
+							supplier_data.registerDepartment = $("#registerDepartment").val();
+							supplier_data.approvalDate = $("#approvalDate").val();
+							supplier_data.registerState = $("#registerState").val();
+							supplier_data.mainProduct = $("#mainProduct").val();
+							supplier_data.businessDeadlineGo = $("#businessDeadlineGo").val();
+							supplier_data.businessDeadlineTo = $("#businessDeadlineTo").val();
+							supplier_data.address = $("#address").val();
+							supplier_data.operateRange = $("#operateRange").val();
+							supplier_data.exceptionInfo = $("#exceptionInfo").val();
+							supplier_data.dangerInfo = $("#dangerInfo").val();
 
 							/*第二步：获取联系人信息 并添加到企业信息*/
 							var contact_data = {};
@@ -861,10 +861,10 @@
 							contact_data.phoneNumberOne = $("#phoneNumberOne").val();
 							contact_data.phoneNumberTwo = $("#phoneNumberTwo").val();
 
-							enterprise_data.contactId = contact_data;
+							supplier_data.contactId = contact_data;
 
 							/*第三步：获取合作情况信息 并添加到企业信息*/
-							enterprise_data.cooperation = [];
+							supplier_data.cooperation = [];
 							var cooperation_data = null;
 							$(".cooperation-box").each(function(index) {
 								cooperation_data = {};
@@ -875,15 +875,15 @@
 								cooperation_data.contactId.address = $("#coopContactAddress"+index).val();
 								cooperation_data.contactId.coopPhoneNumberOne = $("#coopPhoneNumberOne"+index).val();
 								cooperation_data.contactId.coopPhoneNumberTwo = $("#coopPhoneNumberTwo"+index).val();
-								enterprise_data.cooperation.push(cooperation_data);
+								supplier_data.cooperation.push(cooperation_data);
 							});
 
 							/*第四步：获取其他信息*/
-							enterprise_data.userDefinedFieldOne = $("#userDefinedFieldOne").val();
-							enterprise_data.userDefinedFieldTwo = $("#userDefinedFieldTwo").val();
-							enterprise_data.userDefinedFieldThree = $("#userDefinedFieldThree").val();
-							enterprise_data.userDefinedFieldFour = $("#userDefinedFieldFour").val();
-							enterprise_data.userDefinedFieldFive = $("#userDefinedFieldFive").val();
+							supplier_data.userDefinedFieldOne = $("#userDefinedFieldOne").val();
+							supplier_data.userDefinedFieldTwo = $("#userDefinedFieldTwo").val();
+							supplier_data.userDefinedFieldThree = $("#userDefinedFieldThree").val();
+							supplier_data.userDefinedFieldFour = $("#userDefinedFieldFour").val();
+							supplier_data.userDefinedFieldFive = $("#userDefinedFieldFive").val();
 
 							/*第五步：发送请求*/
 							$.post("/supplier/insert", "", function(data) {

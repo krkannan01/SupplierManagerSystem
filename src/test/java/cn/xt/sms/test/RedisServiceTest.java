@@ -1,11 +1,12 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.result.MapResult;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.dto.MapDTO;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.IRedisService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -20,24 +21,24 @@ import java.util.concurrent.CountDownLatch;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 public class RedisServiceTest {
 
     @Autowired
-    private IRedisService<MapResult> redisService;
+    private IRedisService<MapDTO> redisService;
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
 //    @Autowired
 //    private JedisPool jedisPool;
 
     @Test
     public void testGetRedis() {
 //        Jedis jedis = jedisPool.getResource();
-//        String result = jedis.get("enterprise_id_and_name");
+//        String result = jedis.get("supplier_id_and_name");
 //        System.out.println("\n\n"+result+"\n\n");
 //        jedis.close();
-        List<MapResult> list = redisService.getCacheList("enterprise_id_and_name");
+        List<MapDTO> list = redisService.getCacheList("supplier_id_and_name");
         if (list != null && list.size() > 0) {
             for (int i=0; i<list.size(); i++) {
                 System.out.println(list.get(i));
@@ -49,13 +50,13 @@ public class RedisServiceTest {
 
     @Test
     public void testSetRedis() {
-        List<MapResult> list = enterpriseService.getEnterpriseIdAndName();
-        redisService.setCache("enterprise_id_and_name", list, 120);
+        List<MapDTO> list = supplierService.getSupplierIdAndName();
+        redisService.setCache("supplier_id_and_name", list, 120);
         System.out.println("设置缓存成功");
     }
 
     @Test
-    public void testGetEnterpriseIdAndName() {
+    public void testGetSupplierIdAndName() {
 //        for (int i=0; i<5; i++) {
 //            read();
 //        }
@@ -82,13 +83,13 @@ public class RedisServiceTest {
     }
 
     private void read() {
-        List<MapResult> list = redisService.getCacheList("ENTERPRISE_ID_AND_NAME");
+        List<MapDTO> list = redisService.getCacheList("SUPPLIER_ID_AND_NAME");
         if (list == null) {
-            synchronized ("ENTERPRISE_ID_AND_NAME") {
-                list = redisService.getCacheList("ENTERPRISE_ID_AND_NAME");
+            synchronized ("SUPPLIER_ID_AND_NAME") {
+                list = redisService.getCacheList("SUPPLIER_ID_AND_NAME");
                 if (list == null) {
-                    list = enterpriseService.getEnterpriseIdAndName();
-                    redisService.setCache("ENTERPRISE_ID_AND_NAME", list, 180);
+                    list = supplierService.getSupplierIdAndName();
+                    redisService.setCache("SUPPLIER_ID_AND_NAME", list, 180);
                     System.out.println("\n Read in mysql \n");
                 } else {
                     System.out.println("\n Read in cache \n");

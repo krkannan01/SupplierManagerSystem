@@ -1,4 +1,4 @@
-package cn.xt.sms.result;
+package cn.xt.sms.response;
 
 import cn.xt.sms.enums.ResponseCode;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 /**
  * @Auther: xietao
  * @Date: 2018/7/18
- * @Description:
+ * @Description: 简单的响应封装类
  */
 @Getter
 @Setter
@@ -25,7 +25,7 @@ public class SimpleResponse {
     public SimpleResponse(Integer affectedRowNumber) {
         if (affectedRowNumber > 0) {
             this.code = ResponseCode.SUCCESS.getCode();
-            this.msg = "成功，共" + affectedRowNumber + "条数据收到影响！";
+            this.msg = "成功，共" + affectedRowNumber + "条数据受到影响！";
         } else {
             this.code = ResponseCode.ERROR.getCode();
             this.msg = "操作失败！";

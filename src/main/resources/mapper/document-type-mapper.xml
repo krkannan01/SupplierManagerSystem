@@ -1,85 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.xt.sms.dao.ISupplierDocumentDao" >
+<mapper namespace="cn.xt.sms.dao.IDocumentTypeDao" >
 
-  <sql id="table-name">`table_supplier_document`</sql>
-  <sql id="foreign-table-name-one">`table_document_type`</sql>
-  <sql id="foreign-table-name-two">`table_supplier`</sql>
+  <sql id="table-name">`table_document_type`</sql>
 
-  <resultMap id="SupplierDocumentMap" type="SupplierDocument">
-    <id property="id" column="id"/>
-    <result property="name" column="name"/>
-    <result property="description" column="description"/>
-    <result property="appendixName" column="appendix_name"/>
-    <result property="appendix" column="appendix"/>
-    <result property="supplierId" column="supplier_id"/>
-    <result property="supplierName" column="supplier_name"/>
-    <result property="createTime" column="create_time"/>
-    <association property="type" javaType="DocumentType">
-      <result property="name" column="type_name"/>
-    </association>
-  </resultMap>
-
-  <insert id="insertSupplierDocument" parameterType="SupplierDocument">
-    INSERT INTO <include refid="table-name"></include> (`name`,`type`,`description`,`appendix_name`,`appendix`,`supplier_id`) VALUES
-    (#{name}, #{type.id}, #{description}, #{appendixName}, #{appendix}, #{supplierId});
+  <insert id="insertDocumentType" parameterType="DocumentType">
+    INSERT INTO <include refid="table-name"></include> (`name`,`description`) VALUES
+    (#{name}, #{description});
   </insert>
 
-  <delete id="deleteSupplierDocument" parameterType="integer">
+  <delete id="deleteDocumentType" parameterType="integer">
     DELETE FROM <include refid="table-name"></include> WHERE `id` in
     <foreach collection="array" item="id" open="(" close=")" separator=",">
       #{id}
     </foreach>;
   </delete>
 
-  <select id="getSupplierDocumentList" resultMap="SupplierDocumentMap">
-    SELECT `id`,`name`,
-      (SELECT `name` FROM <include refid="foreign-table-name-one"></include> WHERE `id` = doc.`type`) `type_name`,
-      `description`,`appendix_name`,
-      (SELECT `full_name` FROM <include refid="foreign-table-name-two"></include> WHERE `id` = doc.`supplier_id`) `supplier_name`,
-      `supplier_id`
-    FROM <include refid="table-name"></include> doc
-    <choose>
-      <when test="condition != null">
-        <where>
-          <if test="condition.supplierId != null">
-            doc.`supplier_id` = #{condition.supplierId}
-          </if>
-          <if test="condition.name != null and condition.name != ''">
-            AND doc.`name` LIKE '%' #{condition.name} '%'
-          </if>
-        </where>
-        ORDER BY
-        <if test="condition.sortField != null and condition.sortField != ''">
-          `${condition.sortField}`
-          <if test="condition.sortMode != null and condition.sortMode != ''">
-            ${condition.sortMode}
-          </if>,
-        </if>
-        `create_time` DESC
-      </when>
-      <otherwise>
-        ORDER BY `create_time` DESC
-      </otherwise>
-    </choose>
-    LIMIT #{offset},#{pageSize};
+  <select id="getDocumentTypeList" resultType="DocumentType">
+    SELECT `id`,`name` FROM <include refid="table-name"></include> ORDER BY `use_frequency` DESC;
   </select>
 
-  <select id="getSupplierDocumentCount" resultType="integer">
-    SELECT count(`id`)
-    FROM <include refid="table-name"></include>
-    <where>
-      <if test="supplierId != null">
-        `supplier_id` = #{supplierId}
-      </if>
-      <if test="name != null and name != ''">
-        AND `name` LIKE '%' #{name} '%'
-      </if>
-    </where>
-  </select>
-
-  <select id="getSupplierDocument" resultMap="SupplierDocumentMap">
-    SELECT `appendix_name`,`appendix` FROM <include refid="table-name"></include> WHERE `id` = #{id}
-  </select>
+  <update id="updateUseFrequency">
+    UPDATE <include refid="table-name"></include> SET `use_frequency` = `use_frequency` + #{increment} WHERE `id` = #{id};
+  </update>
 
 </mapper>

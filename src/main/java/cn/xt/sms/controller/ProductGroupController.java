@@ -1,6 +1,9 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.RestGetMapping;
+import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.entity.ProductGroup;
+import cn.xt.sms.response.SimpleResponse;
 import cn.xt.sms.service.IProductGroupService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -24,40 +27,38 @@ public class ProductGroupController {
     private IProductGroupService productGroupService;
 
     @RequiresPermissions(value = {"admin","searchProduct","searchProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductGroupList", method = RequestMethod.GET)
-    @ResponseBody
+    @RestGetMapping("/getProductGroupList")
     public List<ProductGroup> getProductGroupList() {
         /*0代表从跟节点查询所有子节点*/
         return productGroupService.getProductGroupList(0);
     }
 
     @RequiresPermissions(value = {"admin","searchProduct","searchProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductGroupById", method = RequestMethod.POST)
-    @ResponseBody
+    @RestPostMapping("/getProductGroupById")
     public ProductGroup getProductGroupById(Integer id) {
         return productGroupService.getProductGroupById(id);
     }
 
     @RequiresPermissions(value = {"admin","insertProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/insertProductGroup", method = RequestMethod.POST)
-    @ResponseBody
-    public String insertProductGroup(ProductGroup productGroup) {
+    @RestPostMapping("/insertProductGroup")
+    public SimpleResponse insertProductGroup(ProductGroup productGroup) {
         if (productGroup.getParentId() == null) productGroup.setParentId(0);
-        return productGroupService.setIdAndInsertProductGroup(productGroup);
+        Integer affectedRowNumber = productGroupService.setIdAndInsertProductGroup(productGroup);
+        return new SimpleResponse(affectedRowNumber);
     }
 
     @RequiresPermissions(value = {"admin","deleteProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/deleteProductGroup", method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteProductGroup(Integer id) {
-        return productGroupService.deleteProductGroup(id);
+    @RestPostMapping("/deleteProductGroup")
+    public SimpleResponse deleteProductGroup(Integer id) {
+        Integer affectedRowNumber = productGroupService.deleteProductGroup(id);
+        return new SimpleResponse(affectedRowNumber);
     }
 
     @RequiresPermissions(value = {"admin","updateProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/updateProductGroup", method = RequestMethod.POST)
-    @ResponseBody
-    public String updateProductGroup(ProductGroup productGroup) {
-        return productGroupService.updateProductGroup(productGroup);
+    @RestPostMapping("/updateProductGroup")
+    public SimpleResponse updateProductGroup(ProductGroup productGroup) {
+        Integer affectedRowNumber = productGroupService.updateProductGroup(productGroup);
+        return new SimpleResponse(affectedRowNumber);
     }
 
     @RequiresPermissions(value = {"admin","searchProductGroup"},logical = Logical.OR)

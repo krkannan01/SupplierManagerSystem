@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -22,52 +23,52 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 @Log4j
 public class ISupplierDaoTest {
 
     @Autowired
-    private ISupplierDao enterpriseDao;
+    private ISupplierDao supplierDao;
 
     @Test
     public void selectContactIdById() {
     }
 
     @Test
-    public void addEnterprise() {
+    public void addSupplier() {
 
     }
 
     @Test
-    public void deleteEnterprise() {
+    public void deleteSupplier() {
     }
 
     @Test
-    public void updateEnterprise() {
+    public void updateSupplier() {
     }
 
     @Test
-    public void selectEnterprise() {
+    public void selectSupplier() {
     }
 
     @Test
-    public void selectSimpleEnterprise() {
+    public void selectSimpleSupplier() {
         SupplierCondition condition = new SupplierCondition();
         condition.setCategoryId(2);
-        List<Supplier> enterprises = enterpriseDao.selectSimpleEnterprise(10, 0, condition);
+        List<Supplier> suppliers = supplierDao.selectSimpleSupplier(10, 0, condition);
 
-        enterprises.stream().forEach(enterprise -> {
-            System.out.println(Render.renderSuccess(enterprise.toString()));
+        suppliers.stream().forEach(supplier -> {
+            System.out.println(Render.renderSuccess(supplier.toString()));
         });
     }
 
     @Test
-    public void selectEnterpriseCount() {
+    public void selectSupplierCount() {
     }
 
     @Test
-    public void getEnterpriseById() {
+    public void getSupplierById() {
     }
 
     @Test
@@ -83,12 +84,12 @@ public class ISupplierDaoTest {
     }
 
     @Test
-    public void getEnterpriseIdAndName() {
+    public void getSupplierIdAndName() {
     }
 
     @Test
     public void getMaxNo() {
-        String no = enterpriseDao.getMaxNo();
+        String no = supplierDao.getMaxNo();
         log.info(Render.renderInfo(no));
         Assert.assertNotNull(no);
     }

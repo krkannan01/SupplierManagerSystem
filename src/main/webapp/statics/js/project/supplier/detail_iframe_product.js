@@ -69,7 +69,7 @@ jQuery(function($) {
         $.modalConfirm("你确定要删除选中的" + idLength + "行数据吗?", function (isOk) {
             if (isOk) {
                 $.post($ctx + "/product/multiDeleteProduct", {ids: ids}, function (data) {
-                    if (data == "success") {
+                    if (data && data.code == 0) {
                         $.modalMsg("删除成功", "success");
                         table.load();
                     } else {
@@ -178,7 +178,7 @@ jQuery(function($) {
             if (isOk) {
                 var id = this_.getAttribute("data-id");
                 $.post($ctx + "/product/deleteProduct", {id: id}, function (data) {
-                    if (data == "success") {
+                    if (data && data.code == 0) {
                         $.modalMsg("删除成功", "success");
                         table.load();
                     } else {
@@ -207,13 +207,15 @@ jQuery(function($) {
 
     //新增
     $("#insert").click(function() {
-        /*1):修改标题信息*/
+        window.supplierId = defaultParams.supplierId;
+        layer_showAuto("新增商品信息", $ctx + "/product/toInsertPage");
+        /*/!*1):修改标题信息*!/
         var $title = $('#product-form-modal div.modal-header > h4');
         $title.removeClass('orange');
         $title.addClass('green');
         $title.text('新增材料信息');
 
-        /*2):修改下拉框信息*/
+        /!*2):修改下拉框信息*!/
         var group = $("#group");//分组下拉框
         var supplier = $("#supplier");//供应商下拉框
         group.children("option:eq(0)").text("-- 请选择 --");
@@ -239,7 +241,7 @@ jQuery(function($) {
             }
             $item.bind({
                 "change": function() {
-                    /*验证下拉框样式*/
+                    /!*验证下拉框样式*!/
                     if ($id == "group" || $id == "supplier") {
                         if ($item.val() > 0) {
                             convert_success_only($item);
@@ -248,7 +250,7 @@ jQuery(function($) {
                         }
                     } else if ($id == "unitprice") {
                         $item.keyup();
-                    } else {/*验证输入框样式*/
+                    } else {/!*验证输入框样式*!/
                         if ($item.val()) {
                             convert_success($item);
                         } else {
@@ -259,7 +261,7 @@ jQuery(function($) {
             });
         });
 
-        /*3):绑定确定事件*/
+        /!*3):绑定确定事件*!/
         $("#confirm").click(function() {
             for (var i=0; i<nodes.length; i++) {
                 var $this = $(nodes[i]);
@@ -283,7 +285,7 @@ jQuery(function($) {
                 }
             }
 
-            /*通过验证，提交表单*/
+            /!*通过验证，提交表单*!/
             var product_data = {};
             if (name.val()) product_data["name"] = name.val();
             if (size.val()) product_data["size"] = size.val();
@@ -305,16 +307,17 @@ jQuery(function($) {
             }, "text");
         });
 
-        /*显示*/
+        /!*显示*!/
 //            $("#product-form-modal").modal("show");
         $("#product-form-modal").modal({
             backdrop: false
-        });
+        });*/
     });
 
     //修改
     $("#product-table").delegate(".updateProduct", "click", function() {
-        var id = this.getAttribute("data-id");
+        layer_showAuto("修改商品信息", $ctx + "/product/toUpdatePage?id=" + this.getAttribute("data-id"));
+        /*var id = this.getAttribute("data-id");
         $.ajax({
             url: $ctx + "/product/getProductById",
             type: "POST",
@@ -323,7 +326,7 @@ jQuery(function($) {
             dataType: "json",
             success: function(data) {
                 if (data != null) {
-                    /*1):修改标题信息 设置ID信息*/
+                    /!*1):修改标题信息 设置ID信息*!/
                     var $title = $('#product-form-modal div.modal-header > h4');
                     var $id = $('#productId');
                     $title.removeClass('green');
@@ -331,7 +334,7 @@ jQuery(function($) {
                     $title.text('修改材料信息');
                     $id.val(id);
 
-                    /*2):设置分组选择框首项*/
+                    /!*2):设置分组选择框首项*!/
                     var group = $("#group");//分组
                     var supplier = $("#supplier");//供应商
                     group.children("option:eq(0)").text(data.groupId.name);
@@ -372,7 +375,7 @@ jQuery(function($) {
                         bind_placeholder_to_value($(nodes_two[i]));
                     }
 
-                    /*3):绑定确定事件*/
+                    /!*3):绑定确定事件*!/
                     $("#confirm").click(function() {
                         if (unitprice.val() && !re.test(unitprice.val())) {
                             $.modalMsg("单价格式有误,请重新填写", "error");
@@ -400,14 +403,14 @@ jQuery(function($) {
                         }, "text");
                     });
 
-                    /*显示*/
+                    /!*显示*!/
 //            $("#product-form-modal").modal("show");
                     $("#product-form-modal").modal({
                         backdrop: false
                     });
                 }
             }
-        });
+        });*/
     });
 
     /*绑定将placeholder属性转换成value属性的方法*/

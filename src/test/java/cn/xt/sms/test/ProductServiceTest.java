@@ -1,7 +1,7 @@
 package cn.xt.sms.test;
 
 import cn.xt.sms.condition.ProductCondition;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.entity.ProductGroup;
 import cn.xt.sms.service.IProductGroupService;
@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -29,8 +30,8 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 public class ProductServiceTest {
 
     @Autowired
@@ -44,7 +45,7 @@ public class ProductServiceTest {
     public void testGetProductList() {
         ProductCondition condition = new ProductCondition();
 //        condition.setBrandIds("24,25");
-        MyResult<Product> productResult = productService.getProductList(condition, 1, 10);
+        DataResponse<Product> productResult = productService.getProductList(condition, 1, 10);
         if (productResult != null) {
             List<Product> productList = productResult.getRows();
             if (productList != null) {

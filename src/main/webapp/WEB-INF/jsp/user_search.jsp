@@ -276,6 +276,7 @@
                                                     条记录
                                                 </td>
                                             </tr>
+                                            <tbody></tbody>
                                         </table>
 
                                     </div>
@@ -345,7 +346,7 @@
 <jsp:include page="${pageContext.request.contextPath}/common/ace-script.jsp"/>
 <jsp:include page="${pageContext.request.contextPath}/common/time.jsp"/>
 
-<script src="${pageContext.request.contextPath}/statics/js/pagination.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/table.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>

@@ -1,10 +1,10 @@
 package cn.xt.sms.test;
 
 import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Cooperation;
 import cn.xt.sms.entity.Product;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.IProductService;
 import cn.xt.sms.util.POIUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -13,8 +13,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,19 +27,19 @@ import java.util.List;
  * @author xietao.x@qq.com
  * @date 2018/3/25
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback = false)
+@Transactional(transactionManager = "transactionManager")
+@Rollback(false)
 public class ExcelExportTest {
 
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
     @Autowired
     private IProductService productService;
 
     @Test
-    public void excelExportEnterprise() throws IOException, InvalidFormatException {
+    public void excelExportSupplier() throws IOException, InvalidFormatException {
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("供应商信息");
 
@@ -62,7 +64,7 @@ public class ExcelExportTest {
             row.getCell(i).setCellStyle(util.styles[tags[i]]);
         }
 
-        List<Supplier> supplierList = enterpriseService.getEnterpriseList(1, 100, null);
+        List<Supplier> supplierList = supplierService.getSupplierList(1, 100, null);
 
         if (supplierList != null && supplierList.size() > 0) {
 
@@ -156,7 +158,7 @@ public class ExcelExportTest {
             row.getCell(i).setCellStyle(util.styles[tags[i]]);
         }
 
-        MyResult<Product> productResult = productService.getProductList(null, 1, 100);
+        DataResponse<Product> productResult = productService.getProductList(null, 1, 100);
 
         if (productResult.getRows() != null && productResult.getRows().size() > 0) {
             for (Product product : productResult.getRows()) {

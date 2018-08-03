@@ -40,10 +40,11 @@ function convert_error_only($el) {
 
 /* 把文本转换成有链接样式的 Html内容.
 * str: 需要装换的文本
-* isNeedPrefix: 是否需要带 http:// 的前缀
+* isNeedPrefix: 文本是否需要带 http:// 的前缀
 * */
 function convert_href_html(str, isNeedPrefix, href, cls) {
     if (str) {
+        // 给显示的文本加 http:// 前缀
         if (isNeedPrefix && href.indexOf("http://") == -1) {
             href = "http://" + href;
             str = href;
@@ -117,10 +118,18 @@ function urlEncode(param, key, encode) {
     return paramStr;
 };
 
-
-function initTableCheckbox(tableSelector, rowSelector) {
+/**
+ * 给 指定表格 绑定 行点击功能 和 复选框点击功能 和 全选功能
+ * 行点击时，取消选中所有行，然后选中当前行
+ * 复选框点击时，不取消其它行，选中当前行
+ * @param tableSelector 表格的选择器 默认 "#simple-table"
+ * @param rowSelector 行的选择器 默认 "tbody > tr"
+ * @param checkboxSelector 复选框选择器 默认 "tbody > .trbox"
+ */
+function initTableCheckbox(tableSelector, rowSelector, checkboxSelector) {
     if (!tableSelector) tableSelector = "#simple-table";
     if (!rowSelector) rowSelector = "tbody > tr";
+    if (!rowSelector) rowSelector = "tbody > .trbox";
 
     /*全选*/
     $(tableSelector + ' > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
@@ -155,6 +164,7 @@ function initTableCheckbox(tableSelector, rowSelector) {
 
     /*行单击事件*/
     $(tableSelector).delegate(rowSelector, 'click', function(){
+        if ($(this).children.length == 1) return;
         // 全部取消选中
         $(tableSelector).find('tbody input[type=checkbox]').each(function(index, item) {
             item.checked = false;

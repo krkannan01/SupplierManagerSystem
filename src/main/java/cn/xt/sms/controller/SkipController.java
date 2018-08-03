@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/skip")
 public class SkipController {
 
+    // 跳转到商品添加页面
     @RequestMapping("/product/add")
     public String toProductAdd(HttpServletRequest request) {
         return "product/add";

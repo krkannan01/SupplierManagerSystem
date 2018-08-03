@@ -15,7 +15,7 @@
   </delete>
 
   <select id="getTradeGroup" resultType="TradeGroup" parameterType="integer">
-    SELECT trade.`id`,trade.`name`,trade.`parent_id`,count(en.`id`) count FROM `table_trade_group` trade LEFT JOIN `table_enterprise` en ON trade.`id` = en.`trade_group_id`
+    SELECT trade.`id`,trade.`name`,trade.`parent_id`,count(en.`id`) count FROM `table_trade_group` trade LEFT JOIN `table_supplier` en ON trade.`id` = en.`trade_group_id`
     <if test="categoryId != null">
       WHERE en.`category_id` = #{categoryId}
     </if>

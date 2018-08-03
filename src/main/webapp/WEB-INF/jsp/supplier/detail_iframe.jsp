@@ -59,6 +59,7 @@
 
     <!-- inline styles related to this page -->
     <style>
+        .page-content { margin-bottom: 0; }
         /*左边距设置为10px*/
         .l10{font-size:15px;margin-left:10px;margin-right:5px;color:#266eb6}
         /*字体大小设置为15px*/
@@ -71,15 +72,22 @@
 
         .item { background: #D9EDF7; color: #31708f; line-height: 2.5; margin-top: 5px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 
-        /* 表格a标签样式. */
+        /* 表格部分样式. */
         .table-a:hover{color:deepskyblue;text-decoration:none;}
 
         /* 排序图标样式. */
-        body [class^="sort-"].active{color:#307ECC;background:inherit;}
-        body [class^="sort-"]:hover{color:orange;}
-        body [class^="sort-"]:after{float:right;display:inline;content:"\f0dc";font-family:FontAwesome;font-size:13px;font-weight:normal;}
-        body [class^="sort-"].active.active-up:after{content:"\f0de";top:4px;}
-        body [class^="sort-"].active.active-down:after{content:"\f0dd";top:-6px;}
+        th[class^="sort-"].active{color:#307ECC;}
+        th[class^="sort-"]:hover{color:orange;}
+        th[class^="sort-"]:after{float:right;display:inline;content:"\f0dc";font-family:FontAwesome;font-size:13px;font-weight:normal;}
+        th[class^="sort-"].active.active-up:after{content:"\f0de";top:4px;}
+        th[class^="sort-"].active.active-down:after{content:"\f0dd";top:-6px;}
+
+        /* 详情展示样式 */
+        .col-sm-12.item { width: 75%; }
+        .col-sm-6.item { width: 48%; margin-right: 2%; }
+        .header.smaller { font-size: 18px; margin: 0; margin-top: 10px; width: 98%; }
+
+        iframe { width: 100%; height: 100%; border: 0; }
     </style>
 
     <!-- ace settings handler -->
@@ -137,50 +145,54 @@
                                                 <div class="tab-content padding-8">
                                                     <div id="basic-tab" class="tab-pane active">
                                                         <div class="row overview">
-                                                            <div class="col-sm-12 item"><dl><dt>统一社会信用代码：</dt> <dd><%=((Supplier)request.getAttribute("supplier")).getUCCcode()%></dd> </dl></div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>企业名称：</dt> <dd>${supplier.fullName}</dd> </dl></div>
+                                                            <div class="header smaller red col-sm-12" style="margin-top: 0;">重要信息</div>
 
-                                                            <div class="col-sm-12 item"><dl> <dt>企业类型：</dt> <dd>${supplier.type}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>企业名称：</dt> <dd>${supplier.fullName}</dd> </dl></div>
+                                                            <div class="col-sm-6 item"><dl><dt>统一社会信用代码：</dt> <dd><%=((Supplier)request.getAttribute("supplier")).getUCCcode()%></dd> </dl></div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>法定代表人：</dt> <dd>${supplier.legalRepresentative}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>法定代表人：</dt> <dd>${supplier.legalRepresentative}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"><dl> <dt>企业类型：</dt> <dd>${supplier.type}</dd> </dl> </div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>公司网站：</dt> <dd>${supplier.website}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>公司网站：</dt> <dd>${supplier.website}</dd> </dl> </div>
+                                                            <%--<div class="col-sm-6 item"> <dl> <dt>公司简称：</dt> <dd>${supplier.simpleName}</dd> </dl> </div>--%>
+                                                            <div class="col-sm-6 item"> <dl> <dt>注册资本：</dt> <dd>${supplier.registeredCapital}</dd> </dl> </div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>公司简称：</dt> <dd>${supplier.simpleName}</dd> </dl> </div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>注册资本：</dt> <dd>${supplier.registeredCapital}</dd> </dl> </div>
+                                                            <div class="header smaller orange col-sm-12">经营信息</div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>成立日期：</dt> <dd><%=foundDate%></dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>登记状态：</dt> <dd>${supplier.registerState}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>主营产品：</dt> <dd>${supplier.mainProduct}</dd> </dl> </div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>营业期限自：</dt> <dd>${supplier.businessDeadlineGo}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>营业期限至：</dt> <dd>${supplier.businessDeadlineTo}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>登记机关：</dt> <dd>${supplier.registerDepartment}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>核准日期：</dt> <dd><%=approvalDate%></dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>登记状态：</dt> <dd>${supplier.registerState}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>主营产品：</dt> <dd>${supplier.mainProduct}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>分组：</dt> <dd>${supplier.tradeGroupId.name}</dd> </dl> </div>
-
-                                                            <div class="col-sm-12 item"> <dl> <dt>信用级别：</dt> <dd><div class="rating inline" style="margin-top: 3px;" id="level" data-score="${supplier.level}"></div></dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>分组：</dt> <dd>${supplier.tradeGroupId.name}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>信用级别：</dt> <dd><div class="rating inline" style="margin-top: 3px;" id="level" data-score="${supplier.level}"></div></dd> </dl> </div>
 
                                                             <div class="col-sm-12 item"> <dl> <dt>住所：</dt> <dd>${supplier.address}</dd> </dl> </div>
-
                                                             <div class="col-sm-12 item"> <dl> <dt>经营范围：</dt> <dd>${supplier.operateRange}</dd> </dl> </div>
 
-                                                            <div class="col-sm-12 item"> <dl> <dt>经营异常信息：</dt> <dd>${supplier.exceptionInfo}</dd> </dl> </div>
 
+                                                            <div class="header smaller green col-sm-12">一般信息</div>
+
+                                                            <div class="col-sm-6 item"> <dl> <dt>成立日期：</dt> <dd><%=foundDate%></dd> </dl> </div>
+                                                            <div class="col-sm-6" style="width: 100%;"><%-- 起到 "换行" 的作用 --%></div>
+
+                                                            <div class="col-sm-6 item"> <dl> <dt>登记机关：</dt> <dd>${supplier.registerDepartment}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>核准日期：</dt> <dd><%=approvalDate%></dd> </dl> </div>
+
+                                                            <div class="col-sm-6 item"> <dl> <dt>营业期限自：</dt> <dd>${supplier.businessDeadlineGo}</dd> </dl> </div>
+                                                            <div class="col-sm-6 item"> <dl> <dt>营业期限至：</dt> <dd>${supplier.businessDeadlineTo}</dd> </dl> </div>
+
+
+                                                            <div class="header smaller col-sm-12" style="color: lightseagreen;">异常信息</div>
+
+                                                            <div class="col-sm-12 item"> <dl> <dt>经营异常信息：</dt> <dd>${supplier.exceptionInfo}</dd> </dl> </div>
                                                             <div class="col-sm-12 item"> <dl> <dt>违法失信信息：</dt> <dd>${supplier.dangerInfo}</dd> </dl> </div>
+
                                                         </div>
                                                     </div>
 
                                                     <div id="product-tab" class="tab-pane">
-                                                        <div class="nav-search" id="nav-search" style="margin-top: 8px;width: 200px; display: block; position: inherit; margin: 10px auto;">
+                                                        <%--<div class="nav-search" id="nav-search" style="margin-top: 8px;width: 200px; display: block; position: inherit; margin: 10px auto;">
                                                             <form class="form-search" action="javascript: void(0);">
                                                                 <span class="input-icon">
                                                                     <input type="text" placeholder="输入关键字查询" class="nav-search-input" id="keywords" autocomplete="off" style="width: 300px;" />
@@ -190,7 +202,10 @@
                                                         </div>
                                                         <table id="product-table" class="table table-bordered table-hover">
                                                             <thead>
-                                                            <tr style="background: #d6e9c6;">
+                                                            <tr style="background: -webkit-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:    -moz-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:      -o-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:         linear-gradient(top, #A4E0F5, #F2F2F2);">
                                                                 <th>序号</th>
                                                                 <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
                                                                 <th>产品编号</th>
@@ -204,53 +219,9 @@
                                                                 <th>操作</th>
                                                             </tr>
                                                             </thead>
-
                                                             <tbody></tbody>
-                                                        </table>
-                                                        <label id="load-animate-product" style="z-index: 2; display: none; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
-                                                        <div class="" style="background-color: #EFF3F8; padding: 5px;">
-                                                            <div class="row">
-                                                                <!--left-->
-                                                                <div class="col-sm-3 col-xs-12">
-                                                                    <shiro:hasAnyPermission name="admin,deleteProduct">
-                                                                        <button class="btn btn-danger btn-sm btn-white btn-round" id="allDelete" style="height: 34px;"> <i class="ace-icon fa fa-trash-o"></i> 删除选中项 </button>
-                                                                    </shiro:hasAnyPermission>
-
-                                                                    <button class="btn btn-warning btn-sm btn-white btn-round" id="refursh" style="height: 34px;"> <i class="ace-icon fa fa-refresh"></i> 刷新 </button>
-
-                                                                    <shiro:hasAnyPermission name="admin,insertProduct">
-                                                                        <button class="btn btn-success btn-sm btn-white btn-round" id="insert" style="height: 34px;"> <i class="ace-icon fa fa-plus"></i> 新增 </button>
-                                                                    </shiro:hasAnyPermission>
-                                                                </div>
-
-                                                                <!--center-->
-                                                                <div class="col-sm-7 col-xs-12">
-                                                                    <table style="margin: 0 auto;">
-                                                                        <tr>
-                                                                            <td>
-                                                                                <button class="btn btn-sm btn-white btn-primary" id="maxPrev" title="第一页"> <i class="ace-icon fa fa-angle-double-left"></i> </button>
-                                                                                <button class="btn btn-sm btn-white btn-primary" id="prev" title="上一页"> <i class="ace-icon fa fa-angle-left"></i> </button>
-                                                                            </td>
-                                                                            <td>
-                                                                                &nbsp;&nbsp;&nbsp; 当前第 <input type="text" class="number-box" id="currentPage" value="1" style="width: 100px;" /> 页 - 共 <label id="maxPage">10</label> 页 &nbsp;&nbsp;&nbsp;
-                                                                            </td>
-                                                                            <td>
-                                                                                <button class="btn btn-sm btn-white btn-primary" id="next" title="下一页"> <i class="ace-icon fa fa-angle-right"></i> </button>
-                                                                                <button class="btn btn-sm btn-white btn-primary" id="maxNext" title="最后一页"> <i class="ace-icon fa fa-angle-double-right"></i> </button>
-                                                                            </td>
-                                                                            <td>
-                                                                                &nbsp;&nbsp;&nbsp; 每页显示 <input type="text" id="pageSize" /> 条记录
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
-
-                                                                <!--right-->
-                                                                <div class="col-sm-2 col-xs-12">
-                                                                    <div style="text-align: right; height: 34px; padding: 5px;">显示 <label id="start">1</label> - <label id="end">1</label> 共 <label id="maxCount">1</label></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        </table>--%>
+                                                        <iframe id="product-iframe" style="height: 590px;" src="${pageContext.request.contextPath}/supplier/toSupplierDetailProduct?id=${supplier.id}"></iframe>
                                                     </div>
 
                                                     <div id="contact-tab" class="tab-pane">
@@ -313,12 +284,15 @@
                                                     </div>
 
                                                     <div id="file-tab" class="tab-pane">
-                                                        <table id="file-table" class="table table-bordered table-hover">
+                                                        <%--<table id="file-table" class="table table-bordered table-hover">
                                                             <thead>
-                                                            <tr style="background: #d6e9c6;">
+                                                            <tr style="background: -webkit-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:    -moz-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:      -o-linear-gradient(top, #A4E0F5, #F2F2F2);
+                                                                       background:         linear-gradient(top, #A4E0F5, #F2F2F2);">
                                                                 <th width="5%">序号</th>
                                                                 <th width="5%" class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
-                                                                <th class="sort-name">名称</th>
+                                                                <th class="sort-name" style="background: inherit;">名称</th>
                                                                 <th width="20%">类型</th>
                                                                 <th>描述</th>
                                                                 <th>附件</th>
@@ -341,24 +315,8 @@
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
-                                                        </table>
-                                                        <label id="load-animate-file" style="z-index: 2; display: none; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
-                                                        <div class="" style="background-color: #EFF3F8; padding: 5px;">
-                                                            <div class="row">
-                                                                <!--left-->
-                                                                <div class="col-sm-3 col-xs-12">
-                                                                    <shiro:hasAnyPermission name="admin,deleteFile">
-                                                                        <button class="btn btn-danger btn-sm btn-white btn-round" id="allDelete" style="height: 34px;"> <i class="ace-icon fa fa-trash-o"></i> 删除选中项 </button>
-                                                                    </shiro:hasAnyPermission>
-
-                                                                    <button class="btn btn-warning btn-sm btn-white btn-round" id="refursh" style="height: 34px;"> <i class="ace-icon fa fa-refresh"></i> 刷新 </button>
-
-                                                                    <shiro:hasAnyPermission name="admin,insertFile">
-                                                                        <button class="btn btn-success btn-sm btn-white btn-round" id="insert" style="height: 34px;"> <i class="ace-icon fa fa-plus"></i> 新增 </button>
-                                                                    </shiro:hasAnyPermission>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        </table>--%>
+                                                        <iframe id="file-iframe" style="height: 590px;" src="${pageContext.request.contextPath}/supplier/toSupplierDetailDocument?id=${supplier.id}"></iframe>
                                                     </div>
 
                                                     <div id="other-tab" class="tab-pane">
@@ -441,7 +399,7 @@
 <script src="${pageContext.request.contextPath}/statics/components/raty/lib/jquery.raty.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/dropzone/dist/dropzone.js"></script>
 
-<script src="${pageContext.request.contextPath}/statics/js/pagination.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/table.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
@@ -451,10 +409,8 @@
 <script type="text/javascript">
     const $ctx = "${pageContext.request.contextPath}";
     var $id = "${supplier.id}";
-    var $currentPage = "<%=request.getAttribute("currentPage")%>";
-    var $pageSize = "<%=request.getAttribute("pageSize")%>";
 </script>
-<script src="${pageContext.request.contextPath}/statics/js/project/detail_iframe.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/project/supplier/detail_iframe.js"></script>
 
 <!-- the following scripts are used in demo only for onpage help and you don't need them -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace.onpage-help.css" />

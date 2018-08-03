@@ -1,0 +1,10 @@
+XTF FtnInfo
+FileCookieID: 3
+FileName: schoolterm.zip
+FileSize: 9824
+FtnUrl: /ftn_handler/3ccc66868481e58fb72b2478263d7cb75a17b664c0ebf06ce92d1e4c37bb46bdd9e841986b71fad322d37d5413ee99ecc153da0d9cc5f7fb1eb35b1e2008718a
+FtnCookie:FTN5K=dcfde25c
+FtnIP: 14.17.29.162
+FtnPort:80
+
+

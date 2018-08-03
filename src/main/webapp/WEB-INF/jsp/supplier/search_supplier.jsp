@@ -249,83 +249,17 @@
                                         <th>序号</th>
                                         <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
                                         <th>供应商编号</th>
-                                        <th>供应商名称</th>
+                                        <th style="min-width: 200px;">供应商名称</th>
                                         <th>网站</th>
                                         <th>统一社会信息代码</th>
                                         <th class="sort-level">信用级别<i class="menu-icon fa fa-acret-right"/><i class="menu-icon fa fa-acret-down"/></th>
-                                        <th>主营产品</th>
+                                        <th style="min-width: 200px;">主营产品</th>
                                         <th>分组</th>
                                         <th width="100">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <label id="loadAnimate" style="z-index: 2; font-size: 18px; position: absolute; left: 48%; top: 48%;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i></label>
-                            <div class="" style="background-color: #EFF3F8; padding: 5px;">
-                                <div class="row">
-                                    <!--left-->
-                                    <div class="col-sm-3 col-xs-12">
-                                        <shiro:hasAnyPermission name="admin,deleteSupplier">
-                                            <button class="btn btn-danger btn-sm btn-white btn-round" id="allDelete" style="height: 34px;">
-                                                <i class="ace-icon fa fa-trash-o"></i> 删除选中项
-                                            </button>
-                                        </shiro:hasAnyPermission>
-                                        <button class="btn btn-warning btn-sm btn-white btn-round" id="reload" style="height: 34px;">
-                                            <i class="ace-icon fa fa-bolt"></i> 重载
-                                        </button>
-                                        <button class="btn btn-info btn-sm btn-white btn-round" id="refresh" style="height: 34px;">
-                                            <i class="ace-icon fa fa-refresh"></i> 刷新
-                                        </button>
-                                    </div>
-
-                                    <!--center-->
-                                    <div class="col-sm-7 col-xs-12">
-                                        <table style="margin: 0 auto;">
-                                            <tr>
-                                                <td>
-                                                    <button class="btn btn-sm btn-white btn-primary" id="maxPrev" title="第一页">
-                                                        <i class="ace-icon fa fa-angle-double-left"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-white btn-primary" id="prev" title="上一页">
-                                                        <i class="ace-icon fa fa-angle-left"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    &nbsp;&nbsp;&nbsp;
-                                                    当前第
-                                                    <input type="text" id="currentPage" value="1" style="width: 100px;" />
-                                                    页 - 共
-                                                    <label id="maxPage">1</label>
-                                                    页
-                                                    &nbsp;&nbsp;&nbsp;
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-white btn-primary" id="next" title="下一页">
-                                                        <i class="ace-icon fa fa-angle-right"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-white btn-primary" id="maxNext" title="最后一页">
-                                                        <i class="ace-icon fa fa-angle-double-right"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    &nbsp;&nbsp;&nbsp;
-                                                    每页显示
-                                                    <input type="text" id="pageSize" />
-                                                    条记录
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                    </div>
-
-                                    <!--right-->
-                                    <div class="col-sm-2 col-xs-12">
-                                        <div style="text-align: right; height: 34px; padding: 5px;">显示 <label id="start">1</label> - <label id="end">1</label> 共 <label id="maxCount">1</label></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
                         </div>
                     </div>
@@ -392,7 +326,7 @@
 <script src="${pageContext.request.contextPath}/statics/components/raty/lib/jquery.raty.js"></script>
 <script src="${pageContext.request.contextPath}/statics/components/dropzone/dist/dropzone.js"></script>
 
-<script src="${pageContext.request.contextPath}/statics/js/pagination.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/table.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
@@ -406,7 +340,7 @@
     var $uccCode = "<%=request.getAttribute("uccCode")%>";
 </script>
 <script src="${pageContext.request.contextPath}/common/excel-download-modal.js"></script>
-<script src="${pageContext.request.contextPath}/statics/js/project/search_supplier.js"></script>
+<script src="${pageContext.request.contextPath}/statics/js/project/supplier/search_supplier.js"></script>
 
 <!-- the following scripts are used in demo only for onpage help and you don't need them -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace.onpage-help.css" />

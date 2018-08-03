@@ -1,8 +1,10 @@
-package cn.xt.sms.result;
+package cn.xt.sms.response;
 
+import cn.xt.sms.enums.ResponseCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.List;
 
@@ -13,18 +15,38 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class MyResult<T> {
+public class DataResponse<E> {
+    private int code;
     private String msg;
-    private Integer count;
-    private List<T> rows;
+    private int count;
+    private List<E> rows;
 
-    public MyResult() {
+    public DataResponse() {
     }
 
-    public MyResult(String msg, Integer count, List<T> rows) {
+    public DataResponse(ResponseCode code, String msg, int count, List<E> rows) {
+        this.code = code.getCode();
         this.msg = msg;
         this.count = count;
         this.rows = rows;
+    }
+
+    public DataResponse<E> setSuccess(List<E> rows, Integer count) { return setSuccess("操作成功！", rows, count); }
+    public DataResponse<E> setSuccess(String msg, List<E> rows, Integer count) {
+        if (rows == null && count == null)
+            return setError();
+        this.code = ResponseCode.SUCCESS.getCode();
+        this.msg = msg;
+        this.count = count;
+        this.rows = rows;
+        return this;
+    }
+
+    public DataResponse<E> setError() { return setError("操作失败！"); }
+    public DataResponse<E> setError(String msg) {
+        this.code = ResponseCode.ERROR.getCode();
+        this.msg = msg;
+        return this;
     }
 
 }

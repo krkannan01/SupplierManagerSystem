@@ -1,3 +1,5 @@
+const document_download_path = $ctx + "/document/download?id="
+
 jQuery(function($) {
 
     /*全局常用参数与对象*/
@@ -83,7 +85,7 @@ jQuery(function($) {
     /*删除选中行*/
     $("#allDelete").click(function () {
         if ($("#file-table > tbody > tr > td input[type=checkbox]:checked").length < 1) {
-            $.modalMsg("请选中要删除的数据!", "success");
+            $.modalMsg("请选中要删除的数据!", "warning");
             return;
         }
         var ids = "";
@@ -147,11 +149,22 @@ jQuery(function($) {
                     item.name = item.name.replace(rule, "<span style='color: red;'>" + defaultParams.keywords + "</span>");
                 }
 
-                if (!item.appendixName)
-                    item.appendixName = "<span style='color: #EE8944'>无</span>";
-
-                // 对商品名称添加事件链接
-                // item.name = convert_href_html(item.name, false, "javascript:void(0);", 'table-a');
+                if (item.appendixName) {
+                    var suffixIndex = item.appendixName.lastIndexOf(".");
+                    var suffix = item.appendixName.substring(suffixIndex+1).toUpperCase();
+                    var preview_content = "";
+                    if(suffix=="BMP"||suffix=="JPG"||suffix=="JPEG"||suffix=="PNG"||suffix=="GIF"){
+                        preview_content = "<img src='"+ document_download_path + item.id +"' width='250px'>";
+                    } else {
+                        preview_content = "<span style='color: #EE8944;'>抱歉，非图片文件暂不支持预览</span>";
+                    }
+                    // 为附件栏同时添加图片预览效果和附件下载链接
+                    // ["]作为一级引号，[\"]作为二级引号，[']作为三级引号
+                    item.appendixName = "<a href=\"" + document_download_path + item.id + "\" class=\"table-a\" data-trigger=\"hover\" data-placement=\"auto top\" " +
+                        "data-toggle=\"popover\" data-content=\"" + preview_content + "\">" + item.appendixName + "</a>";
+                } else {
+                    item.appendixName = "<span style='color: #EE8944;'>无</span>";
+                }
 
                 content += "<tr>" +
                     "<td>" + startNo++ + "</td>" +
@@ -159,7 +172,7 @@ jQuery(function($) {
                     "<td>" + item.name + "</td>" +
                     "<td>" + item.type.name + "</td>" +
                     "<td></td>" +
-                    "<td>" + item.appendixName + "</td>" +
+                    "<td class='appendixName'>" + item.appendixName + "</td>" +
                     "<td>" +
                         "<shiro:hasAnyPermission name='admin,deleteFile'>" +
                         "    <button class='btn btn-xs btn-round btn-danger deleteFile' data-id='" + item.id + "'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>" +
@@ -172,15 +185,7 @@ jQuery(function($) {
         }
         $("#file-table > tbody").html(content);
 
-        // $("#file-table .product-name").each(function (index, item) {
-        //     if (data.rows[index]) {
-        //         $(this).click(function () {
-        //             showProductDetail(data.rows[index]);
-        //         });
-        //     }
-        // });
-
-        // $("#file-table .technical-param > a").popover({html: true});
+        $(".appendixName > a").popover({html:true});
 
     }
 
@@ -192,14 +197,14 @@ jQuery(function($) {
             if (isOk) {
                 var id = this_.getAttribute("data-id");
                 $.post($ctx + "/document/deleteDocument", {ids: id}, function (data) {
-                    var data = JSON.parse(data);
+                    // var data = JSON.parse(data);
                     if (data && data.code == 0) {
                         $.modalMsg("删除成功", "success");
                         table.load();
                     } else {
                         $.modalMsg("删除失败", "error");
                     }
-                }, "text");
+                }, "json");
             }
         });
     });
@@ -219,5 +224,12 @@ jQuery(function($) {
         defaultParams.keywords = keywords.val();
         table.load();
     }
+
+    /*文档管理-添加*/
+    $("#insert").click(function() {
+        window.supplierId = defaultParams.supplierId;
+        var url = $ctx + "/document/toPage/supplier-add_document";
+        layer_showAuto("添加文档", url);
+    });
 
 });

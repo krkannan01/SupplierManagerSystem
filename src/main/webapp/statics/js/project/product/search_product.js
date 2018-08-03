@@ -375,14 +375,14 @@ jQuery(function($){
             if (group.val()) product_data["groupId.id"] = group.val();
             if (supplier.val() > 0) product_data["supplierId.id"] = supplier.val();
             $.post($ctx + "/product/insertProduct", product_data, function(data) {
-                if (data == "success") {
+                if (data && data.code == 0) {
                     $.modalMsg("新增成功", "success");
                     $("#product-form-modal").modal("hide");
                     table.load();
                 } else {
                     $.modalMsg("新增失败", "error");
                 }
-            }, "text");
+            }, "json");
         });
 
         /*显示*/
@@ -399,13 +399,13 @@ jQuery(function($){
             if (isOk) {
                 var id = this_.getAttribute("data-id");
                 $.post($ctx + "/product/deleteProduct", {id: id}, function(data) {
-                    if (data == "success") {
+                    if (data && data.code == 0) {
                         $.modalMsg("删除成功", "success");
                         table.load();
                     } else {
                         $.modalMsg("删除失败", "error");
                     }
-                }, "text");
+                }, "json");
             }
         });
     });
@@ -427,13 +427,13 @@ jQuery(function($){
         $.modalConfirm("你确定要删除选中的" + idLength + "行数据吗?", function(isOk) {
             if (isOk) {
                 $.post($ctx + "/product/multiDeleteProduct", {ids: ids}, function(data) {
-                    if (data == "success") {
+                    if (data && data.code == 0) {
                         $.modalMsg("删除成功", "success");
                         table.load();
                     } else {
                         $.modalMsg("删除失败", "error");
                     }
-                }, "text");
+                }, "json");
             }
         });
     });
@@ -522,14 +522,14 @@ jQuery(function($){
                         if (group.val()) product_data["groupId.id"] = group.val();
                         if (supplier.val() > 0) product_data["supplierId.id"] = supplier.val();
                         $.post($ctx + "/product/updateProduct", product_data, function(data) {
-                            if (data == "success") {
+                            if (data && data.code == 0) {
                                 $.modalMsg("修改成功", "success");
                                 table.load();
                                 $("#product-form-modal").modal("hide");
                             } else {
                                 $.modalMsg("修改失败", "error");
                             }
-                        }, "text");
+                        }, "json");
                     });
 
                     /*显示*/
@@ -636,7 +636,7 @@ jQuery(function($){
             if (name.val()) product_group_data["name"] = name.val();
             if (parent.val()) product_group_data["parentId"] = parent.val();
             $.get($ctx + "/productGroup/insertProductGroup", product_group_data, function(data) {
-                if (data == "success") {
+                if (data && data.code == 0) {
                     $("#product-group-form-modal").modal("hide");
                     $.modalMsg("新增成功", "success");
                     /*重新加载tree*/
@@ -644,7 +644,7 @@ jQuery(function($){
                 } else {
                     $.modalMsg("新增失败", "error");
                 }
-            }, "text");
+            }, "json");
         });
 
         /*显示*/
@@ -658,14 +658,14 @@ jQuery(function($){
         $.modalConfirm("确定删除【" + name + "】节点及其子节点吗?", function(isOk) {
             if (isOk) {
                 $.get($ctx + "/productGroup/deleteProductGroup", {id: id}, function(data) {
-                    if (data == "success") {
+                    if (data && data.code == 0) {
                         if ($item.is("li")) $item.remove();
                         else $item.closest("li").remove();
                         $.modalMsg("删除成功", "success");
                     } else {
                         $.modalMsg("删除失败", "error");
                     }
-                }, "text");
+                }, "json");
             }
         });
     }
@@ -713,14 +713,14 @@ jQuery(function($){
                         if ($parent.val() != data.parentId) product_group_data["parentId"] = $parent.val();
                         if (product_group_data["name"] || product_group_data["parentId"]) {
                             $.get($ctx + "/productGroup/updateProductGroup", product_group_data, function(data) {
-                                if (data == "success") {
+                                if (data && data.code == 0) {
                                     $("#product-group-form-modal").modal("hide");
                                     $.modalMsg("修改成功", "success");
                                     reLoadData();
                                 } else {
                                     $.modalMsg("修改失败", "error");
                                 }
-                            }, "text");
+                            }, "json");
                         } else {
                             $("#product-group-form-modal").modal("hide");
                             $.modalMsg("没有做任何更改", "success");

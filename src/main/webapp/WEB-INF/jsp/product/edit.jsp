@@ -3,6 +3,7 @@
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+ path;
 %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +28,7 @@
 	<style type="text/css">
 		.required:before { color: red; content: '*'; }
 		/* 重置下拉选择框的默认高度 */
-		.select2-results__options { max-height: 400px !important; }
+		.select2-results__options { max-height: 270px !important; }
 	</style>
 
 </head>
@@ -38,55 +39,59 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">商品名称：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="name">
+					<input class="form-control" type="text" value="${product.name}" name="name">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">商品规格：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="size">
+					<input class="form-control" type="text" value="${product.size}" name="size">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">商品品牌：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="brand">
+					<input class="form-control" type="text" value="${product.brandId.name}" name="brand">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">商品单位：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="unit">
+					<input class="form-control" type="text" value="${product.unit}" name="unit">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">商品单价：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="price">
+					<input class="form-control" type="text" value="${product.unitprice}" name="price">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">技术参数：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="param">
+					<input class="form-control" type="text" value="${product.technicalParam}" name="param">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">所属分组：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="group"></select>
+					<select class="form-control" name="group">
+						<option value="${groupId.id}">${groupId.name}</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">供应商：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="supplier"></select>
+					<select class="form-control" name="supplier">
+						<option value="${supplierId.id}">${supplierId.fullName}</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">备注：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="comment">
+					<input class="form-control" type="text" value="${product.comment}" name="comment">
 				</div>
 			</div>
 			
@@ -108,6 +113,7 @@
 	<script src="<%=basePath%>/statics/js/ry-ui.js"></script>
 	<script type="text/javascript">
 		var $ctx = "<%=basePath%>";
+		var $id = "${supplier.id}";
 	</script>
 	<script src="<%=basePath%>/statics/js/project/product/add.js"></script>
 </body>

@@ -1,6 +1,7 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.constant.CommonConstants;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IUserService;
@@ -59,7 +60,7 @@ public class UserController {
     @RequiresPermissions(value = {"admin","searchUser"}, logical = Logical.OR)
     @RequestMapping("/search")
     @ResponseBody
-    public MyResult<User> search(String keywords, Integer currentPage, Integer pageSize) {
+    public DataResponse<User> search(String keywords, Integer currentPage, Integer pageSize) {
         return userService.getUserList(keywords, currentPage, pageSize);
     }
 
@@ -176,7 +177,7 @@ public class UserController {
                     b[i]+=256;
                 }
             }
-            String path = session.getServletContext().getRealPath("statics/headImg");
+            String path = session.getServletContext().getRealPath(CommonConstants.HEAD_IMG_URL);
             String fileName = ((User) session.getAttribute("user")).getId() + ".jpg";
             //生成jpeg图片
             File dir = new File(path);
@@ -200,9 +201,8 @@ public class UserController {
     /*头像上传的方法图片文件，返回url*/
     private String upload(MultipartFile file,HttpServletRequest request) {
         if (file != null) {
-            String path = request.getSession().getServletContext().getRealPath("statics/handImg");
+            String path = request.getSession().getServletContext().getRealPath(CommonConstants.HEAD_IMG_URL);
             String fileName = file.getOriginalFilename();
-            String url = "/statics/handImg"+fileName;
 
             File dir = new File(path,fileName);
             if(!dir.exists()){
@@ -216,6 +216,7 @@ public class UserController {
                 log.error("The avatar file parsed the exception.");
                 return null;
             }
+            String url = CommonConstants.HEAD_IMG_URL + fileName;
             return url;
         }
 

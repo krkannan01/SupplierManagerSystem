@@ -14,22 +14,22 @@ public class Cooperation {
     private String projectName;//
     private String productName;//
     private Contact contactId;//
-    private Integer enterpriseId;
+    private Integer supplierId;
 
     public Cooperation() {
     }
 
-    public Cooperation(Integer id, String projectName, String productName, Contact contactId, Integer enterpriseId) {
+    public Cooperation(Integer id, String projectName, String productName, Contact contactId, Integer supplierId) {
         this.id = id;
         this.projectName = projectName;
         this.productName = productName;
         this.contactId = contactId;
-        this.enterpriseId = enterpriseId;
+        this.supplierId = supplierId;
     }
 
     @JSONField(serialize = false)
     public boolean isNotNull() {
-        return !(id==null && projectName==null && productName==null && contactId==null && enterpriseId==null);
+        return !(id==null && projectName==null && productName==null && contactId==null && supplierId==null);
     }
 
 }

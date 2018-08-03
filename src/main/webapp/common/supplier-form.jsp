@@ -35,7 +35,7 @@
 %>
 
 <form class="form-horizontal" id="supplier-form">
-    <input id="enterpriseId" value="<%=id%>" style="display:none;"/>
+    <input id="supplierId" value="<%=id%>" style="display:none;"/>
     <div class="col-sm-6 col-xs-12">
         <div class="form-group has-warning">
             <label for="uCCcode" class="col-sm-4 control-label no-padding-right">统一社会信用代码：</label>

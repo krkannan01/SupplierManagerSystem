@@ -23,7 +23,7 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <shiro:hasAnyPermission name="admin,searchEnterprise">
+                <shiro:hasAnyPermission name="admin,searchSupplier">
                     <li class="${"Supplier-Search".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toSearchSupplier';">
                             <i class="menu-icon fa fa-caret-right"></i>
@@ -34,7 +34,7 @@
                     </li>
                 </shiro:hasAnyPermission>
 
-                <shiro:hasAnyPermission name="admin,insertEnterprise">
+                <shiro:hasAnyPermission name="admin,insertSupplier">
                     <li class="${"Supplier-Insert".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toAddSupplier';">
                             <i class="menu-icon fa fa-caret-right"></i>

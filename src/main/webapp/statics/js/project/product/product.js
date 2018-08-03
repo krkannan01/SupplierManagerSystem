@@ -32,7 +32,7 @@ function get_brand_by_group_ids(id_str) {
     var result = "";
     $.ajax({
         url: $ctx + "/product/getBrandByGroupId",
-        type: "POST",
+        type: "GET",
         dataType: "JSON",
         async: false,
         data: {groupIds: id_str ? id_str : ""},
@@ -175,7 +175,7 @@ function init_supplier($el) {
     //加载数据
     $.ajax({
         url: $ctx + "/supplier/getSupplierIdAndName",
-        type: "POST",
+        type: "GET",
         dataType: "JSON",
         async: false,
         success: function(data) {

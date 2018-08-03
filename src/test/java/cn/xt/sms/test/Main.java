@@ -1,6 +1,6 @@
 package cn.xt.sms.test;
 
-import cn.xt.sms.result.MapResult;
+import cn.xt.sms.dto.MapDTO;
 import com.alibaba.fastjson.JSON;
 
 import java.util.Timer;
@@ -18,9 +18,9 @@ public class Main {
 
 //        Long startTime = System.currentTimeMillis();
 //        for (int i=0; i<100000; i++) {
-//            Supplier enterprise = new Supplier();
+//            Supplier supplier = new Supplier();
 //        }
-//        System.out.println("实例化100000个Enterprise耗时:" + (System.currentTimeMillis() - startTime) + "毫秒!");
+//        System.out.println("实例化100000个Supplier耗时:" + (System.currentTimeMillis() - startTime) + "毫秒!");
 //        //13ms
 //
 //        startTime = System.currentTimeMillis();
@@ -32,7 +32,7 @@ public class Main {
 
 //        System.out.println(ansi().eraseScreen().render("@|red java|@"));
 
-        MapResult result = new MapResult("message", "出现错误");
+        MapDTO result = new MapDTO("message", "出现错误");
         System.out.println(JSON.toJSONString(result));
 
     }

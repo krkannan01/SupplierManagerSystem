@@ -1,13 +1,19 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.RestGetMapping;
+import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.ProductCondition;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.dto.MapDTO;
+import cn.xt.sms.entity.ProductGroup;
+import cn.xt.sms.enums.ResponseCode;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Product;
 import cn.xt.sms.entity.ProductBrand;
-import cn.xt.sms.result.SimpleResponse;
-import cn.xt.sms.result.SimpleResponse.ResponseCode;
+import cn.xt.sms.response.SimpleResponse;
 import cn.xt.sms.service.IProductBrandService;
+import cn.xt.sms.service.IProductGroupService;
 import cn.xt.sms.service.IProductService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.middle.IProductMiddleService;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -17,9 +23,8 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,73 +50,100 @@ public class ProductController {
     private IProductMiddleService productMiddleService;
     @Autowired
     private IProductBrandService productBrandService;
+    @Autowired
+    private ISupplierService supplierService;
+    @Autowired
+    private IProductGroupService productGroupService;
 
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
     @RequestMapping("/toSearchProduct")
     public String toSearchProduct() {
-        return "search_product";
+        return "product/search_product";
     }
 
+
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductList", method = RequestMethod.GET)
-    @ResponseBody
-    public MyResult<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize) {
+    @RestGetMapping("/getProductList")
+    public DataResponse<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize) {
         return productService.getProductList(productCondition, currentPage, pageSize);
     }
 
+
     @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/insertProduct", method = RequestMethod.POST)
-    @ResponseBody
-    public String insertProduct(HttpServletRequest request, Product product) {
-        return productService.insertProduct(request.getServletContext(), product);
+    @GetMapping("/toInsertPage")
+    public String toInsertPage() {
+        return "product/add";
     }
 
-    @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/deleteProduct", method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteProduct(Integer id) {
-        return productService.deleteProduct(id);
+
+    @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
+    @RestPostMapping("/insertProduct")
+    public SimpleResponse insertProduct(HttpServletRequest request, Product product) {
+        Integer affectedRowNumber = productService.insertProduct(request.getServletContext(), product);
+        return new SimpleResponse(affectedRowNumber);
     }
 
+
     @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/multiDeleteProduct", method = RequestMethod.POST)
-    @ResponseBody
-    public String MultiDeleteProduct(String ids) {
-        return productMiddleService.multiDeleteProduct(ids);
+    @RestPostMapping("/deleteProduct")
+    public SimpleResponse deleteProduct(Integer id) {
+        Integer affectedRowNumber = productService.deleteProduct(id);
+        return new SimpleResponse(affectedRowNumber);
     }
+
+
+    @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
+    @RestPostMapping("/multiDeleteProduct")
+    public SimpleResponse MultiDeleteProduct(String ids) {
+        Integer affectedRowNumber = productMiddleService.multiDeleteProduct(ids);
+        return new SimpleResponse(affectedRowNumber);
+    }
+
 
     @RequiresPermissions(value = {"admin","updateProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
-    @ResponseBody
-    public String updateProduct(Product product) {
-        return productService.updateProduct(product);
+    @GetMapping("/toUpdatePage")
+    public String toUpdatePage(Integer id, HttpServletRequest request) {
+        Product product = productService.getProductById(id);
+        List<ProductGroup> groupList = productGroupService.getProductGroupList(0);
+        List<MapDTO> supplierPartLists = supplierService.getSupplierIdAndName();
+        request.setAttribute("product", product);
+        request.setAttribute("groupList", groupList);
+        request.setAttribute("supplierPartLists", supplierPartLists);
+        return "product/edit";
     }
 
+
+    @RequiresPermissions(value = {"admin","updateProduct"},logical = Logical.OR)
+    @RestPostMapping("/updateProduct")
+    public SimpleResponse updateProduct(Product product) {
+        Integer affectedRowNumber = productService.updateProduct(product);
+        return new SimpleResponse(affectedRowNumber);
+    }
+
+
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductById", method = RequestMethod.POST)
-    @ResponseBody
+    @RestGetMapping("/getProductById")
     public Product getProductById(Integer id) {
         return productService.getProductById(id);
     }
 
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/getBrandByGroupId", method = RequestMethod.POST)
-    @ResponseBody
+    @RestGetMapping("/getBrandByGroupId")
     public List<ProductBrand> getBrandByGroupId(String groupIds) {
         return productBrandService.getBrandByGroupId(groupIds);
     }
 
+
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/getProductCount", method = RequestMethod.POST)
-    @ResponseBody
+    @RestGetMapping("/getProductCount")
     public Integer getProductCount(ProductCondition productCondition) {
         return productService.getProductCount(productCondition);
     }
 
+
     /*excel文件导入*/
     @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
-    @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    @ResponseBody
+    @RestPostMapping("/importExcel")
     public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
             //解析excel
@@ -136,8 +168,7 @@ public class ProductController {
     }
 
     @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
-    @RequestMapping("/exportExcel")
-    @ResponseBody
+    @RestGetMapping("/exportExcel")
     public String exportExcel(HttpServletResponse response, Integer start, Integer end, ProductCondition productCondition) {
         Workbook wb = new XSSFWorkbook();
 

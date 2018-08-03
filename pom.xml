@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <springframeword.version>4.3.14.RELEASE</springframeword.version>
     </properties>
 
     <dependencies>
@@ -108,45 +109,45 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <!-- 2)spring dao层依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <!-- 3)spring web相关依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
         <!-- 4)spring test相关依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.1.7.RELEASE</version>
+            <version>${springframeword.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -293,38 +294,9 @@
     </dependencies>
 
     <build>
-        <finalName>rwxx</finalName>
+        <finalName>sms</finalName>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
-                <!--<plugin>
-                  <artifactId>maven-clean-plugin</artifactId>
-                  <version>3.0.0</version>
-                </plugin>
-                &lt;!&ndash; see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging &ndash;&gt;
-                <plugin>
-                  <artifactId>maven-resources-plugin</artifactId>
-                  <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-compiler-plugin</artifactId>
-                  <version>3.7.0</version>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <version>2.20.1</version>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-install-plugin</artifactId>
-                  <version>2.5.2</version>
-                </plugin>
-                <plugin>
-                  <artifactId>maven-deploy-plugin</artifactId>
-                  <version>2.8.2</version>
-                </plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
