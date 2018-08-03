@@ -17,8 +17,8 @@ public class ProductCondition {
     private List<Integer> groupIds;//分组Id集合
     private List<Integer> brandIds;//品牌Id集合
     private String brand;//品牌
-    private String enterprise;//供应商
-    private Integer enterpriseId;//供应商ID
+    private String supplier;//供应商
+    private Integer supplierId;//供应商ID
     private Double priceMin;//最低价格
     private Double priceMax;//最高价格
 
