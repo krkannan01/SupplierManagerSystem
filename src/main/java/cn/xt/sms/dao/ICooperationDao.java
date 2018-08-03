@@ -13,7 +13,7 @@ public interface ICooperationDao {
     /*根据id查询ContactId*/
     Integer selectContactIdById(Integer id);
 
-    /*根据enterpriseId查询id*/
+    /*根据supplierId查询id*/
     List<Integer> selectIdBySupplierId(Integer supplierId);
 
     /*删除合作情况信息*/

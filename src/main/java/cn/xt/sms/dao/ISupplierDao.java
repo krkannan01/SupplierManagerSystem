@@ -2,7 +2,7 @@ package cn.xt.sms.dao;
 
 import cn.xt.sms.condition.SupplierCondition;
 import cn.xt.sms.entity.Supplier;
-import cn.xt.sms.result.MapResult;
+import cn.xt.sms.dto.MapDTO;
 import cn.xt.sms.entity.UserDefinedFieldName;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,29 +18,29 @@ public interface ISupplierDao {
     Integer selectContactIdById(Integer id);
 
     /*添加企业信息*/
-    Integer addEnterprise(Supplier supplier);
+    Integer addSupplier(Supplier supplier);
 
     /*删除企业信息*/
-    Integer deleteEnterprise(Integer id);
+    Integer deleteSupplier(Integer id);
 
     /*更新企业信息*/
-    Integer updateEnterprise(Supplier supplier);
+    Integer updateSupplier(Supplier supplier);
 
-    /*查询所有Enterprise信息【所有字段】*/
-    List<Supplier> selectEnterprise(@Param("pageSize") Integer pageSize,
+    /*查询所有Supplier信息【所有字段】*/
+    List<Supplier> selectSupplier(@Param("pageSize") Integer pageSize,
                                     @Param("offset") Integer offset,
                                     @Param("supplierCondition") SupplierCondition supplierCondition);
 
-    /*查询所有Enterprise信息【部分字段】*/
-    List<Supplier> selectSimpleEnterprise(@Param("pageSize") Integer pageSize,
+    /*查询所有Supplier信息【部分字段】*/
+    List<Supplier> selectSimpleSupplier(@Param("pageSize") Integer pageSize,
                                           @Param("offset") Integer offset,
                                           @Param("supplierCondition") SupplierCondition supplierCondition);
 
-    /*查询对应条件下的Enterprise记录数量信息*/
-    Integer selectEnterpriseCount(SupplierCondition supplierCondition);
+    /*查询对应条件下的Supplier记录数量信息*/
+    Integer selectSupplierCount(SupplierCondition supplierCondition);
 
-    /*根据id查询对应Enterprise信息*/
-    Supplier getEnterpriseById(Integer id);
+    /*根据id查询对应Supplier信息*/
+    Supplier getSupplierById(Integer id);
 
     /*查询用户自定义字段名称信息*/
     UserDefinedFieldName getUserDefinedFieldName();
@@ -48,11 +48,11 @@ public interface ISupplierDao {
     /*验证公司名称是否存在*/
     Integer getIdByFullName(String fullName);
 
-    /*根据TradeGroupId查询所有EnterpriseId信息*/
+    /*根据TradeGroupId查询所有SupplierId信息*/
     List<Integer> getIdByTradeGroupId(Integer tradeGroupId);
 
     /*获取所有企业的id和name信息*/
-    List<MapResult> getEnterpriseIdAndName();
+    List<MapDTO> getSupplierIdAndName();
 
     /*获取供应商目前最大的编号*/
     String getMaxNo();
