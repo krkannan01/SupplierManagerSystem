@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xt.sms.dao.IUserDao" >
+
+  <!--<resultMap id="UserMap" type="User">
+    <id column="id" property="id"/>
+    <result column="username" property="username"/>
+    <result column="real_name" property="realName"/>
+    <result column="phone_number" property="phoneNumber"/>
+    <result column="is_su" property="isSu"/>
+    <result column="level" property="level"/>
+    <result column="last_online_time" property="lastOnLineTime"/>
+    <result column="birthday" property="birthday"/>
+    <result column="state" property="state"/>
+    <result column="create_time" property="createTime"/>
+    <result column="location" property="location"/>
+    <result column="about_me" property="aboutMe"/>
+  </resultMap>-->
+  
+  <sql id="common_column">
+    `id`,`username`,`real_name`,`phone_number`,`is_su`,`level`,`last_online_time`,`birthday`,`state`,`create_time`,
+    `location`,`about_me`,`online`,`head_img`
+  </sql>
+
+  <select id="findUserByUsername" parameterType="string" resultType="User">
+    SELECT <include refid="common_column"/>,`password`
+    FROM `table_user` WHERE `username` = #{username} AND `state` = 1 limit 0,1
+  </select>
+
+  <select id="findUserById" parameterType="integer" resultType="User">
+    SELECT <include refid="common_column"/>
+    FROM `table_user` WHERE `id` = #{id} limit 0,1
+  </select>
+
+  <select id="unique" parameterType="string" resultType="integer">
+    SELECT count(`id`)
+    FROM `table_user` WHERE `username` = #{username}
+  </select>
+
+  <insert id="register" parameterType="User">
+    INSERT INTO `table_user` (`username`,`password`,`last_online_time`,`create_time`,`state`) VALUES (#{username},#{password},now(),now(),1);
+  </insert>
+
+  <select id="getRole" parameterType="integer" resultType="string">
+    SELECT CASE `is_su` WHEN 1 THEN 'admin' ELSE 'user' END FROM `table_user` WHERE `id` = #{userId}
+  </select>
+
+  <select id="selectUserList" resultType="User">
+    SELECT <include refid="common_column"/>
+    FROM `table_user`
+    WHERE
+      `is_su` != 1
+      <if test="keywords != null and keywords != ''">AND `username` LIKE '%' #{keywords} '%'</if>
+    <if test="offset != null and pageSize != null">LIMIT #{offset},#{pageSize}</if>
+  </select>
+
+  <select id="selectUserCount" resultType="integer">
+    SELECT count(`id`)
+    FROM `table_user`
+    WHERE
+      `is_su` != 1
+      <if test="keywords != null and keywords != ''">AND `username` LIKE '%' #{keywords} '%'</if>
+  </select>
+
+  <delete id="deleteUser" parameterType="integer">
+    DELETE FROM `table_user` WHERE `id` = #{id}
+  </delete>
+
+  <insert id="insertUser" parameterType="User">
+    INSERT INTO `table_user`(`username`,`level`,`password`,`last_online_time`,`create_time`,`state`)
+      VALUES (
+        #{username},
+        <choose>
+          <when test="level != null and level != ''">
+            #{level},
+          </when>
+          <otherwise>
+            DEFAULT,
+          </otherwise>
+        </choose>
+        #{password},now(),now(),#{state}
+      )
+  </insert>
+
+  <update id="updateUser" parameterType="User">
+    UPDATE `table_user`
+      <set>
+        `id` = #{id},
+        <if test="username != null and username != ''">`username` = #{username},</if>
+        <if test="realName != null and realName != ''">`real_name` = #{realName},</if>
+        <if test="phoneNumber != null and phoneNumber != ''">`phone_number` = #{phoneNumber},</if>
+        <if test="location != null and location != ''">`location` = #{location},</if>
+        <if test="birthday != null">`birthday` = #{birthday},</if>
+        <if test="aboutMe != null and aboutMe != ''">`about_me` = #{aboutMe},</if>
+      </set>
+    WHERE `id` = #{id}
+  </update>
+
+  <update id="updateUserByAdmin" parameterType="User">
+    UPDATE `table_user`
+    <set>
+      `id` = #{id},
+      <if test="level != null and level != ''">`level` = #{level},</if>
+      <if test="state != null">`state` = #{state}</if>
+    </set>
+    WHERE `id` = #{id}
+  </update>
+
+  <update id="updateOnline">
+    UPDATE `table_user`
+    <set>
+      `username` = #{username},
+      <if test="online != null">
+        <choose>
+          <when test="online == 1">
+            `online` = 1
+          </when>
+          <otherwise>
+            `last_online_time` = now(),
+            `online` = 0
+          </otherwise>
+        </choose>
+      </if>
+    </set>
+    WHERE `username` = #{username}
+  </update>
+
+  <update id="updateHeadUrl">
+    UPDATE `table_user` set `head_img` = #{fileName} where `username` = #{username}
+  </update>
+
+  <select id="getUserByUsername" parameterType="string" resultType="User">
+    SELECT <include refid="common_column"/> FROM `table_user` WHERE `username` = #{username}
+  </select>
+
+  <update id="updatePassword">
+    UPDATE `table_user` set `password` = #{password} where `username` = #{username}
+  </update>
+
+</mapper>

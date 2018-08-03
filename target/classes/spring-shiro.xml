@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <!-- 启用shrio授权注解拦截方式 -->
+       <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+              <!-- 装配 securityManager -->
+              <property name="securityManager" ref="securityManager"/>
+              <!-- 配置登陆页面 -->
+              <property name="loginUrl" value="/login/autoLogin"/>
+              <!-- 登陆成功后的一面 -->
+              <property name="successUrl" value="/login/toIndex"/>
+              <property name="unauthorizedUrl" value="/login/toNoAuthority"/>
+              <!-- 具体配置需要拦截哪些 URL, 以及访问对应的 URL 时使用 Shiro 的什么 Filter 进行拦截.  -->
+              <property name="filterChainDefinitions">
+                     <value>
+                            /login/** = anon
+                            /statics/** = anon
+                            /common/** = anon
+                            /supplier/** = authc
+                            /tradeGroup/** = authc
+                            /** = anon
+                     </value>
+              </property>
+       </bean>
+
+       <!-- 配置进行授权和认证的 Realm -->
+       <bean id="myRealm" class="cn.xt.sms.realm.CheckRealm"></bean>
+
+       <!-- 配置 Shiro 的 SecurityManager Bean. -->
+       <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+              <!-- 注入realm -->
+              <property name="realm" ref="myRealm"/>
+              <!-- 注入缓存管理器 -->
+              <property name="cacheManager" ref="cacheManager"/>
+       </bean>
+
+       <!-- 注册ehcache缓存管理器 -->
+       <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+              <!-- 注册配置文件的路径 -->
+              <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"></property>
+       </bean>
+       
+       <!-- 配置 Bean 后置处理器: 会自动的调用和 Spring 整合后各个组件的生命周期方法. -->
+       <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+       <bean id="defaultAdvisorAutoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+              <!-- 必须改为true，即使用cglib方式为Action创建代理对象。默认值为false，使用JDK创建代理对象，会造成问题 -->
+              <property name="proxyTargetClass" value="true"></property>
+       </bean>
+
+       <!-- 使用shiro框架提供的切面类，用于创建代理对象 -->
+       <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor"></bean>
+
+</beans>
