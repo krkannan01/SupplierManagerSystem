@@ -19,6 +19,6 @@ public interface IProductMiddleService {
     void setProductToExcel(Workbook wb, Integer start, Integer end, ProductCondition productCondition);
 
     /*批量删除*/
-    String multiDeleteProduct(String ids);
+    Integer multiDeleteProduct(String ids);
 
 }

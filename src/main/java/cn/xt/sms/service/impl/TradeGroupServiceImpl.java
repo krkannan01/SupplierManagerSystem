@@ -1,9 +1,8 @@
 package cn.xt.sms.service.impl;
 
-import cn.xt.sms.result.MyResult;
 import cn.xt.sms.dao.ITradeGroupDao;
 import cn.xt.sms.entity.TradeGroup;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.ITradeGroupService;
 import cn.xt.sms.util.BasicUtil;
 import cn.xt.sms.util.Render;
@@ -25,7 +24,7 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
     @Autowired
     private ITradeGroupDao tradeGroupDao;
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
 
     @Override
     public String insert(TradeGroup tradeGroup) {
@@ -40,9 +39,9 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
     @Override
     @Transactional
     public String delete(Integer id) {
-        List<Integer> ids = enterpriseService.getIdByTradeGroupId(id);
-        for (Integer enterpriseId: ids) {
-            enterpriseService.deleteEnterprise(enterpriseId);
+        List<Integer> ids = supplierService.getIdByTradeGroupId(id);
+        for (Integer supplierId: ids) {
+            supplierService.deleteSupplier(supplierId);
         }
         return tradeGroupDao.deleteTradeGroup(id) > 0 ? "success":"fail";
     }

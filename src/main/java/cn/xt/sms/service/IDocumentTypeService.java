@@ -1,6 +1,7 @@
 package cn.xt.sms.service;
 
 import cn.xt.sms.condition.SupplierDocumentCondition;
+import cn.xt.sms.entity.DocumentType;
 import cn.xt.sms.entity.SupplierDocument;
 import cn.xt.sms.response.DataResponse;
 
@@ -11,18 +12,18 @@ import java.util.List;
  * @Date: 2018/7/25
  * @Description: 供应商文档 业务逻辑层
  */
-public interface ISupplierDocumentService {
+public interface IDocumentTypeService {
 
-    /* 添加文档信息 */
-    Integer insertSupplierDocument(SupplierDocument supplierDocument);
+    // 添加文档类型
+    Integer insertDocumentType(DocumentType type);
 
-    /* 删除文档信息 */
-    Integer deleteSupplierDocument(Integer... ids);
+    // 删除文档类型
+    Integer deleteDocumentType(Integer[] ids);
 
-    /* 查询文档信息 */
-    DataResponse<SupplierDocument> getSupplierDocumentList(Integer currentPage, Integer pageSize, SupplierDocumentCondition condition);
+    // 获取文档类型集合
+    DataResponse<DocumentType> getDocumentTypeList();
 
-    /* 根据文档Id获取文档信息 */
-    SupplierDocument getSupplierDocument(Integer id);
+    // 修改使用频率
+    Integer updateUseFrequency(Integer id, Integer increment);
 
 }

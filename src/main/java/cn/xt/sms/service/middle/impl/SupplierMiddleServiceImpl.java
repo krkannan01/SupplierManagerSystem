@@ -6,9 +6,9 @@ import cn.xt.sms.entity.Cooperation;
 import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.exception.NullCellValueException;
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.ITradeGroupService;
-import cn.xt.sms.service.middle.IEnterpriseMiddleService;
+import cn.xt.sms.service.middle.ISupplierMiddleService;
 import cn.xt.sms.util.POIUtil;
 import lombok.extern.log4j.Log4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,15 +30,15 @@ import static org.fusesource.jansi.Ansi.ansi;
  */
 @Service
 @Log4j
-public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
+public class SupplierMiddleServiceImpl implements ISupplierMiddleService {
 
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
     @Autowired
     private ITradeGroupService tradeGroupService;
 
     @Override
-    public String getEnterpriseFormExcel(ServletContext context, Sheet sheet) {
+    public String getSupplierFormExcel(ServletContext context, Sheet sheet) {
         //设置根据内容自动调整列宽
         sheet.autoSizeColumn(256 * 30);
         int index = 0;
@@ -224,11 +224,11 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
         int success = 0;
         for (Supplier supplier : supplierList) {
             try {
-                if (enterpriseService.getIdByFullName(supplier.getFullName()) != null) {
+                if (supplierService.getIdByFullName(supplier.getFullName()) != null) {
                     System.out.print(ansi().eraseScreen().render("\n@|red \t供应商名已存在，跳过该项\t|@\n"));
                 } else {
                     handleTradeGroup(supplier);
-                    enterpriseService.insertEnterprise(context, supplier);
+                    supplierService.insertSupplier(context, supplier);
                     success++;
                 }
             } catch (Exception e) {
@@ -240,7 +240,7 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
     }
 
     @Override
-    public void setEnterpriseToExcel(Workbook wb, Integer start, Integer end, SupplierCondition supplierCondition) {
+    public void setSupplierToExcel(Workbook wb, Integer start, Integer end, SupplierCondition supplierCondition) {
         Sheet sheet = wb.createSheet("供应商信息");
 
         int rowPointer = 0;
@@ -269,7 +269,7 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
                 pageSize = end - offset;
             }
 
-            List<Supplier> supplierList = enterpriseService.getEnterpriseList(pageSize, offset, supplierCondition);
+            List<Supplier> supplierList = supplierService.getSupplierList(pageSize, offset, supplierCondition);
             offset += pageSize;
 
             if (supplierList != null && supplierList.size() > 0) {
@@ -342,13 +342,13 @@ public class EnterpriseMiddleServiceImpl implements IEnterpriseMiddleService {
     }
 
     @Override
-    public String mutliDeleteEnterprise(String ids) {
+    public String mutliDeleteSupplier(String ids) {
         String[] temp = ids.split(",");
         Integer id = null;
         for (int i=0; i<temp.length; i++) {
             try {
                 id = Integer.valueOf(temp[i]);
-                enterpriseService.deleteEnterprise(id);
+                supplierService.deleteSupplier(id);
             } catch(Exception e) {
                 log.error("删除企业信息出现异常!\t" + e.getMessage());
                 continue;

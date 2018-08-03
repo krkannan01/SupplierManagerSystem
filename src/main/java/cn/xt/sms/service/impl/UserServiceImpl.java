@@ -1,6 +1,6 @@
 package cn.xt.sms.service.impl;
 
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.dao.IUserDao;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
@@ -26,13 +26,13 @@ public class UserServiceImpl implements IUserService {
 
     /*获取所有用户信息，除超级管理员外*/
     @Override
-    public MyResult<User> getUserList(String keywords, Integer currentPage, Integer pageSize) {
+    public DataResponse<User> getUserList(String keywords, Integer currentPage, Integer pageSize) {
         /*计算偏移量*/
         pageSize = pageSize == null ? 10:pageSize;
         Integer offset = currentPage == null ? 0:(currentPage-1)*pageSize;
         offset = offset < 0 ? 0:offset;
 
-        MyResult<User> userResult = new MyResult<User>();
+        DataResponse<User> userResult = new DataResponse<User>();
         Integer count = userDao.selectUserCount(keywords);
 
         /*判断偏移量是否超过总数，如果是，降低偏移量*/

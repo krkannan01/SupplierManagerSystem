@@ -1,6 +1,6 @@
 package cn.xt.sms.service;
 
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public interface IUserService {
 
     /*获取所有用户信息*/
-    MyResult<User> getUserList(String keywords, Integer currentPage, Integer pageSize);
+    DataResponse<User> getUserList(String keywords, Integer currentPage, Integer pageSize);
 
     /*删除用户信息*/
     String deleteUser(Integer id);

@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ContactVO {
 
     /*<%
-    Supplier ep = (Supplier) request.getAttribute("enterprise");
+    Supplier ep = (Supplier) request.getAttribute("supplier");
 
     // 处理日期值
     String foundDate = "",approvalDate = "",udfFive = "";

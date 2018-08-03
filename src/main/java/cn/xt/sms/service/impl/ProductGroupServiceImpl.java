@@ -82,24 +82,23 @@ public class ProductGroupServiceImpl implements IProductGroupService {
     }
 
     @Override
-    public String setIdAndInsertProductGroup(ProductGroup productGroup) {
+    public Integer setIdAndInsertProductGroup(ProductGroup productGroup) {
         if (productGroup != null) {
             /*判断是否已经存在分组名称*/
             Integer groupId = productGroupDao.getIdByName(productGroup.getName());
             if (groupId == null) {
-                productGroupDao.insertProductGroup(productGroup);
+                return productGroupDao.insertProductGroup(productGroup);
             } else {
                 productGroup.setId(groupId);
             }
-            return "success";
         }
-        return "fail";
+        return 0;
     }
 
     @Override
     @Transactional
-    public String deleteProductGroup(Integer id) {
-        return productGroupDao.deleteProductGroup(id) > 0 ? "success":"fail";
+    public Integer deleteProductGroup(Integer id) {
+        return productGroupDao.deleteProductGroup(id);
     }
 
     @Override
@@ -108,8 +107,8 @@ public class ProductGroupServiceImpl implements IProductGroupService {
     }
 
     @Override
-    public String updateProductGroup(ProductGroup productGroup) {
-        return productGroupDao.updateProductGroup(productGroup) > 0 ? "success":"fail";
+    public Integer updateProductGroup(ProductGroup productGroup) {
+        return productGroupDao.updateProductGroup(productGroup);
     }
 
 }

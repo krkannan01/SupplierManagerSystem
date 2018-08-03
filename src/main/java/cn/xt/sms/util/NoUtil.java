@@ -1,13 +1,12 @@
 package cn.xt.sms.util;
 
-import cn.xt.sms.service.IEnterpriseService;
+import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.IProductService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Auther: xietao
@@ -22,20 +21,20 @@ public class NoUtil {
      * @param context
      * @return
      */
-    public static synchronized String getEnterpriseNo(ServletContext context) {
-        String currentNo = context.getAttribute("enterpriseMaxNo").toString();
+    public static synchronized String getSupplierNo(ServletContext context) {
+        String currentNo = context.getAttribute("supplierMaxNo").toString();
         try {
-            context.setAttribute("enterpriseMaxNo", Integer.valueOf(currentNo) + 1);
+            context.setAttribute("supplierMaxNo", Integer.valueOf(currentNo) + 1);
         } catch (NumberFormatException e) {
             // 如果转换出现异常，重新获取数据库中的最大供应商编号
             log.error(Render.renderError("供应商编号获取异常，正在尝试从数据库中重新获取..."));
             ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-            IEnterpriseService enterpriseService = (IEnterpriseService) applicationContext.getBean("enterpriseServiceImpl");
-            String maxNo = enterpriseService.getMaxNo();
+            ISupplierService supplierService = (ISupplierService) applicationContext.getBean("supplierServiceImpl");
+            String maxNo = supplierService.getMaxNo();
             currentNo = maxNo + 1;
             log.info(Render.renderInfo("获取到新的供应商编号，为：" + currentNo));
             try {
-                context.setAttribute("enterpriseMaxNo", Integer.valueOf(currentNo) + 1);
+                context.setAttribute("supplierMaxNo", Integer.valueOf(currentNo) + 1);
             } catch (NumberFormatException e2) {
                 log.error(Render.renderError("数据异常，请排除供应商编号字段中的非数字值！"));
             }
@@ -56,8 +55,8 @@ public class NoUtil {
             // 如果转换出现异常，重新获取数据库中的最大供应商编号
             log.error(Render.renderError("商品编号获取异常，正在尝试从数据库中重新获取..."));
             ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-            IProductService enterpriseService = (IProductService) applicationContext.getBean("productServiceImpl");
-            String maxNo = enterpriseService.getMaxNo();
+            IProductService supplierService = (IProductService) applicationContext.getBean("productServiceImpl");
+            String maxNo = supplierService.getMaxNo();
             currentNo = maxNo + 1;
             log.info(Render.renderInfo("获取到新的商品编号，为：" + currentNo));
             try {

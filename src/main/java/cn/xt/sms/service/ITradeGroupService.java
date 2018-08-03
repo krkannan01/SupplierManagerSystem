@@ -1,8 +1,6 @@
 package cn.xt.sms.service;
 
-import cn.xt.sms.result.MyResult;
 import cn.xt.sms.entity.TradeGroup;
-import cn.xt.sms.vo.TradeGroupVO;
 
 import java.util.List;
 

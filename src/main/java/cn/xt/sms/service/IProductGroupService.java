@@ -17,13 +17,13 @@ public interface IProductGroupService {
     ProductGroup getProductGroupById(Integer id);
 
     /*修改材料分组信息*/
-    String updateProductGroup(ProductGroup productGroup);
+    Integer updateProductGroup(ProductGroup productGroup);
 
     /*新增材料分组信息*/
-    String setIdAndInsertProductGroup(ProductGroup productGroup);
+    Integer setIdAndInsertProductGroup(ProductGroup productGroup);
 
     /*删除材料分组信息*/
-    String deleteProductGroup(Integer id);
+    Integer deleteProductGroup(Integer id);
 
     /*验证名称是否已存在*/
     boolean unique(String name);

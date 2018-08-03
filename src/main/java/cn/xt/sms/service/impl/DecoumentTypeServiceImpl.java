@@ -1,10 +1,12 @@
 package cn.xt.sms.service.impl;
 
 import cn.xt.sms.condition.SupplierDocumentCondition;
+import cn.xt.sms.dao.IDocumentTypeDao;
 import cn.xt.sms.dao.ISupplierDocumentDao;
-import cn.xt.sms.entity.Product;
+import cn.xt.sms.entity.DocumentType;
 import cn.xt.sms.entity.SupplierDocument;
 import cn.xt.sms.response.DataResponse;
+import cn.xt.sms.service.IDocumentTypeService;
 import cn.xt.sms.service.ISupplierDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,46 +19,33 @@ import java.util.List;
  * @Description:
  */
 @Service
-public class SupplierDecoumentServiceImpl implements ISupplierDocumentService {
+public class DecoumentTypeServiceImpl implements IDocumentTypeService {
 
     @Autowired
-    private ISupplierDocumentDao supplierDocumentDao;
+    private IDocumentTypeDao documentTypeDao;
 
     @Override
-    public Integer insertSupplierDocument(SupplierDocument supplierDocument) {
-        return supplierDocumentDao.insertSupplierDocument(supplierDocument);
+    public Integer insertDocumentType(DocumentType type) {
+        return documentTypeDao.insertDocumentType(type);
     }
 
     @Override
-    public Integer deleteSupplierDocument(Integer... ids) {
-        return supplierDocumentDao.deleteSupplierDocument(ids);
+    public Integer deleteDocumentType(Integer[] ids) {
+        return documentTypeDao.deleteDocumentType(ids);
     }
 
     @Override
-    public DataResponse<SupplierDocument> getSupplierDocumentList(Integer currentPage, Integer pageSize, SupplierDocumentCondition condition) {
-        /*计算偏移量*/
-        pageSize = pageSize == null ? 10:pageSize;
-        Integer offset = currentPage == null ? 0:(currentPage-1)*pageSize;
-        offset = offset < 0 ? 0:offset;
-
-        Integer count = supplierDocumentDao.getSupplierDocumentCount(condition);
-
-        /*判断偏移量是否超过总数，如果是，降低偏移量*/
-        if (offset >= count) {
-            offset = (count-1)/pageSize*pageSize;
-        }
-
-        List<SupplierDocument> supplierDocumentList = supplierDocumentDao.getSupplierDocumentList(pageSize, offset, condition);
-
-        if (supplierDocumentList != null && count != null) {
-            return new DataResponse<SupplierDocument>().setSuccess(supplierDocumentList, count);
+    public DataResponse<DocumentType> getDocumentTypeList() {
+        List<DocumentType> types = documentTypeDao.getDocumentTypeList();
+        if (types != null) {
+            return new DataResponse<DocumentType>().setSuccess(types, types.size());
         } else {
-            return new DataResponse<SupplierDocument>().setError();
+            return new DataResponse<DocumentType>().setError();
         }
     }
 
     @Override
-    public SupplierDocument getSupplierDocument(Integer id) {
-        return supplierDocumentDao.getSupplierDocument(id);
+    public Integer updateUseFrequency(Integer id, Integer increment) {
+        return documentTypeDao.updateUseFrequency(id, increment);
     }
 }

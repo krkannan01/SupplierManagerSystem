@@ -1,7 +1,7 @@
 package cn.xt.sms.service.middle.impl;
 
 import cn.xt.sms.condition.ProductCondition;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.*;
 import cn.xt.sms.exception.NullCellValueException;
 import cn.xt.sms.service.*;
@@ -31,7 +31,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
     @Autowired
     private IProductService productService;
     @Autowired
-    private IEnterpriseService enterpriseService;
+    private ISupplierService supplierService;
 
     @Override
     public String getProductFormExcel(ServletContext context, Sheet sheet) {
@@ -59,7 +59,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                 // 备注 (String)
                 String comment = POIUtil.getStringValue(row.getCell(pointer++));
                 // 供应商 (String)
-                String enterprise = POIUtil.getStringValue(row.getCell(pointer++), "供应商");
+                String supplier = POIUtil.getStringValue(row.getCell(pointer++), "供应商");
                 // 产品分组 (String)
                 String group = POIUtil.getStringValue(row.getCell(pointer++), "产品分组");
 
@@ -72,7 +72,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                 product.setUnitprice(unitprise);
                 product.setTechnicalParam(technicalParam);
                 product.setComment(comment);
-                product.setSupplierId(new Supplier(enterprise));
+                product.setSupplierId(new Supplier(supplier));
                 product.setGroupId(new ProductGroup(group));
 
                 System.out.println(ansi().eraseScreen().render("@|green --------\t信息读取成功\t--------|@"));
@@ -88,9 +88,9 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
         for (Product product : productList) {
             try {
                 //判断供应商是否存在
-                Integer enterpriseId = enterpriseService.getIdByFullName(product.getSupplierId().getFullName());
-                if (enterpriseId != null) {
-                    product.getSupplierId().setId(enterpriseId);
+                Integer supplierId = supplierService.getIdByFullName(product.getSupplierId().getFullName());
+                if (supplierId != null) {
+                    product.getSupplierId().setId(supplierId);
                     //根据名称与供应商判断是否重复
                     if (!productService.isUnique(product)) {
                         productService.insertFromExcelProduct(context, product);
@@ -138,7 +138,7 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
                 pageSize = end - offset;
             }
 
-            MyResult<Product> productResult = productService.getProductList(productCondition, offset, pageSize);
+            DataResponse<Product> productResult = productService.getProductList(productCondition, offset, pageSize);
             offset += pageSize;
 
             if (productResult.getRows() != null && productResult.getRows().size() > 0) {
@@ -165,19 +165,20 @@ public class ProductMiddleServiceImpl implements IProductMiddleService {
     }
 
     @Override
-    public String multiDeleteProduct(String ids) {
+    public Integer multiDeleteProduct(String ids) {
         String[] temp = ids.split(",");
         Integer id = null;
+        Integer affectedRowNumber = 0;
         for (int i=0; i<temp.length; i++) {
             try {
                 id = Integer.valueOf(temp[i]);
-                productService.deleteProduct(id);
+                affectedRowNumber += productService.deleteProduct(id);
             } catch(Exception e) {
                 log.error("删除材料信息出现异常!\t" + e.getMessage());
                 continue;
             }
         }
-        return "success";
+        return affectedRowNumber;
     }
 
 }

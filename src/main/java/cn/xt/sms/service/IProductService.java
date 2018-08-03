@@ -1,10 +1,9 @@
 package cn.xt.sms.service;
 
 import cn.xt.sms.condition.ProductCondition;
-import cn.xt.sms.result.MyResult;
+import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Product;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 
 /**
@@ -13,17 +12,17 @@ import javax.servlet.ServletContext;
  */
 public interface IProductService {
 
-    MyResult<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize);
+    DataResponse<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize);
 
     Integer getProductCount(ProductCondition productCondition);
 
-    String insertProduct(ServletContext context, Product product);
+    Integer insertProduct(ServletContext context, Product product);
 
-    String insertFromExcelProduct(ServletContext context, Product product);
+    Integer insertFromExcelProduct(ServletContext context, Product product);
 
-    String deleteProduct(Integer id);
+    Integer deleteProduct(Integer id);
 
-    String updateProduct(Product product);
+    Integer updateProduct(Product product);
 
     Product getProductById(Integer id);
 
