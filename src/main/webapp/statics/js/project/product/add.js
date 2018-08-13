@@ -4,8 +4,13 @@ const supplier_id = parent.supplierId;
 
 // validate.js 插件的自定义验证方法
 jQuery.validator.addMethod("notnull", function (value, element, param) {
-    return param ? value : false;
+    return param ? value : true;
 }, $.validator.format("不能为空!"));
+jQuery.validator.addMethod("price", function (value, element, param) {
+    var reg = /^\d{0,8}\.{0,1}(\d{1,2})?$/;
+    return param ? reg.test(value) : true;
+}, $.validator.format("只能为两位小数值!"));
+
 
 jQuery(function($){
 
@@ -22,7 +27,7 @@ jQuery(function($){
             },
             price:{
                 required:true,
-                digits:true
+                price:true
             },
             supplier:{
                 notnull:true
@@ -40,7 +45,7 @@ jQuery(function($){
             },
             "price": {
                 required: "商品单价不能为空",
-                digits: "商品单价必须是数值"
+                price: "商品单价必须是两位小数值"
             },
             "supplier": {
                 notnull: "商品供应商不能为空"

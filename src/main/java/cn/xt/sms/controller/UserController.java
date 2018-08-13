@@ -1,11 +1,15 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.RestGetMapping;
+import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.constant.CommonConstants;
+import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.entity.Privilege;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IUserService;
 import cn.xt.sms.util.MD5Util;
+import cn.xt.sms.util.Render;
 import lombok.extern.log4j.Log4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,14 +36,16 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    private final String privilege_prefix = PrivilegeConstants.USER;
+
     @Autowired
     private IUserService userService;
 
     /*转到查询用户信息页面*/
-    @RequiresPermissions(value = {"admin","searchUser"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"}, logical = Logical.OR)
     @RequestMapping("/toSearchUser")
     public String toSearchUser() {
-        return "user_search";
+        return "user/user_search";
     }
 
     /*查看个人信息*/
@@ -47,83 +53,74 @@ public class UserController {
     public String toProfile(HttpSession session) {
         String username = ((User) session.getAttribute("user")).getUsername();
         session.setAttribute("user", userService.getUserByUsername(username));
-        return "profile";
+        return "user/profile";
     }
 
     /*查看个人信息*/
     @RequestMapping("/toUpdatePassword")
     public String toUpdatePassword(HttpSession session) {
-        return "update_password";
+        return "user/update_password";
     }
 
     /*查询用户信息*/
-    @RequiresPermissions(value = {"admin","searchUser"}, logical = Logical.OR)
-    @RequestMapping("/search")
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"}, logical = Logical.OR)
+    @RestGetMapping("/search")
     public DataResponse<User> search(String keywords, Integer currentPage, Integer pageSize) {
         return userService.getUserList(keywords, currentPage, pageSize);
     }
 
     /*删除用户数据*/
-    @RequiresPermissions(value = {"admin","deleteUser"},logical = Logical.OR)
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
+    @RestPostMapping("/delete")
     public String delete(Integer id) {
         return userService.deleteUser(id);
     }
 
     /*多行删除用户数据*/
-    @RequiresPermissions(value = {"admin","deleteUser"},logical = Logical.OR)
-    @RequestMapping(value = "/multiDelete", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
+    @RestPostMapping("/multiDelete")
     public String multiDelete(String ids) {
         return userService.multiDeleteUser(ids);
     }
 
     /*查询所有权限信息*/
-    @RequiresPermissions(value = {"admin","searchUser"},logical = Logical.OR)
-    @RequestMapping(value = "/getAllPrivilege", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/getAllPrivilege")
     public List<Privilege> getPrivilege() {
         return userService.getPrivilege();
     }
 
     /*修改用户权限信息*/
-    @RequiresPermissions(value = {"admin","updateUser"},logical = Logical.OR)
-    @RequestMapping(value = "/updateUserPrivilege", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
+    @RestPostMapping("/updateUserPrivilege")
     public String updateUserPrivilege(Integer id, String privilegeIds) {
         return userService.updateUserPrivilege(id, privilegeIds);
     }
 
     /*获取用户权限信息*/
-    @RequiresPermissions(value = {"admin","searchUser"},logical = Logical.OR)
-    @RequestMapping(value = "/getUserPrivilege", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/getUserPrivilege")
     public List<Integer> getUserPrivilege(Integer id) {
         return userService.getUserPrivilege(id);
     }
 
     /*新增用户信息*/
-    @RequiresPermissions(value = {"admin","insertUser"},logical = Logical.OR)
-    @RequestMapping(value = "/insertUser", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
+    @RestPostMapping("/insertUser")
     public String insert(User user) {
         user.setPassword(MD5Util.EncoderByMd5("123456"));
         return userService.insertUser(user);
     }
 
     /*修改用户信息*/
-    @RequestMapping(value = "/updateBasicUser", method = RequestMethod.POST)
-    @ResponseBody
+    @RestPostMapping("/updateBasicUser")
     public String updateBasicUser(User user, HttpSession session) {
         user.setId(((User) session.getAttribute("user")).getId());
         return userService.updateUser(user);
     }
 
     /*修改密码*/
-    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    @ResponseBody
+    @RestPostMapping("/updatePassword")
     public String updatePassword(HttpSession session, String password) {
         if (password != null && password != "") {
             String username = ((User) session.getAttribute("user")).getUsername();
@@ -133,8 +130,7 @@ public class UserController {
     }
 
     /*验证原密码*/
-    @RequestMapping(value = "/validatePassword", method = RequestMethod.POST)
-    @ResponseBody
+    @RestPostMapping("/validatePassword")
     public boolean validataPassword(HttpSession session, String password) {
         if (password != null && password != "") {
             String username = ((User) session.getAttribute("user")).getUsername();
@@ -144,22 +140,19 @@ public class UserController {
     }
 
     /*修改用户高级信息*/
-    @RequiresPermissions(value = {"admin","updateUser"},logical = Logical.OR)
-    @RequestMapping(value = "/updateCoreUser", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
+    @RestPostMapping("/updateCoreUser")
     public String updateCoreUser(User user) {
         return userService. updateUserByAdmin(user);
     }
 
-    @RequiresPermissions(value = {"admin","searchUser"},logical = Logical.OR)
-    @RequestMapping(value = "/findUserById", method = RequestMethod.POST)
-    @ResponseBody
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/findUserById")
     public User findUserById(Integer id) {
         return userService.findUserById(id);
     }
 
-    @RequestMapping("/uploadHeadImg")
-    @ResponseBody
+    @RestPostMapping("/uploadHeadImg")
     public boolean uploadHeadFile(String file, HttpSession session) {
 
         //对字节数组字符串进行Base64解码并生成图片
@@ -182,7 +175,8 @@ public class UserController {
             //生成jpeg图片
             File dir = new File(path);
             if (!dir.exists()) dir.mkdirs();
-            OutputStream out = new FileOutputStream(path + "/" +fileName);
+            log.info(Render.renderInfo(path + "\\" + fileName));
+            OutputStream out = new FileOutputStream(path + "\\" +fileName);
             out.write(b);
             out.flush();
             out.close();

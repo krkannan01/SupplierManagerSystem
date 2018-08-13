@@ -17,11 +17,21 @@
   </delete>
 
   <select id="getDocumentTypeList" resultType="DocumentType">
-    SELECT `id`,`name` FROM <include refid="table-name"></include> ORDER BY `use_frequency` DESC;
+    SELECT `id`,`name`,`description` FROM <include refid="table-name"></include> ORDER BY `use_frequency` DESC;
   </select>
 
   <update id="updateUseFrequency">
     UPDATE <include refid="table-name"></include> SET `use_frequency` = `use_frequency` + #{increment} WHERE `id` = #{id};
+  </update>
+
+  <update id="updateDocumentType">
+    UPDATE <include refid="table-name"></include>
+    <set>
+      `id` = #{id}
+      <if test="name != null and name != ''">,`name` = #{name}</if>
+      <if test="description != null and description != ''">,`description` = #{description}</if>
+    </set>
+    WHERE `id` = #{id};
   </update>
 
 </mapper>

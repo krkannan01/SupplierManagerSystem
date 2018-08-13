@@ -14,6 +14,8 @@ public class SupplierDocumentCondition {
     private Integer supplierId; // 供应商Id
     private String keywords; // 关键字
     private String name; // 文档名称
+    private String supplierName; // 供应商名称
+    private Integer typeId; // 类型Id
     private String sortField; // 排序属性
     private String sortMode; // 排序方式 ASC/DESC
 

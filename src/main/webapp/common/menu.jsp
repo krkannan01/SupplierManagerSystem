@@ -1,9 +1,11 @@
-<%--
+<%@ page import="cn.xt.sms.constant.PrivilegeConstants" %>
+<%@ page import="cn.xt.sms.entity.Privilege" %><%--
   @author xietao.x@qq.com
   Created by 2018/3/28
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+
 <!-- #section:basics/sidebar -->
 <div id="sidebar" class="sidebar                  responsive                    ace-save-state">
     <script type="text/javascript">
@@ -15,7 +17,7 @@
             <a href="javascript: void(0);" class="dropdown-toggle">
                 <i class="menu-icon fa fa-user"></i>
 							<span class="menu-text">
-								供应商信息管理
+								供应商管理
 							</span>
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -23,33 +25,22 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <shiro:hasAnyPermission name="admin,searchSupplier">
+                <shiro:hasAnyPermission name="admin,supplier:search">
                     <li class="${"Supplier-Search".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toSearchSupplier';">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            查询供应商信息
+                            供应商管理
                         </a>
 
                         <b class="arrow"></b>
                     </li>
                 </shiro:hasAnyPermission>
 
-                <shiro:hasAnyPermission name="admin,insertSupplier">
-                    <li class="${"Supplier-Insert".equals(active) ? "active":""}">
-                        <a href="javascript: void(0);" onclick="javascript: location.href='${pageContext.request.contextPath}/supplier/toAddSupplier';">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            新增供应商信息
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
-                </shiro:hasAnyPermission>
-
-                <shiro:hasAnyPermission name="admin,searchTradeGroup">
+                <shiro:hasAnyPermission name="admin,supplier_group:search">
                     <li class="${"Supplier-Group".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/tradeGroup/toTradeGroup';">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            设置供应商分组
+                            供应商分组管理
                         </a>
 
                         <b class="arrow"></b>
@@ -62,7 +53,7 @@
             <a href="javascript: void(0);" class="dropdown-toggle">
                 <i class="menu-icon fa fa-list"></i>
 							<span class="menu-text">
-								材料信息管理
+								商品信息管理
 							</span>
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -70,11 +61,22 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <shiro:hasAnyPermission name="admin,searchProduct">
+                <shiro:hasAnyPermission name="admin,product:search">
                     <li class="${"Product-Search".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/product/toSearchProduct';">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            查询材料信息
+                            商品信息管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </shiro:hasAnyPermission>
+
+                <shiro:hasAnyPermission name="admin,product_group:search">
+                    <li class="${"ProductGroup-Search".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/productGroup/toSearchProductGroupPage';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            商品分组管理
                         </a>
 
                         <b class="arrow"></b>
@@ -83,7 +85,43 @@
             </ul>
         </li>
 
-        <li class="${active!=null and active.startsWith("System") ? "open":""}">
+        <li class="${active!=null and active.startsWith("Document") ? "open":""}">
+            <a href="javascript: void(0);" class="dropdown-toggle">
+                <i class="menu-icon fa fa-list"></i>
+                <span class="menu-text">
+								文档信息管理
+							</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <shiro:hasAnyPermission name="admin,document:search">
+                    <li class="${"Document-Search".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/document/toPage/document-search_document';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            文档信息管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </shiro:hasAnyPermission>
+
+                <shiro:hasAnyPermission name="admin,document_type:search">
+                    <li class="${"DocumentType-Search".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/documentType/toSearchDocumentType';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            文档类型管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </shiro:hasAnyPermission>
+            </ul>
+        </li>
+
+        <%--<li class="${active!=null and active.startsWith("System") ? "open":""}">
             <a href="javascript: void(0);" class="dropdown-toggle">
                 <i class="menu-icon fa fa-cog"></i>
 							<span class="menu-text">
@@ -95,8 +133,33 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <shiro:hasAnyPermission name="admin,searchUser">
+                <shiro:hasAnyPermission name="admin,user:search">
                     <li class="${"System-UserPrivilege".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/user/toSearchUser';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            用户权限管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </shiro:hasAnyPermission>
+            </ul>
+        </li>--%>
+
+        <li class="${active!=null and active.startsWith("User") ? "open":""}">
+            <a href="javascript: void(0);" class="dropdown-toggle">
+                <i class="menu-icon fa fa-cog"></i>
+                <span class="menu-text">
+								用户管理
+							</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <shiro:hasAnyPermission name="admin,user:search">
+                    <li class="${"User-UserPrivilege".equals(active) ? "active":""}">
                         <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/user/toSearchUser';">
                             <i class="menu-icon fa fa-caret-right"></i>
                             用户权限管理

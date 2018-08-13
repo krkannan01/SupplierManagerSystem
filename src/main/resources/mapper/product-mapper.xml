@@ -3,24 +3,24 @@
 <mapper namespace="cn.xt.sms.dao.IProductDao" >
 
   <resultMap id="ProductMap" type="Product">
-    <id column="tp_id" property="id"/>
-    <result column="tp_no" property="no"/>
-    <result column="tp_name" property="name"/>
-    <result column="tp_size" property="size"/>
+    <id     column="tp_id"              property="id"/>
+    <result column="tp_no"              property="no"/>
+    <result column="tp_name"            property="name"/>
+    <result column="tp_size"            property="size"/>
     <result column="tp_technical_param" property="technicalParam"/>
-    <result column="tp_unit" property="unit"/>
-    <result column="tp_unitprice" property="unitprice"/>
-    <result column="tp_comment" property="comment"/>
+    <result column="tp_unit"            property="unit"/>
+    <result column="tp_unitprice"       property="unitprice"/>
+    <result column="tp_comment"         property="comment"/>
     <association property="brandId" javaType="ProductBrand">
-      <id column="tpb_id" property="id"/>
+      <id     column="tpb_id"   property="id"/>
       <result column="tpb_name" property="name"/>
     </association>
     <association property="supplierId" javaType="Supplier">
-      <id column="te_id" property="id"/>
+      <id     column="te_id"        property="id"/>
       <result column="te_full_name" property="fullName"/>
     </association>
     <association property="groupId" javaType="ProductGroup">
-      <id column="tpg_id" property="id"/>
+      <id     column="tpg_id"   property="id"/>
       <result column="tpg_name" property="name"/>
     </association>
   </resultMap>

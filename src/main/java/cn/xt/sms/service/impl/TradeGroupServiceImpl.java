@@ -27,23 +27,30 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
     private ISupplierService supplierService;
 
     @Override
-    public String insert(TradeGroup tradeGroup) {
-        return tradeGroupDao.insertTradeGroup(tradeGroup) > 0 ? "success":"fail";
+    public Integer insert(TradeGroup tradeGroup) {
+        return tradeGroupDao.insertTradeGroup(tradeGroup);
     }
 
     @Override
-    public String update(TradeGroup tradeGroup) {
-        return tradeGroupDao.updateTradeGroup(tradeGroup) > 0 ? "success":"fail";
+    public Integer update(TradeGroup tradeGroup) {
+        return tradeGroupDao.updateTradeGroup(tradeGroup);
     }
 
     @Override
     @Transactional
-    public String delete(Integer id) {
+    public Integer delete(Integer id) {
         List<Integer> ids = supplierService.getIdByTradeGroupId(id);
         for (Integer supplierId: ids) {
             supplierService.deleteSupplier(supplierId);
         }
-        return tradeGroupDao.deleteTradeGroup(id) > 0 ? "success":"fail";
+        return tradeGroupDao.deleteTradeGroup(id);
+    }
+
+    @Override
+    @Transactional
+    public Integer multiDelete(List<Integer> ids) {
+        // TODO 这里调用 delete() 的事务会失效
+        return ids.stream().mapToInt(id -> delete(id)).sum();
     }
 
     @Override
@@ -113,6 +120,7 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
 
     @Override
     public Integer selectIdByNameOrInsert(String name) {
+        name = name.trim(); //去空格，排重
         Integer id = tradeGroupDao.selectIdByName(name);
         if (id == null) {
             TradeGroup tradeGroup = new TradeGroup(null, name, null);

@@ -12,9 +12,10 @@
 
 	<!--配置静态资源文件存放目录-->
 	<mvc:resources location="/statics/" mapping="/statics/**"/>
+	<mvc:resources location="/ry-statics/" mapping="/ry-statics/**"/>
 	<mvc:resources mapping="/common/**" location="/common/"/>
 	<!--配置扫描包-->
-	 <context:component-scan base-package="cn.xt.sms.controller"></context:component-scan>
+	<context:component-scan base-package="cn.xt.sms.controller"/>
 	<!--配置注解驱动， 配置日期数据转换类-->
 	 <mvc:annotation-driven conversion-service="myDateConverter">
 		 <!--配置json字符处理-->

@@ -3,6 +3,7 @@
   Created by 2018/3/15
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,9 +115,9 @@
                                                                        background:         linear-gradient(top, #A4E0F5, #F2F2F2);">
                             <th>序号</th>
                             <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
-                            <th>产品编号</th>
-                            <th>产品名称</th>
-                            <th>产品规格</th>
+                            <th>商品编号</th>
+                            <th>商品名称</th>
+                            <th>商品规格</th>
                             <th>品牌</th>
                             <th>技术参数</th>
                             <th>价格-单位</th>
@@ -136,29 +137,6 @@
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 </a>
-
-<%--<!-- 材料信息表单 -->
-<div class="modal fade" id="product-form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width: 60%;">
-        <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h4 class="modal-title green">
-                </h4>
-            </div>
-            <div class="modal-body">
-                <jsp:include page="${pageContext.request.contextPath}/common/product-form.jsp"/>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-white" data-dismiss="modal">
-                    取消
-                </button>
-                <button type="button" class="btn btn-warning btn-white" id="confirm">
-                    确定
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->--%>
 
 <!-- basic scripts -->
 
@@ -213,6 +191,19 @@
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
+<script type="text/javascript">
+    // TODO 目的：shiro权限控制页面显示
+    //      问题：使用js对页面内容动态添加时，嵌套在字符串中的<shiro>无效
+    //          如：$(body).append("<shiro:hasAnyPermission name='admin'>你好</shiro:hasAnyPermission>"); // 无效
+    //      临时方法：把是否拥有权限通过变量来存储，在动态添加的时候是否通过判断变量来指定某个标签是否需要显示
+    //          如：const hasAdmin = false; <shiro:hasAnyPermission name="admin">hasAdmin = true;</shiro:hasAnyPermission>
+    //              $(body).append("你好".display(hasAdmin)); display 是自定义添加的原生方法，如果hasAdmin=true返回原字符串，否则返回空字符串
+    //      缺点：耦合高
+    var has_product_delete = false; <shiro:hasAnyPermission name="admin,product:delete">has_product_delete = true;</shiro:hasAnyPermission>
+    var has_product_insert = false; <shiro:hasAnyPermission name="admin,product:insert">has_product_insert = true;</shiro:hasAnyPermission>
+    var has_product_update = false; <shiro:hasAnyPermission name="admin,product:update">has_product_update = true;</shiro:hasAnyPermission>
+</script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">

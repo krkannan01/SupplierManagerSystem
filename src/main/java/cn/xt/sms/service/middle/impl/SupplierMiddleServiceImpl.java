@@ -10,6 +10,7 @@ import cn.xt.sms.service.ISupplierService;
 import cn.xt.sms.service.ITradeGroupService;
 import cn.xt.sms.service.middle.ISupplierMiddleService;
 import cn.xt.sms.util.POIUtil;
+import cn.xt.sms.util.Render;
 import lombok.extern.log4j.Log4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -186,7 +187,7 @@ public class SupplierMiddleServiceImpl implements ISupplierMiddleService {
 
                 } catch (NullCellValueException ncve) {
                     pointer = tempPointer + 2;
-                    System.out.println(ansi().eraseScreen().render("@|yellow \t--------\t合作情况信息为空|@\t--------"));
+                    System.out.println(Render.renderWarn("\t--------\t合作情况信息为空\t--------"));
                     break;
                 }
 
@@ -214,7 +215,7 @@ public class SupplierMiddleServiceImpl implements ISupplierMiddleService {
 
                 } catch (NullCellValueException ncve) {
                     pointer = tempPointer + 5;
-                    System.out.println(ansi().eraseScreen().render("@|yellow \t\t--------\t联系人信息为空|@\t--------"));
+                    System.out.println(Render.renderWarn("\t\t--------\t联系人信息为空\t--------"));
                 }
                 cooperationList.add(cooperation);
             }
@@ -225,7 +226,7 @@ public class SupplierMiddleServiceImpl implements ISupplierMiddleService {
         for (Supplier supplier : supplierList) {
             try {
                 if (supplierService.getIdByFullName(supplier.getFullName()) != null) {
-                    System.out.print(ansi().eraseScreen().render("\n@|red \t供应商名已存在，跳过该项\t|@\n"));
+                    System.out.print(Render.renderError("\n\t供应商名已存在，跳过该项\t\n"));
                 } else {
                     handleTradeGroup(supplier);
                     supplierService.insertSupplier(context, supplier);
@@ -254,6 +255,7 @@ public class SupplierMiddleServiceImpl implements ISupplierMiddleService {
                 "自定义属性1", "自定义属性2", "自定义属性3", "自定义属性4", "自定义属性5", "项目名称", "产品名称", "主要联系人姓名", "次要联系人姓名",
                 "主要联系方式", "次要联系方式", "备注"};
 
+        // tags 储存每列的样式 在 util.styles 样式组中的下标   0：无样式  1：灰底橙字  2：灰底绿字
         int[] tags = {0, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 3, 4, 4, 4, 4, 6, 6, 6, 6, 6, 8, 8, 8, 8, 8, 8, 8};
 
         POIUtil util = new POIUtil(wb);

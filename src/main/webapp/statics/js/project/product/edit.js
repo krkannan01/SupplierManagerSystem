@@ -1,9 +1,17 @@
+const get_product_group_list_path = $ctx + "/productGroup/getProductGroupList";
+
 // validate.js 插件的自定义验证方法
 jQuery.validator.addMethod("notnull", function (value, element, param) {
     return param ? value : false;
 }, $.validator.format("不能为空!"));
+jQuery.validator.addMethod("price", function (value, element, param) {
+    var reg = /^\d{0,8}\.{0,1}(\d{1,2})?$/;
+    return param ? reg.test(value) : true;
+}, $.validator.format("只能为两位小数值!"));
 
 jQuery(function($){
+
+    initSelectBox($("select[name=group]"), get_product_group_list_path, handleProductGroupData);
 
     $("#form-product-add").validate({
         rules:{
@@ -15,7 +23,7 @@ jQuery(function($){
             },
             price:{
                 required:true,
-                digits:true
+                price:true
             },
             supplier:{
                 notnull:true
@@ -33,7 +41,7 @@ jQuery(function($){
             },
             "price": {
                 required: "商品单价不能为空",
-                digits: "商品单价必须是数值"
+                price: "商品单价必须是两位小数值"
             },
             "supplier": {
                 notnull: "商品供应商不能为空"
@@ -49,7 +57,47 @@ jQuery(function($){
     });
 });
 
-function add() {
+// 初始化下拉选择框
+function initSelectBox(el, requestPath, processorMethod) {
+    var $el = $(el);
+    var data = {};
+    var success = false;
+    // 加载数据
+    $.ajax({
+        url: requestPath,
+        type: "GET",
+        dataType: "JSON",
+        async: false,
+        success: function(result) {
+            success = true;
+            data = result;
+        }
+    });
+
+    // 处理数据
+    var htmlContent = processorMethod(data);
+    $el.html($el.html() + htmlContent);
+}
+
+// 处理商品分组数据
+function handleProductGroupData(data, prefix, prefix_unit) {
+    if (data && data.length > 0) {
+        prefix = prefix || "";
+        prefix_unit = prefix_unit || "&nbsp;&nbsp;--&nbsp;&nbsp;";
+        var html = "";
+        $.each(data, function(index, item) {
+            html += "<option value='"+ item.id +"'>"+ prefix + item.name +"</option>";
+            if (item.children) {
+                html += handleProductGroupData(item.children, prefix_unit + prefix, prefix_unit);
+            }
+        });
+        return html;
+    } else {
+        return "<option value='0'> 无信息 </option>";
+    }
+}
+
+function update() {
     var data = {};
 
     data["id"] = $id;
@@ -69,7 +117,7 @@ function add() {
         dataType: "json",
         data: data,
         success: function(result) {
-            if (data && data.code == 0) {
+            if (result && result.code == 0) {
                 parent.layer.msg("修改成功,正在刷新数据请稍后……",{icon:1,time: 500,shade: [0.1,'#fff']},function(){
                     $.parentReload();
                 });

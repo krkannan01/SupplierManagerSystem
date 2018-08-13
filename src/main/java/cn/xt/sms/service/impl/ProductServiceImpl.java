@@ -7,7 +7,7 @@ import cn.xt.sms.entity.Product;
 import cn.xt.sms.service.IProductBrandService;
 import cn.xt.sms.service.IProductGroupService;
 import cn.xt.sms.service.IProductService;
-import cn.xt.sms.util.NoUtil;
+import cn.xt.sms.util.NOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements IProductService {
                 product.getBrandId().setGroupId(product.getGroupId().getId().toString());
             }
             productBrandService.setIdAndInsertProductBrand(product.getBrandId());
-            product.setNo(NoUtil.getProductNo(context)); // 获取商品编号并设置到实体中
+            product.setNo(NOUtil.getProductNo(context)); // 获取商品编号并设置到实体中
             return productDao.insertProduct(product);
         }
         return 0;

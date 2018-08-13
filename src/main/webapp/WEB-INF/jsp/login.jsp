@@ -41,9 +41,9 @@
         .error:-moz-placeholder, .error:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ color: #ff0000; }
         .error::-moz-placeholder, .error::-moz-placeholder { /* Mozilla Firefox 19+ */ color: #ff0000; }
         .error:-ms-input-placeholder, .error:-ms-input-placeholder { /* Internet Explorer 10+ */ color: #ff0000; }
-        .bgs { width: 100%; margin: 0; list-style: none; position: fixed; z-index: -1; }
-        .bg { width: 100%; float: left; position: fixed; left: 0; top: 0; opacity: 0; }
-        .bg img { width: 100%; }
+        .bgs { width: 100%; height: 100%; margin: 0; list-style: none; position: fixed; z-index: -1; }
+        .bg { width: 100%; height: 100%; float: left; position: fixed; left: 0; top: 0; opacity: 0; }
+        .bg img { background-size: cover; }
         .radian { border-radius: 15px; }
     </style>
 
@@ -55,11 +55,11 @@
 
 <body class="login-layout light-login">
 <ul class="bgs">
-    <li class="bg" style="opacity: 1;"><img src="${pageContext.request.contextPath}/statics/img/bg1.jpg" /></li>
-    <li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg2.jpg" /></li>
+    <li class="bg" style="opacity: 1;"><img src="${pageContext.request.contextPath}/statics/img/bg4.jpg" /></li>
+    <%--<li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg2.jpg" /></li>
     <li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg3.jpg" /></li>
     <li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg4.jpg" /></li>
-    <li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg5.jpg" /></li>
+    <li class="bg"><img src="${pageContext.request.contextPath}/statics/img/bg5.jpg" /></li>--%>
 </ul>
 <div class="main-container">
     <div class="main-content">

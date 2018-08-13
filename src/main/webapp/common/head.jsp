@@ -1,4 +1,5 @@
 <%@ page import="cn.xt.sms.entity.User" %>
+<%@ page import="cn.xt.sms.constant.CommonConstants" %>
 <%--
   @author xietao.x@qq.com
   Created by 2018/3/22
@@ -10,7 +11,7 @@
     User user = (User) session.getAttribute("user");
     if (user != null) {
         if (user.getHeadImg() != null && user.getHeadImg() != "") {
-            headImg = "headImg/" + user.getHeadImg();
+            headImg = user.getHeadImg();
         }
         if (user.getUsername() != null) {
             if (user.getUsername().equals("admin")) {
@@ -64,7 +65,7 @@
                 <!-- #section:basics/navbar.user_menu -->
                 <li class="light-blue dropdown-modal">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <img class="nav-user-photo" style="width: 40px;height: 40px;" src="${pageContext.request.contextPath}/statics/<%=headImg%>" alt="头像" />
+                        <img class="nav-user-photo" style="width: 40px;height: 40px;" src="${pageContext.request.contextPath}/<%=CommonConstants.HEAD_IMG_URL%>/<%=headImg%>" alt="头像" />
 								<span class="user-info">
 									<small>欢迎,</small>
 									<%=username%>

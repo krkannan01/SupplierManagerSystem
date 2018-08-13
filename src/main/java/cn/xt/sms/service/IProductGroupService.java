@@ -10,19 +10,22 @@ import java.util.List;
  */
 public interface IProductGroupService {
 
-    /*查询所有材料分组信息*/
-    List<ProductGroup> getProductGroupList(Integer parentId);
+    /*查询所有商品分组信息*/
+    List<ProductGroup> getProductGroupList();
+    
+    /*查询所有商品分组信息和分组下的商品数量信息*/
+    List<ProductGroup> getProductGroupListAndSupplierCount();
 
-    /*根据ID查询材料分组信息*/
+    /*根据ID查询商品分组信息*/
     ProductGroup getProductGroupById(Integer id);
 
-    /*修改材料分组信息*/
+    /*修改商品分组信息*/
     Integer updateProductGroup(ProductGroup productGroup);
 
-    /*新增材料分组信息*/
+    /*新增商品分组信息*/
     Integer setIdAndInsertProductGroup(ProductGroup productGroup);
 
-    /*删除材料分组信息*/
+    /*删除商品分组信息*/
     Integer deleteProductGroup(Integer id);
 
     /*验证名称是否已存在*/

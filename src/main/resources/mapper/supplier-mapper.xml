@@ -6,57 +6,57 @@
   <sql id="table-name">`table_supplier`</sql>
 
   <resultMap id="SupplierMap" type="Supplier">
-    <id property="id" column="te_id"/>
-    <result property="no" column="te_no"/>
-    <result property="fullName" column="te_full_name"/>
-    <result property="simpleName" column="te_simple_name"/>
-    <result property="UCCcode" column="te_UCCcode"/>
-    <result property="legalRepresentative" column="te_legal_representative"/>
-    <result property="website" column="te_website"/>
-    <result property="mainProduct" column="te_main_product"/>
-    <result property="foundDate" column="te_found_date"/>
-    <result property="type" column="te_type"/>
-    <result property="registeredCapital" column="te_registered_capital"/>
-    <result property="businessDeadlineGo" column="te_business_deadline_go"/>
-    <result property="businessDeadlineTo" column="te_business_deadline_to"/>
-    <result property="registerDepartment" column="te_register_department"/>
-    <result property="approvalDate" column="te_approval_date"/>
-    <result property="registerState" column="te_register_state"/>
-    <result property="address" column="te_address"/>
-    <result property="operateRange" column="te_operate_range"/>
-    <result property="exceptionInfo" column="te_exception_info"/>
-    <result property="dangerInfo" column="te_danger_info"/>
-    <result property="comment" column="te_comment"/>
-    <result property="userDefinedFieldOne" column="te_user_defined_field_one"/>
-    <result property="userDefinedFieldTwo" column="te_user_defined_field_two"/>
+    <id     property="id"                    column="te_id"/>
+    <result property="no"                    column="te_no"/>
+    <result property="fullName"              column="te_full_name"/>
+    <result property="simpleName"            column="te_simple_name"/>
+    <result property="UCCcode"               column="te_UCCcode"/>
+    <result property="legalRepresentative"   column="te_legal_representative"/>
+    <result property="website"               column="te_website"/>
+    <result property="mainProduct"           column="te_main_product"/>
+    <result property="foundDate"             column="te_found_date"/>
+    <result property="type"                  column="te_type"/>
+    <result property="registeredCapital"     column="te_registered_capital"/>
+    <result property="businessDeadlineGo"    column="te_business_deadline_go"/>
+    <result property="businessDeadlineTo"    column="te_business_deadline_to"/>
+    <result property="registerDepartment"    column="te_register_department"/>
+    <result property="approvalDate"          column="te_approval_date"/>
+    <result property="registerState"         column="te_register_state"/>
+    <result property="address"               column="te_address"/>
+    <result property="operateRange"          column="te_operate_range"/>
+    <result property="exceptionInfo"         column="te_exception_info"/>
+    <result property="dangerInfo"            column="te_danger_info"/>
+    <result property="comment"               column="te_comment"/>
+    <result property="userDefinedFieldOne"   column="te_user_defined_field_one"/>
+    <result property="userDefinedFieldTwo"   column="te_user_defined_field_two"/>
     <result property="userDefinedFieldThree" column="te_user_defined_field_three"/>
-    <result property="userDefinedFieldFour" column="te_user_defined_field_four"/>
-    <result property="userDefinedFieldFive" column="te_user_defined_field_five"/>
-    <result property="enterDate" column="te_enter_date"/>
-    <result property="level" column="te_level"/>
+    <result property="userDefinedFieldFour"  column="te_user_defined_field_four"/>
+    <result property="userDefinedFieldFive"  column="te_user_defined_field_five"/>
+    <result property="enterDate"             column="te_enter_date"/>
+    <result property="level"                 column="te_level"/>
     <association property="contactId" javaType="Contact">
-      <id property="id" column="tc_id"/>
-      <result property="nameMaster" column="tc_name_master"/>
-      <result property="nameSlave" column="tc_name_slave"/>
-      <result property="phoneNumberMaster" column="tc_phone_number_master"/>
-      <result property="phoneNumberSlave" column="tc_phone_number_slave"/>
-      <result property="comment" column="tc_comment"/>
+      <id     property="id"                  column="tc_id"/>
+      <result property="nameMaster"          column="tc_name_master"/>
+      <result property="nameSlave"           column="tc_name_slave"/>
+      <result property="phoneNumberMaster"   column="tc_phone_number_master"/>
+      <result property="phoneNumberSlave"    column="tc_phone_number_slave"/>
+      <result property="comment"             column="tc_comment"/>
     </association>
     <association property="tradeGroupId" javaType="TradeGroup">
-      <id property="id" column="ttg_id"/>
+      <id     property="id"   column="ttg_id"/>
       <result property="name" column="ttg_name"/>
     </association>
     <collection property="cooperationList" ofType="Cooperation">
-      <id property="id" column="tco_id"/>
+      <id     property="id"          column="tco_id"/>
       <result property="projectName" column="tco_project_name"/>
       <result property="productName" column="tco_product_name"/>
       <association property="contactId" javaType="Contact">
-        <id property="id" column="tc2_id"/>
-        <result property="nameMaster" column="tc2_name_master"/>
-        <result property="nameSlave" column="tc2_name_slave"/>
+        <id     property="id"                column="tc2_id"/>
+        <result property="nameMaster"        column="tc2_name_master"/>
+        <result property="nameSlave"         column="tc2_name_slave"/>
         <result property="phoneNumberMaster" column="tc2_phone_number_master"/>
-        <result property="phoneNumberSlave" column="tc2_phone_number_slave"/>
-        <result property="comment" column="tc2_comment"/>
+        <result property="phoneNumberSlave"  column="tc2_phone_number_slave"/>
+        <result property="comment"           column="tc2_comment"/>
       </association>
     </collection>
   </resultMap>

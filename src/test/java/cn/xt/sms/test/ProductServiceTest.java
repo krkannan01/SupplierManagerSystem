@@ -90,7 +90,7 @@ public class ProductServiceTest {
 
     @Test
     public void testGetProductGroupList() {
-        List<ProductGroup> productGroupList = productGroupService.getProductGroupList(0);
+        List<ProductGroup> productGroupList = productGroupService.getProductGroupList();
         if (productGroupList != null) {
             if (productGroupList.size() > 0) {
                 for (ProductGroup productGroup:productGroupList) {

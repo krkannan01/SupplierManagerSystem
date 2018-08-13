@@ -30,19 +30,19 @@ jQuery(function($) {
         dataUrl: $ctx + "/document/getDocumentList",
         render: render_file,
         buttons: "<div class='col-sm-3 col-xs-12'>" +
-        "    <shiro:hasAnyPermission name='admin,deleteSupplierDocument'>" +
-        "        <button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
-        "    <button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
-        "        <i class='ace-icon fa fa-bolt'></i> 刷新" +
-        "    </button>" +
-        "    <shiro:hasAnyPermission name='admin,insertSupplierDocument'>" +
-        "        <button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-plus'></i> 新增" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
+        (
+            "<button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
+            "    <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
+            "</button>"
+        ).display(has_document_delete) +
+            "<button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
+            "    <i class='ace-icon fa fa-bolt'></i> 刷新" +
+            "</button>" +
+        (
+            "<button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px;'>" +
+            "    <i class='ace-icon fa fa-plus'></i> 新增" +
+            "</button>"
+        ).display(has_document_insert) +
         "</div>"
     });
 
@@ -174,9 +174,7 @@ jQuery(function($) {
                     "<td></td>" +
                     "<td class='appendixName'>" + item.appendixName + "</td>" +
                     "<td>" +
-                        "<shiro:hasAnyPermission name='admin,deleteFile'>" +
-                        "    <button class='btn btn-xs btn-round btn-danger deleteFile' data-id='" + item.id + "'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>" +
-                        "</shiro:hasAnyPermission>" +
+                    ("<button class='btn btn-xs btn-round btn-danger deleteFile' data-id='" + item.id + "'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>").display(has_document_delete) +
                     "</td>" +
                 "</tr>";
             });

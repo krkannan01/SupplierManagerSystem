@@ -21,8 +21,11 @@ public interface IDocumentTypeDao {
     // 获取文档类型集合
     List<DocumentType> getDocumentTypeList();
 
-    // 修改使用频率
+    // 修改文档类型使用频率 (用于排序)
     Integer updateUseFrequency(@Param("id") Integer id,
                                @Param("increment") Integer increment);
+
+    // 修改文档类型
+    Integer updateDocumentType(DocumentType type);
 
 }

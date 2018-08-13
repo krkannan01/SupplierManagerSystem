@@ -1,4 +1,5 @@
-<%--
+<%@ page import="cn.xt.sms.constant.PrivilegeConstants" %>
+<%@ page import="cn.xt.sms.entity.Privilege" %><%--
   @author xietao.x@qq.com
   Created by 2018/3/15
 --%>
@@ -45,6 +46,7 @@
     <!-- inline styles related to this page -->
     <style>
         /* styling the grid page's grid elements */
+        .page-header h1{ font-size: 18px; }
         .center{text-align:center;}
         .center [class*="col-"]{margin-top:2px;margin-bottom:2px;position:relative;text-overflow:ellipsis;}
         .center [class*="col-"]  div{position:relative;z-index:2;padding-top:4px;padding-bottom:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;}
@@ -131,12 +133,12 @@
                             供应商信息查询
                         </small>
                         <div class="btn-group" style="float: right;">
-                            <shiro:hasAnyPermission name="admin,insertProduct">
+                            <shiro:hasAnyPermission name="admin,product:insert">
                                 <button class="btn btn-success btn-sm btn-round" id="import-excel-button" style="height: 34px; border-width: 1px; margin-right: 10px;">
                                     <i class="ace-icon fa fa-arrow-circle-o-down"></i> 导入Excel
                                 </button>
                             </shiro:hasAnyPermission>
-                            <shiro:hasAnyPermission name="admin,searchProduct">
+                            <shiro:hasAnyPermission name="admin,product:search">
                                 <button class="btn btn-warning btn-sm btn-round" id="export-excel-button" style="height: 34px; border-width: 1px; margin-right: 10px;">
                                     <i class="ace-icon fa fa-arrow-circle-o-up"></i> 导出Excel
                                 </button>
@@ -184,66 +186,66 @@
                                 <ul id="supplier-group-tree"></ul>
                             </div>
                             <div style="float: right; width: 84%;">
-                            <div class="row filter-box">
-                                <div class="row filter-body groups">
-                                    <div class="row group-lowest">
-                                        <div class="col-sm-1 col-xs-12 group-head">模糊筛选：</div>
-                                        <div class="col-sm-11 col-xs-12 group-body">
-                                            <div class="row">
-                                                <form class="form-search">
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-addon"> 供应商名称 </span>
-                                                            <input type="text" class="form-control search-query" id="supplier-input" placeholder="按供应商名称搜索" />
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn-purple btn-xs" id="supplier-search">
-                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                                    搜索
-                                                                </button>
-                                                            </span>
+                                <div class="row filter-box">
+                                    <div class="row filter-body groups">
+                                        <div class="row group-lowest">
+                                            <div class="col-sm-1 col-xs-12 group-head">模糊筛选：</div>
+                                            <div class="col-sm-11 col-xs-12 group-body">
+                                                <div class="row">
+                                                    <form class="form-search">
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group input-group-sm">
+                                                                <span class="input-group-addon"> 供应商名称 </span>
+                                                                <input type="text" class="form-control search-query" id="supplier-input" placeholder="按供应商名称搜索" />
+                                                                <span class="input-group-btn">
+                                                                    <button type="button" class="btn btn-purple btn-xs" id="supplier-search">
+                                                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                        搜索
+                                                                    </button>
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-addon"> 单位税号 </span>
-                                                            <input type="text" class="form-control search-query" id="ucccode-input" placeholder="按单位税号搜索" />
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn-info btn-xs" id="ucccode-search">
-                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                                    搜索
-                                                                </button>
-                                                            </span>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group input-group-sm">
+                                                                <span class="input-group-addon"> 单位税号 </span>
+                                                                <input type="text" class="form-control search-query" id="ucccode-input" placeholder="按单位税号搜索" />
+                                                                <span class="input-group-btn">
+                                                                    <button type="button" class="btn btn-info btn-xs" id="ucccode-search">
+                                                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                        搜索
+                                                                    </button>
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-addon"> 经营范围 </span>
-                                                            <input type="text" class="form-control search-query" id="operate-range-input" placeholder="按经营范围搜索" />
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn- btn-xs" id="operate-range-search">
-                                                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                                    搜索
-                                                                </button>
-                                                            </span>
+                                                        <div class="col-sm-3">
+                                                            <div class="input-group input-group-sm">
+                                                                <span class="input-group-addon"> 经营范围 </span>
+                                                                <input type="text" class="form-control search-query" id="operate-range-input" placeholder="按经营范围搜索" />
+                                                                <span class="input-group-btn">
+                                                                    <button type="button" class="btn btn- btn-xs" id="operate-range-search">
+                                                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                        搜索
+                                                                    </button>
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-sm-3">
-                                                        <button type="button" class="btn btn-info btn-xs btn-round" id="unite-search">
-                                                            <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                                            联合搜索
-                                                        </button>
-                                                    </div>
-                                                </form>
+                                                        <div class="col-sm-3">
+                                                            <button type="button" class="btn btn-info btn-xs btn-round" id="unite-search">
+                                                                <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                                                联合搜索
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row" id="show-filter">当前查询条件：</div>
                                 </div>
-                                <div class="row" id="show-filter">当前查询条件：</div>
-                            </div>
-                            <table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-bottom:0">
+                                <table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-bottom:0">
                                 <thead>
                                     <tr>
                                         <th>序号</th>
@@ -260,7 +262,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -331,6 +333,19 @@
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
+<script type="text/javascript">
+    // TODO 目的：shiro权限控制页面显示
+    //      问题：使用js对页面内容动态添加时，嵌套在字符串中的<shiro>无效
+    //          如：$(body).append("<shiro:hasAnyPermission name='admin'>你好</shiro:hasAnyPermission>"); // 无效
+    //      临时方法：把是否拥有权限通过变量来存储，在动态添加的时候是否通过判断变量来指定某个标签是否需要显示
+    //          如：const hasAdmin = false; <shiro:hasAnyPermission name="admin">hasAdmin = true;</shiro:hasAnyPermission>
+    //              $(body).append("你好".display(hasAdmin)); display 是自定义添加的原生方法，如果hasAdmin=true返回原字符串，否则返回空字符串
+    //      缺点：耦合高
+    var has_supplier_delete = false; <shiro:hasAnyPermission name="admin,supplier:delete">has_supplier_delete = true;</shiro:hasAnyPermission>
+    var has_supplier_insert = false; <shiro:hasAnyPermission name="admin,supplier:insert">has_supplier_insert = true;</shiro:hasAnyPermission>
+    var has_supplier_update = false; <shiro:hasAnyPermission name="admin,supplier:update">has_supplier_update = true;</shiro:hasAnyPermission>
+</script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">

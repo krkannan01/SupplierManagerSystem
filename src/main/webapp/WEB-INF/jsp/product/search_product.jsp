@@ -1,3 +1,4 @@
+<%@ page import="cn.xt.sms.constant.PrivilegeConstants" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
@@ -11,7 +12,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>查询材料信息 - 供应商管理系统</title>
+    <title>查询商品信息 - 供应商管理系统</title>
 
     <meta name="description" content="with selectable elements and custom icons" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -38,6 +39,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace-skins.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/statics/assets/css/ace-rtl.css" />
     <style type="text/css">
+        .page-header h1{ font-size: 18px; }
         #product-form-modal>.modal-dialog{width:800px;margin:30px auto;margin-top:30px}
         hr{border-style:dashed;margin:5px 0}
         .filter-box{margin:6px 20px}
@@ -109,18 +111,18 @@
                 <!-- /section:settings.box -->
                 <div class="page-header">
                     <h1>
-                        材料信息管理
+                        商品信息管理
                         <small>
                             <i class="ace-icon fa fa-angle-double-right"></i>
-                            材料信息查询
+                            商品信息查询
                         </small>
                         <div class="btn-group" style="float: right;">
-                            <shiro:hasAnyPermission name="admin,insertProduct">
+                            <shiro:hasAnyPermission name="admin,product:insert">
                                 <button class="btn btn-success btn-sm btn-round" id="import-excel-button" style="height: 34px; border-width: 1px; margin-right: 10px;">
                                     <i class="ace-icon fa fa-arrow-circle-o-down"></i> 导入Excel
                                 </button>
                             </shiro:hasAnyPermission>
-                            <shiro:hasAnyPermission name="admin,searchProduct">
+                            <shiro:hasAnyPermission name="admin,product:search">
                                 <button class="btn btn-warning btn-sm btn-round" id="export-excel-button" style="height: 34px; border-width: 1px; margin-right: 10px;">
                                     <i class="ace-icon fa fa-arrow-circle-o-up"></i> 导出Excel
                                 </button>
@@ -139,7 +141,7 @@
                             <div class="col-sm-12">
                                 <div class="widget-box widget-color-blue2">
                                     <div class="widget-header">
-                                        <h4 class="widget-title lighter smaller">材料信息汇总</h4>
+                                        <h4 class="widget-title lighter smaller">商品信息汇总</h4>
                                     </div>
 
                                     <div class="widget-body">
@@ -239,8 +241,8 @@
                                                             <th>序号</th>
                                                             <th class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </th>
                                                             <th>商品编号</th>
-                                                            <th>产品名称</th>
-                                                            <th>产品规格</th>
+                                                            <th>商品名称</th>
+                                                            <th>商品规格</th>
                                                             <th>品牌</th>
                                                             <th>技术参数</th>
                                                             <th>价格-单位</th>
@@ -278,18 +280,18 @@
 
     <%-- 右键菜单 --%>
     <div id="my-menu">
-        <shiro:hasAnyPermission name="admin,insertProductGroup">
+        <shiro:hasAnyPermission name="admin,product_group:insert">
             <div class="my-menu" id="insertChildNode">添加子节点</div>
         </shiro:hasAnyPermission>
-        <shiro:hasAnyPermission name="admin,deleteProductGroup">
+        <shiro:hasAnyPermission name="admin,product_group:delete">
             <div class="my-menu" id="deleteNode">删除节点</div>
         </shiro:hasAnyPermission>
-        <shiro:hasAnyPermission name="admin,updateProductGroup">
+        <shiro:hasAnyPermission name="admin,product_group:update">
             <div class="my-menu" id="updateNode">修改节点</div>
         </shiro:hasAnyPermission>
     </div>
 
-    <!-- 材料信息表单 -->
+    <!-- 商品信息表单 -->
     <div class="modal fade" id="product-form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -312,7 +314,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <!-- 材料分组信息表单 -->
+    <!-- 商品分组信息表单 -->
     <div class="modal fade" id="product-group-form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -373,6 +375,19 @@
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
+<script type="text/javascript">
+    // TODO 目的：shiro权限控制页面显示
+    //      问题：使用js对页面内容动态添加时，嵌套在字符串中的<shiro>无效
+    //          如：$(body).append("<shiro:hasAnyPermission name='admin'>你好</shiro:hasAnyPermission>"); // 无效
+    //      临时方法：把是否拥有权限通过变量来存储，在动态添加的时候是否通过判断变量来指定某个标签是否需要显示
+    //          如：const hasAdmin = false; <shiro:hasAnyPermission name="admin">hasAdmin = true;</shiro:hasAnyPermission>
+    //              $(body).append("你好".display(hasAdmin)); display 是自定义添加的原生方法，如果hasAdmin=true返回原字符串，否则返回空字符串
+    //      缺点：耦合高
+    var has_product_delete = false; <shiro:hasAnyPermission name="admin,product:delete">has_product_delete = true;</shiro:hasAnyPermission>
+    var has_product_insert = false; <shiro:hasAnyPermission name="admin,product:insert">has_product_insert = true;</shiro:hasAnyPermission>
+    var has_product_update = false; <shiro:hasAnyPermission name="admin,product:update">has_product_update = true;</shiro:hasAnyPermission>
+</script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">

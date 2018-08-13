@@ -24,18 +24,22 @@ public class ProductGroupServiceImpl implements IProductGroupService {
     @Autowired
     private IProductGroupDao productGroupDao;
 
+    public List<ProductGroup> getProductGroupList() {
+        return productGroupDao.getProductGroupList();
+    }
+
     @Override
-    public List<ProductGroup> getProductGroupList(Integer parentId) {
+    public List<ProductGroup> getProductGroupListAndSupplierCount() {
         /* 1:取出 parentId 为参数中 parentId 的第一级集合，并将第一集集合元素添加道队列中
          * 2:依次为队列中的元素查找子集，并将子集元素已添加到队列中，直至队列全部遍历完成 */
-        List<ProductGroup> productGroupList = productGroupDao.getProductGroupList();  // 全部分组信息
+        List<ProductGroup> productGroupList = productGroupDao.getProductGroupListAndSupplierCount();  // 全部分组信息
         List<ProductGroup> resultGroupList = new ArrayList<>();  // 初始化结果集
         Queue<ProductGroup> queue = new LinkedList<>();  // 需要查找子集的元素的队列
 
         int index = 0;  // 标识已取出的数据的个数
 
         // 遍历结果集，为结果集设置子集
-        resultGroupList = getProductGroupForAllByParentId(productGroupList, parentId, index);
+        resultGroupList = getProductGroupForAllByParentId(productGroupList, 0, index);
         if (resultGroupList.size() > 0) {
             resultGroupList.stream().forEach(e -> queue.offer(e));  // 添加到队列
             index += resultGroupList.size();  // 取出的数量叠加
@@ -45,7 +49,7 @@ public class ProductGroupServiceImpl implements IProductGroupService {
 
         // 循环队列
         while (queue.size() > 0) {
-            ProductGroup productGroup = queue.poll();  // 弹出第一个元素并再队列中删除
+            ProductGroup productGroup = queue.poll();  // 弹出第一个元素并在队列中删除
             productGroup.setChildren(getProductGroupForAllByParentId(productGroupList, productGroup.getId(), index));
             if (productGroup.getChildren().size() > 0) {
                 productGroup.getChildren().stream().forEach(e -> queue.offer(e));

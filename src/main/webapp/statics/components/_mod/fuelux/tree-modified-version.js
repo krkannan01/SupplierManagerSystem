@@ -184,7 +184,9 @@
                         var header = $entity.find('.tree-branch-header');
 
                         // TODO 改动
+                        console.log(value);
                         if (value.state === 'open') {
+                            self.discloseFolder(header, false);
                             setTimeout(function(){header.trigger('click')}, 0);
                         }
 

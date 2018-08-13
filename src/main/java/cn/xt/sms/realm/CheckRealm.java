@@ -3,6 +3,8 @@ package cn.xt.sms.realm;
 import cn.xt.sms.dao.IUserDao;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IPrivilegeService;
+import cn.xt.sms.util.Render;
+import lombok.extern.log4j.Log4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -14,6 +16,9 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
+@Log4j
 public class CheckRealm extends AuthorizingRealm {
 
     @Autowired
@@ -43,6 +48,8 @@ public class CheckRealm extends AuthorizingRealm {
         if (user.getIsSu() == 1) {
             info.addStringPermission("admin");
         } else {
+            List<String> privilegeList = privilegeService.getPrivilegeList(user.getId());
+            privilegeList.forEach(p -> log.info(Render.renderInfo(p)));
             info.addStringPermissions(privilegeService.getPrivilegeList(user.getId()));
         }
         return info;

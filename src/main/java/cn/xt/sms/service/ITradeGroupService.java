@@ -11,13 +11,16 @@ import java.util.List;
 public interface ITradeGroupService {
 
     /*新增TradeGroup信息*/
-    String insert(TradeGroup tradeGroup);
+    Integer insert(TradeGroup tradeGroup);
 
     /*更新TradeGroup信息*/
-    String update(TradeGroup tradeGroup);
+    Integer update(TradeGroup tradeGroup);
 
     /*删除TradeGroup信息*/
-    String delete(Integer id);
+    Integer delete(Integer id);
+
+    /*多行删除TradeGroup信息*/
+    Integer multiDelete(List<Integer> ids);
 
     /*查询所有TradeGroup信息*/
     List<TradeGroup> getTradeGroup(Integer parentId, Integer categoryId);

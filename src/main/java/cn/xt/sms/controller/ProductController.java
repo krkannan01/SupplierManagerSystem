@@ -3,6 +3,7 @@ package cn.xt.sms.controller;
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.ProductCondition;
+import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.dto.MapDTO;
 import cn.xt.sms.entity.ProductGroup;
 import cn.xt.sms.enums.ResponseCode;
@@ -44,6 +45,8 @@ import java.util.List;
 @RequestMapping("/product")
 public class ProductController {
 
+    private final String privilege_prefix = PrivilegeConstants.PRODUCT;
+
     @Autowired
     private IProductService productService;
     @Autowired
@@ -55,28 +58,28 @@ public class ProductController {
     @Autowired
     private IProductGroupService productGroupService;
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/toSearchProduct")
     public String toSearchProduct() {
         return "product/search_product";
     }
 
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getProductList")
     public DataResponse<Product> getProductList(ProductCondition productCondition, Integer currentPage, Integer pageSize) {
         return productService.getProductList(productCondition, currentPage, pageSize);
     }
 
 
-    @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @GetMapping("/toInsertPage")
     public String toInsertPage() {
         return "product/add";
     }
 
 
-    @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insertProduct")
     public SimpleResponse insertProduct(HttpServletRequest request, Product product) {
         Integer affectedRowNumber = productService.insertProduct(request.getServletContext(), product);
@@ -84,7 +87,7 @@ public class ProductController {
     }
 
 
-    @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/deleteProduct")
     public SimpleResponse deleteProduct(Integer id) {
         Integer affectedRowNumber = productService.deleteProduct(id);
@@ -92,7 +95,7 @@ public class ProductController {
     }
 
 
-    @RequiresPermissions(value = {"admin","deleteProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/multiDeleteProduct")
     public SimpleResponse MultiDeleteProduct(String ids) {
         Integer affectedRowNumber = productMiddleService.multiDeleteProduct(ids);
@@ -100,20 +103,20 @@ public class ProductController {
     }
 
 
-    @RequiresPermissions(value = {"admin","updateProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @GetMapping("/toUpdatePage")
     public String toUpdatePage(Integer id, HttpServletRequest request) {
         Product product = productService.getProductById(id);
-        List<ProductGroup> groupList = productGroupService.getProductGroupList(0);
+        List<ProductGroup> groupList = productGroupService.getProductGroupList();
         List<MapDTO> supplierPartLists = supplierService.getSupplierIdAndName();
         request.setAttribute("product", product);
-        request.setAttribute("groupList", groupList);
+//        request.setAttribute("groupList", groupList);
         request.setAttribute("supplierPartLists", supplierPartLists);
         return "product/edit";
     }
 
 
-    @RequiresPermissions(value = {"admin","updateProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/updateProduct")
     public SimpleResponse updateProduct(Product product) {
         Integer affectedRowNumber = productService.updateProduct(product);
@@ -121,20 +124,20 @@ public class ProductController {
     }
 
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getProductById")
     public Product getProductById(Integer id) {
         return productService.getProductById(id);
     }
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getBrandByGroupId")
     public List<ProductBrand> getBrandByGroupId(String groupIds) {
         return productBrandService.getBrandByGroupId(groupIds);
     }
 
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getProductCount")
     public Integer getProductCount(ProductCondition productCondition) {
         return productService.getProductCount(productCondition);
@@ -142,7 +145,7 @@ public class ProductController {
 
 
     /*excel文件导入*/
-    @RequiresPermissions(value = {"admin","insertProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/importExcel")
     public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
@@ -167,7 +170,7 @@ public class ProductController {
         return new SimpleResponse(ResponseCode.SUCCESS, "解析失败");
     }
 
-    @RequiresPermissions(value = {"admin","searchProduct"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/exportExcel")
     public String exportExcel(HttpServletResponse response, Integer start, Integer end, ProductCondition productCondition) {
         Workbook wb = new XSSFWorkbook();

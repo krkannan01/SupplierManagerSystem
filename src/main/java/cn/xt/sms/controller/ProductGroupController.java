@@ -2,6 +2,7 @@ package cn.xt.sms.controller;
 
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
+import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.ProductGroup;
 import cn.xt.sms.response.SimpleResponse;
 import cn.xt.sms.service.IProductGroupService;
@@ -9,9 +10,7 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,23 +22,48 @@ import java.util.List;
 @RequestMapping("/productGroup")
 public class ProductGroupController {
 
+    private final String privilege_prefix = PrivilegeConstants.PRODUCT_GROUP;
+
     @Autowired
     private IProductGroupService productGroupService;
 
-    @RequiresPermissions(value = {"admin","searchProduct","searchProductGroup"},logical = Logical.OR)
-    @RestGetMapping("/getProductGroupList")
-    public List<ProductGroup> getProductGroupList() {
-        /*0代表从跟节点查询所有子节点*/
-        return productGroupService.getProductGroupList(0);
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @GetMapping("/toSearchProductGroupPage")
+    public String toSearchProductGroupPage() {
+        return "product_group/wrap";
     }
 
-    @RequiresPermissions(value = {"admin","searchProduct","searchProductGroup"},logical = Logical.OR)
-    @RestPostMapping("/getProductGroupById")
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @GetMapping("/toSearchProductGroup")
+    public String toSearchProductGroup() {
+        return "product_group/search_product_group";
+    }
+
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/list")
+    public List<ProductGroup> list() {
+        return productGroupService.getProductGroupList();
+    }
+
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/getProductGroupList")
+    public List<ProductGroup> getProductGroupList() {
+        return productGroupService.getProductGroupListAndSupplierCount();
+    }
+
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/getProductGroupById")
     public ProductGroup getProductGroupById(Integer id) {
         return productGroupService.getProductGroupById(id);
     }
 
-    @RequiresPermissions(value = {"admin","insertProductGroup"},logical = Logical.OR)
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insertProductGroup")
     public SimpleResponse insertProductGroup(ProductGroup productGroup) {
         if (productGroup.getParentId() == null) productGroup.setParentId(0);
@@ -47,23 +71,25 @@ public class ProductGroupController {
         return new SimpleResponse(affectedRowNumber);
     }
 
-    @RequiresPermissions(value = {"admin","deleteProductGroup"},logical = Logical.OR)
-    @RestPostMapping("/deleteProductGroup")
-    public SimpleResponse deleteProductGroup(Integer id) {
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
+    @RestPostMapping("/deleteProductGroup/{id}")
+    public SimpleResponse deleteProductGroup(@PathVariable("id") Integer id) {
         Integer affectedRowNumber = productGroupService.deleteProductGroup(id);
         return new SimpleResponse(affectedRowNumber);
     }
 
-    @RequiresPermissions(value = {"admin","updateProductGroup"},logical = Logical.OR)
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/updateProductGroup")
     public SimpleResponse updateProductGroup(ProductGroup productGroup) {
         Integer affectedRowNumber = productGroupService.updateProductGroup(productGroup);
         return new SimpleResponse(affectedRowNumber);
     }
 
-    @RequiresPermissions(value = {"admin","searchProductGroup"},logical = Logical.OR)
-    @RequestMapping(value = "/unique", method = RequestMethod.POST)
-    @ResponseBody
+
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
+    @RestGetMapping("/unique")
     public boolean unique(String name) {
         return productGroupService.unique(name);
     }

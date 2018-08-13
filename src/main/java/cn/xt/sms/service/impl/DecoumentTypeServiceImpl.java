@@ -48,4 +48,10 @@ public class DecoumentTypeServiceImpl implements IDocumentTypeService {
     public Integer updateUseFrequency(Integer id, Integer increment) {
         return documentTypeDao.updateUseFrequency(id, increment);
     }
+
+    @Override
+    public Integer updateDocumentType(DocumentType type) {
+        return documentTypeDao.updateDocumentType(type);
+    }
+
 }

@@ -178,3 +178,21 @@ function initTableCheckbox(tableSelector, rowSelector, checkboxSelector) {
         handleIsAllSelect(tableSelector);
     });
 }
+
+/*给Array添加原生方法remove*/
+Array.prototype.remove = function(item) {
+    var c = 0;
+    for (var i=0,j=0; i<this.length; i++) {
+        if (this[i] == item) {
+            c++;
+            continue;
+        }
+        this[j++] = this[i];
+    }
+    this.length -= c;
+}
+
+/*给String添加原生方法display 用于判断文本是否需要显示*/
+String.prototype.display = function(is) {
+    return is ? this.toString() : "";
+}

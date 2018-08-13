@@ -3,6 +3,7 @@ package cn.xt.sms.controller;
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.SupplierCondition;
+import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.enums.ResponseCode;
 import cn.xt.sms.dto.MapDTO;
@@ -38,6 +39,8 @@ import java.util.List;
 @RequestMapping("/supplier")
 public class SupplierController {
 
+    private final String privilege_prefix = PrivilegeConstants.SUPPLIER;
+
     @Autowired
     private ISupplierService supplierService;
     @Autowired
@@ -45,7 +48,7 @@ public class SupplierController {
     @Autowired
     private ISupplierMiddleService supplierMiddleService;
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/search")
     public DataResponse<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session) {
         session.setAttribute("currentPage", currentPage);
@@ -53,71 +56,71 @@ public class SupplierController {
         return supplierService.getSupplierList(supplierCondition, currentPage, pageSize);
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestPostMapping("/getSupplierCount")
     public Integer searchSupplierCount(SupplierCondition supplierCondition) {
         return supplierService.getSupplierCount(supplierCondition);
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestPostMapping("/getUserDefinedFieldName")
     public UserDefinedFieldName getUserDefinedFieldName() {
         return supplierService.getUserDefinedFieldName();
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getSupplierIdAndName")
     public List<MapDTO> getSupplierIdAndName() {
         return supplierService.getSupplierIdAndName();
     }
 
-    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insert")
     public String insert(HttpServletRequest request, Supplier supplier) {
         return supplierService.insertSupplier(request.getServletContext(), supplier);
     }
 
-    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestGetMapping("/isUnique")
     public boolean isUnique(String fullName) {
         return supplierService.getIdByFullName(fullName) != null;
     }
 
-    @RequiresPermissions(value = {"admin","deleteSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/delete")
     public String delete(Integer id) {
         return supplierService.deleteSupplier(id);
     }
 
-    @RequiresPermissions(value = {"admin","deleteSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/mutliDelete")
     public String mutliDelete(String ids) {
         return supplierMiddleService.mutliDeleteSupplier(ids);
     }
 
-    @RequiresPermissions(value = {"admin","updateSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/update")
     public String update(Supplier supplier) {
         return supplierService.updateSupplier(supplier);
     }
 
     /*查询分组信息*/
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getTradeGroup")
     public List<TradeGroup> getTradeGroup(@RequestParam(required = false, defaultValue = "0") Integer parentId,
                                           Integer categoryId) {
         return tradeGroupService.getTradeGroup(parentId, categoryId);
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/getSupplierById")
     public String getSupplierById(Integer id, String action, HttpServletRequest request) {
         Supplier supplier = supplierService.getSupplierById(id);
         request.setAttribute("supplier", supplier);
-        return action == null ? "details":action;
+        return action == null ? "supplier/details" : ("supplier/" + action);
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/getSupplierById2")
     public String getSupplierById2(Integer id, HttpServletRequest request) {
         Supplier supplier = supplierService.getSupplierById(id);
@@ -125,14 +128,14 @@ public class SupplierController {
         return "supplier/detail_iframe";
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @GetMapping("/toSupplierDetailProduct")
     public String toSupplierDetailProduct(Integer id, HttpServletRequest request) {
         request.setAttribute("id", id);
         return "supplier/detail_iframe_product";
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @GetMapping("/toSupplierDetailDocument")
     public String toSupplierDetailDocument(Integer id, HttpServletRequest request) {
         request.setAttribute("id", id);
@@ -140,7 +143,7 @@ public class SupplierController {
     }
 
     /*转到serach_supplier页面*/
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/toSearchSupplier")
     public String toSearchSupplier(String uccCode, HttpServletRequest request, HttpSession session) {
         if (uccCode != null && uccCode != "") {
@@ -152,14 +155,14 @@ public class SupplierController {
     }
 
     /*跳转到add_supplier页面*/
-    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RequestMapping("/toAddSupplier")
     public String toAddSupplier(HttpSession session) {
-        return "supplier/add_supplier";
+        return "supplier/add_supplier_iframe";
     }
 
     /*excel文件导入*/
-    @RequiresPermissions(value = {"admin","insertSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/importExcel")
     public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
         try {
@@ -184,7 +187,7 @@ public class SupplierController {
         return new SimpleResponse(ResponseCode.ERROR, "解析错误");
     }
 
-    @RequiresPermissions(value = {"admin","searchSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/exportExcel")
     public String exportExcel(HttpServletResponse response, Integer start, Integer end, SupplierCondition supplierCondition) {
         Workbook wb = new XSSFWorkbook();
@@ -223,7 +226,7 @@ public class SupplierController {
     }
 
     /*转到edit页面*/
-    @RequiresPermissions(value = {"admin","updateSupplier"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RequestMapping("/toEdit")
     public String toEdit(HttpSession session) {
         return "supplier/edit";

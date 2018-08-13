@@ -6,6 +6,10 @@
     SELECT `id`,`name`,`parent_id` FROM `table_product_group`;
   </select>
 
+  <select id="getProductGroupListAndSupplierCount" resultType="ProductGroup">
+    SELECT pro_g.`id`,pro_g.`name`,pro_g.`parent_id`,count(pro.`id`) `count` FROM `table_product_group` pro_g LEFT JOIN `table_product` pro ON pro_g.`id` = pro.`group_id` GROUP BY pro_g.`id`;
+  </select>
+
   <select id="getProductGroupById" resultType="ProductGroup" parameterType="integer">
     SELECT `id`,`name`,`parent_id` as `parentId` FROM `table_product_group` WHERE `id` = #{id}
   </select>

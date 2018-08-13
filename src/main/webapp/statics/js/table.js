@@ -16,7 +16,6 @@ function Table(obj) {
     this.buttons = obj.buttons;//功能按钮 type:字符串
     this.extraCallback = obj.extraCallback;//额外的回调 type:方法
 
-    console.log(this);
     this.init();
 }
 // 初始化

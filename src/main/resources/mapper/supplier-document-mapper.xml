@@ -33,12 +33,15 @@
   </delete>
 
   <select id="getSupplierDocumentList" resultMap="SupplierDocumentMap">
-    SELECT `id`,`name`,
+    SELECT doc.`id`,doc.`name`,
       (SELECT `name` FROM <include refid="foreign-table-name-one"></include> WHERE `id` = doc.`type`) `type_name`,
-      `description`,`appendix_name`,
-      (SELECT `full_name` FROM <include refid="foreign-table-name-two"></include> WHERE `id` = doc.`supplier_id`) `supplier_name`,
-      `supplier_id`
+      doc.`description`,doc.`appendix_name`,
+      <!--(SELECT `full_name` FROM <include refid="foreign-table-name-two"></include> WHERE `id` = doc.`supplier_id`) `supplier_name`,-->
+      sup.`full_name` `supplier_name`,
+      doc.`supplier_id`
     FROM <include refid="table-name"></include> doc
+    LEFT JOIN <include refid="foreign-table-name-two"></include> sup
+    ON doc.`supplier_id` = sup.`id`
     <choose>
       <when test="condition != null">
         <where>
@@ -47,6 +50,12 @@
           </if>
           <if test="condition.name != null and condition.name != ''">
             AND doc.`name` LIKE '%' #{condition.name} '%'
+          </if>
+          <if test="condition.supplierName != null and condition.supplierName != ''">
+            AND sup.`full_name` LIKE '%' #{condition.supplierName} '%'
+          </if>
+          <if test="condition.typeId != null and condition.typeId &gt; 0">
+            AND doc.`type` = #{condition.typeId}
           </if>
         </where>
         ORDER BY
@@ -66,14 +75,22 @@
   </select>
 
   <select id="getSupplierDocumentCount" resultType="integer">
-    SELECT count(`id`)
-    FROM <include refid="table-name"></include>
+    SELECT count(doc.`id`)
+    FROM <include refid="table-name"></include> doc
+    LEFT JOIN <include refid="foreign-table-name-two"></include> sup
+    ON doc.`supplier_id` = sup.`id`
     <where>
       <if test="supplierId != null">
-        `supplier_id` = #{supplierId}
+        doc.`supplier_id` = #{supplierId}
       </if>
       <if test="name != null and name != ''">
-        AND `name` LIKE '%' #{name} '%'
+        AND doc.`name` LIKE '%' #{name} '%'
+      </if>
+      <if test="supplierName != null and supplierName != ''">
+        AND sup.`full_name` LIKE '%' #{supplierName} '%'
+      </if>
+      <if test="typeId != null and typeId &gt; 0">
+        AND doc.`type` = #{typeId}
       </if>
     </where>
   </select>

@@ -139,19 +139,19 @@ jQuery(function($){
         dataUrl: $ctx + "/product/getProductList",
         render: render,
         buttons: "<div class='col-sm-3 col-xs-12'>" +
-        "    <shiro:hasAnyPermission name='admin,deleteProduct'>" +
-        "        <button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
+        (
+            "<button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
+            "    <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
+            "</button>"
+        ).display(has_product_delete) +
         "    <button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
-        "        <i class='ace-icon fa fa-bolt'></i> 刷新" +
+        "        <i class='ace-icon fa fa-refresh'></i> 刷新" +
         "    </button>" +
-        "    <shiro:hasAnyPermission name='admin,insertProduct'>" +
-        "        <button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-plus'></i> 新增" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
+        (
+            "<button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px; margin-left: 5px;'>" +
+            "    <i class='ace-icon fa fa-plus'></i> 新增" +
+            "</button>"
+        ).display(has_product_insert) +
         "</div>"
     });
 
@@ -196,12 +196,12 @@ jQuery(function($){
                     "<td>"+ item.groupId.name +"</td>" +
                     "<td>" +
                     "<div class='btn-group'>" +
-                    "<shiro:hasAnyPermission name='admin,updateProduct'>" +
-                    "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-pencil bigger-120'></i>修改 </button>" +
-                    "</shiro:hasAnyPermission>" +
-                    "<shiro:hasAnyPermission name='admin,deleteProduct'>" +
-                    "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>" +
-                    "</shiro:hasAnyPermission>" +
+                    (
+                        "<button class='btn btn-xs btn-info updateProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-pencil bigger-120'></i>修改 </button>"
+                    ).display(has_product_update) +
+                    (
+                        "<button class='btn btn-xs btn-warning deleteProduct' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>"
+                    ).display(has_product_delete) +
                     "</div>" +
                     "</td>" +
                     "</tr>";
@@ -449,7 +449,7 @@ jQuery(function($){
         var id = this.getAttribute("data-id");
         $.ajax({
             url: $ctx + "/product/getProductById",
-            type: "POST",
+            type: "GET",
             async: false,
             data: {id: id},
             dataType: "json",

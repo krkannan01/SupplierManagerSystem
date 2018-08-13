@@ -1,8 +1,9 @@
-<%--
+<%@ page import="cn.xt.sms.constant.PrivilegeConstants" %><%--
   @author xietao.x@qq.com
   Created by 2018/3/15
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,22 +122,7 @@
                             <th width="10%">操作</th>
                         </tr>
                         </thead>
-
-                        <tr>
-                        <tr>
-                            <td>1</td>
-                            <td class="center"> <label class="pos-rel"> <input type="checkbox" class="ace" /> <span class="lbl"></span> </label> </td>
-                            <td>营业执照</td>
-                            <td>税务登记证</td>
-                            <td></td>
-                            <td>yyzz.jpg</td>
-                            <td>
-                                <shiro:hasAnyPermission name='admin,deleteFile'>
-                                    <button class='btn btn-xs btn-round btn-danger deleteProduct' data-id='1'> <i class='ace-icon fa fa-trash-o bigger-120'></i>删除 </button>
-                                </shiro:hasAnyPermission>
-                            </td>
-                        </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div><!-- /.page-content -->
@@ -201,6 +187,19 @@
 <script src="${pageContext.request.contextPath}/statics/js/layer/layer.min.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-common.js"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js"></script>
+
+<script type="text/javascript">
+    // TODO 目的：shiro权限控制页面显示
+    //      问题：使用js对页面内容动态添加时，嵌套在字符串中的<shiro>无效
+    //          如：$(body).append("<shiro:hasAnyPermission name='admin'>你好</shiro:hasAnyPermission>"); // 无效
+    //      临时方法：把是否拥有权限通过变量来存储，在动态添加的时候是否通过判断变量来指定某个标签是否需要显示
+    //          如：const hasAdmin = false; <shiro:hasAnyPermission name="admin">hasAdmin = true;</shiro:hasAnyPermission>
+    //              $(body).append("你好".display(hasAdmin)); display 是自定义添加的原生方法，如果hasAdmin=true返回原字符串，否则返回空字符串
+    //      缺点：耦合高
+    var has_document_delete = false; <shiro:hasAnyPermission name="admin,document:delete">has_document_delete = true;</shiro:hasAnyPermission>
+    var has_document_insert = false; <shiro:hasAnyPermission name="admin,document:insert">has_document_insert = true;</shiro:hasAnyPermission>
+    var has_document_update = false; <shiro:hasAnyPermission name="admin,document:update">has_document_update = true;</shiro:hasAnyPermission>
+</script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">

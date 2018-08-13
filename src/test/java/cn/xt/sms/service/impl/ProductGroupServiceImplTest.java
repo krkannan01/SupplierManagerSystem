@@ -35,7 +35,7 @@ public class ProductGroupServiceImplTest {
     @Test
     public void getProductGroupList() {
 
-        List<ProductGroup> list = productGroupService.getProductGroupList(0);
+        List<ProductGroup> list = productGroupService.getProductGroupList();
         list.stream().forEach(productGroup -> log.info(Render.renderInfo(productGroup.toString())));
 
     }

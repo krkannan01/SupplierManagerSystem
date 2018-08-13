@@ -5,7 +5,7 @@ import org.fusesource.jansi.Ansi;
 /**
  * @Auther: Administrator
  * @Date: 2018/7/7 20:40
- * @Description:
+ * @Description: 字符串高亮输出工具类
  */
 public class Render {
 

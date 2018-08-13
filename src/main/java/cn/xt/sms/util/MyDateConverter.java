@@ -12,6 +12,7 @@ import java.util.Date;
 
 /**
  * Created by Administrator on 2018/2/26.
+ * 日期格式转换
  */
 @Log4j
 public class MyDateConverter implements Converter<String,Date> {

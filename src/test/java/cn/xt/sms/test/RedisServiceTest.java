@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 public class RedisServiceTest {
 
     @Autowired
-    private IRedisService<MapDTO> redisService;
+    private IRedisService redisService;
     @Autowired
     private ISupplierService supplierService;
 //    @Autowired
@@ -38,7 +38,7 @@ public class RedisServiceTest {
 //        String result = jedis.get("supplier_id_and_name");
 //        System.out.println("\n\n"+result+"\n\n");
 //        jedis.close();
-        List<MapDTO> list = redisService.getCacheList("supplier_id_and_name");
+        List<MapDTO> list = (List<MapDTO>) (List) redisService.getCacheList("supplier_id_and_name");
         if (list != null && list.size() > 0) {
             for (int i=0; i<list.size(); i++) {
                 System.out.println(list.get(i));
@@ -83,10 +83,10 @@ public class RedisServiceTest {
     }
 
     private void read() {
-        List<MapDTO> list = redisService.getCacheList("SUPPLIER_ID_AND_NAME");
+        List<MapDTO> list = (List<MapDTO>) (List) redisService.getCacheList("SUPPLIER_ID_AND_NAME");
         if (list == null) {
             synchronized ("SUPPLIER_ID_AND_NAME") {
-                list = redisService.getCacheList("SUPPLIER_ID_AND_NAME");
+                list = (List<MapDTO>) (List) redisService.getCacheList("SUPPLIER_ID_AND_NAME");
                 if (list == null) {
                     list = supplierService.getSupplierIdAndName();
                     redisService.setCache("SUPPLIER_ID_AND_NAME", list, 180);

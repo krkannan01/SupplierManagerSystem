@@ -26,4 +26,7 @@ public interface IDocumentTypeService {
     // 修改使用频率
     Integer updateUseFrequency(Integer id, Integer increment);
 
+    // 修改文档类型
+    Integer updateDocumentType(DocumentType type);
+
 }

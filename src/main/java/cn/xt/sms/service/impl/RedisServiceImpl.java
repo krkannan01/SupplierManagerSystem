@@ -2,8 +2,10 @@ package cn.xt.sms.service.impl;
 
 import cn.xt.sms.service.IRedisService;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -18,7 +20,7 @@ import java.util.List;
  */
 @Service
 @Log4j
-public class RedisServiceImpl<T> implements IRedisService<T> {
+public class RedisServiceImpl implements IRedisService {
 
     public static final int EXIPRE_SECOND = 3600;
 
@@ -26,25 +28,24 @@ public class RedisServiceImpl<T> implements IRedisService<T> {
     private JedisPool jedisPool;
 
     @Override
-    public List<T> getCacheList(String key) {
-        List<T> list = null;
+    public JSONArray getCacheList(String key) {
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             String result = jedis.get(key);
             if (result != null) {
-                list = (List<T>) JSON.parseArray(result);
+                return JSON.parseArray(result);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
             if (jedis != null) jedis.close();
         }
-        return list;
+        return null;
     }
 
     @Override
-    public void setCache(String key, List<T> value, int expire) {
+    public void setCache(String key, List value, int expire) {
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();

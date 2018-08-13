@@ -1,15 +1,17 @@
 package cn.xt.sms.service;
 
+import com.alibaba.fastjson.JSONArray;
+
 import java.util.List;
 
 /**
  * @author xietao.x@qq.com
  * @date 2018/5/4
  */
-public interface IRedisService<T> {
+public interface IRedisService {
 
-    List<T> getCacheList(String key);
+    JSONArray getCacheList(String key);
 
-    void setCache(String key, List<T> value, int expire);
+    void setCache(String key, List value, int expire);
 
 }

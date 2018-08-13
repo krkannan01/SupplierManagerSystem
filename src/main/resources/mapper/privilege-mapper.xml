@@ -3,10 +3,10 @@
 <mapper namespace="cn.xt.sms.dao.IPrivilegeDao" >
 
   <resultMap id="PrivilegeMap" type="Privilege">
-      <id column="p_id" property="id"/>
+      <id     column="p_id"   property="id"/>
       <result column="p_name" property="name"/>
       <collection property="childrens" ofType="Privilege">
-          <id column="c_id" property="id"/>
+          <id     column="c_id"   property="id"/>
           <result column="c_name" property="name"/>
       </collection>
   </resultMap>

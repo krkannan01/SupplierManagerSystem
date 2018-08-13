@@ -59,11 +59,15 @@ public class ISupplierDocumentDaoTest {
 
     @Test
     public void getSupplierDocumentList() {
-        List<SupplierDocument> supplierDocumentList = supplierDocumentDao.getSupplierDocumentList(10, 0, new SupplierDocumentCondition(null, "name", "asc"));
+        SupplierDocumentCondition condition = new SupplierDocumentCondition(null, "name", "asc");
+//        condition.setName("基");
+//        condition.setTypeId(2);
+        condition.setSupplierName("厦门");
+        List<SupplierDocument> supplierDocumentList = supplierDocumentDao.getSupplierDocumentList(10, 0, condition);
         supplierDocumentList.stream().forEach(document -> {
             log.info(Render.renderSuccess(document.getName()));
-            if (document.getAppendix() != null && document.getAppendix().length != 0)
-                byte2image(document.getAppendix(), "D:\\安装包资源\\SupplierManagerSystem\\src\\test\\resources\\" + document.getAppendixName());
+//            if (document.getAppendix() != null && document.getAppendix().length != 0)
+//                byte2image(document.getAppendix(), "D:\\安装包资源\\SupplierManagerSystem\\src\\test\\resources\\" + document.getAppendixName());
         });
     }
 

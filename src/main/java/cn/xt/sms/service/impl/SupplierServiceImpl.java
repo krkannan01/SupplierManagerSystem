@@ -6,7 +6,8 @@ import cn.xt.sms.dao.ISupplierDao;
 import cn.xt.sms.entity.*;
 import cn.xt.sms.service.*;
 import cn.xt.sms.condition.SupplierCondition;
-import cn.xt.sms.util.NoUtil;
+import cn.xt.sms.util.NOUtil;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import static org.fusesource.jansi.Ansi.ansi;
  * @author xietao.x@qq.com
  * @date 2018/3/13
  */
+@Log4j
 @Service
 public class SupplierServiceImpl implements ISupplierService {
 
@@ -33,7 +35,7 @@ public class SupplierServiceImpl implements ISupplierService {
     @Autowired
     private ICooperationService cooperationService;
     @Autowired
-    private IRedisService<MapDTO> redisService;
+    private IRedisService redisService;
 
     @Override
     public DataResponse<Supplier> getSupplierList(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize) {
@@ -80,7 +82,7 @@ public class SupplierServiceImpl implements ISupplierService {
         contactService.insertContact(supplier.getContactId());
         /*2:添加企业信息*/
         supplier.setEnterDate(new Date());
-        supplier.setNo(NoUtil.getSupplierNo(context));
+        supplier.setNo(NOUtil.getSupplierNo(context));
         supplierDao.addSupplier(supplier);
         /*3:添加合作情况信息*/
         if (supplier.getCooperationList() != null) {
@@ -168,10 +170,19 @@ public class SupplierServiceImpl implements ISupplierService {
 
     @Override
     public List<MapDTO> getSupplierIdAndName() {
-        List<MapDTO> list = redisService.getCacheList(CACHE_KEY);
+        List<MapDTO> list = null;
+        try {
+            list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
+        } catch (ClassCastException e) {
+            log.warn("获取到的缓存无法转换类型！");
+        }
         if (list == null) {
             synchronized (CACHE_KEY) {
-                list = redisService.getCacheList(CACHE_KEY);
+                try {
+                    list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
+                } catch (ClassCastException e) {
+                    log.warn("获取到的缓存无法转换类型！");
+                }
                 if (list == null) {
                     list = supplierDao.getSupplierIdAndName();
                     redisService.setCache(CACHE_KEY, list, RedisServiceImpl.EXIPRE_SECOND);

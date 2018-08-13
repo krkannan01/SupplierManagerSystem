@@ -1,6 +1,8 @@
 package cn.xt.sms.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -8,7 +10,8 @@ import java.util.List;
  * 材料分组实体
  * @author xietao.x@qq.com
  */
-@Data
+@Getter
+@Setter
 public class ProductGroup {
 
     private Integer id;//ID

@@ -80,7 +80,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label required">供应商：</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="supplier" display></select>
+					<select class="form-control" name="supplier"></select>
 				</div>
 			</div>
 			<div class="form-group">

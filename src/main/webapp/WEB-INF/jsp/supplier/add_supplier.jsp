@@ -366,14 +366,10 @@
                                     $(".step-content > .step-pane[data-step='5'] > .green.none").removeClass("none").next().addClass("none");
                                     next.removeAttr("disabled");
                                 } else {
-                                    bootbox.dialog({
-                                        message: "抱歉,出现未知错误,请联系网站管理员!",
-                                        buttons: {
-                                            "danger" : {
-                                                "label" : "知道了",
-                                                "className" : "btn-sm btn-warning"
-                                            }
-                                        }
+                                    layer.confirm("抱歉,出现未知错误,请联系网站管理员!", {
+                                        icon: 3,
+                                        title: "系统提示",
+                                        buttons: ["确定"]
                                     });
                                 }
                             }, "text");
@@ -382,8 +378,11 @@
                 })
                 /*步骤条确定事件*/
                 .on('finished.fu.wizard', function(e) {
+                    // debugger
                     /*点击完成后刷新页面*/
-                    location.reload();
+                    // location.reload();
+                    //关闭弹层
+                    layer_close();
                 });
 
         /*辅助设置参数【局部使用】*/
@@ -584,24 +583,6 @@
                 });
             }
 
-            /*绑定修改名称事件*/
-            /*$("#other-form .form-group .userDefinedFieldName").bind({
-                "mouseover": function() {
-                    this.style.color = "orange";
-                    this.style.cursor = "pointer";
-                    this.style.borderBottom = "1px dashed orange";
-                },
-                "mouseout": function() {
-                    this.style.color = "";
-                    this.style.cursor = "";
-                    this.style.borderBottom = "";
-                },
-                "click": function() {
-                    this.style.display = "none";
-                    $(this).after("<input class='radius-5' onblur='recover()' />");
-                }
-            });*/
-
         }, "json");
 
         /*渲染日期选择框*/
@@ -616,15 +597,6 @@
         }
 
     });
-    /*function recover() {
-        var $this = $(this);
-        if (this.value) {
-            $this.prev().html(this.value);
-        }
-        console.log($this.prev().prop("tagName"));
-        $this.parent().find("label").get(0).style.display = "block";
-        $this.remove();
-    }*/
 </script>
 
 <!-- the following scripts are used in demo only for onpage help and you don't need them -->

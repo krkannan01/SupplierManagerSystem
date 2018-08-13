@@ -13,6 +13,9 @@ public interface IProductGroupDao {
     /*查询分组信息*/
     List<ProductGroup> getProductGroupList();
 
+    /*查询分组信息和分组下的商品数量信息*/
+    List<ProductGroup> getProductGroupListAndSupplierCount();
+
     /*根据ID查询分组信息*/
     ProductGroup getProductGroupById(Integer id);
 

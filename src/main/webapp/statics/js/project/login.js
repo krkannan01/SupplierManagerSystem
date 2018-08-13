@@ -10,6 +10,7 @@ jQuery(function($) {
 jQuery(function($) {
     var $bgs = $(".bgs");
     var length = $bgs.find("li").length;
+    if (length <= 1) return;
     //轮播
     var prev = 0;
     var curr = 1;

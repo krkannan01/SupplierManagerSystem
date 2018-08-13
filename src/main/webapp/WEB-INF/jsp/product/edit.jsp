@@ -76,7 +76,7 @@
 				<label class="col-sm-3 control-label required">所属分组：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="group">
-						<option value="${groupId.id}">${groupId.name}</option>
+						<option value="${product.groupId.id}">${product.groupId.name}</option>
 					</select>
 				</div>
 			</div>
@@ -84,7 +84,10 @@
 				<label class="col-sm-3 control-label required">供应商：</label>
 				<div class="col-sm-8">
 					<select class="form-control" name="supplier">
-						<option value="${supplierId.id}">${supplierId.fullName}</option>
+						<option value="${product.supplierId.id}">${product.supplierId.fullName}</option>
+						<c:forEach items="${supplierPartLists}" var="item">
+							<option value="${item.key}">${item.value}</option>
+						</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -113,8 +116,8 @@
 	<script src="<%=basePath%>/statics/js/ry-ui.js"></script>
 	<script type="text/javascript">
 		var $ctx = "<%=basePath%>";
-		var $id = "${supplier.id}";
+		var $id = "${product.id}";
 	</script>
-	<script src="<%=basePath%>/statics/js/project/product/add.js"></script>
+	<script src="<%=basePath%>/statics/js/project/product/edit.js"></script>
 </body>
 </html>

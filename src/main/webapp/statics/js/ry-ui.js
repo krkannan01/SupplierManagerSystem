@@ -138,7 +138,7 @@ $(function(){
 		$.initTreeTable(_id, _parentId, _columns, _url, true);
 	}
 	//初始化表格树，_expandAll true展开 false 不展开
-	$.initTreeTable = function (_id, _parentId, _columns, _url, _expandAll) {
+	$.initTreeTable = function (_id, _parentId, _columns, _url, _expandAll, afterCallback) {
 	    $('.bootstrap-table').bootstrapTreeTable({
 		    code : _id,                  // 用于设置父子关系
 	        parentCode : _parentId,      // 用于设置父子关系
@@ -150,7 +150,8 @@ $(function(){
 			bordered : true,              // 是否显示边框
 			expandAll : _expandAll,       // 是否全部展开
 			showRefresh: true,            // 是否显示刷新按钮
-	        columns: _columns
+	        columns: _columns,
+            afterCallback: afterCallback  // 加载完成后的回调
 	    });
 	}
 	// 刷新bootstrap table数据

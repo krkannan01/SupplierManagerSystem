@@ -8,6 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
+    final String privilege_prefix = "supplier";
     String foundDate = "",approvalDate = "",udfFive = "";
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
@@ -449,7 +450,7 @@
 
     <div style="position: fixed; opacity: 0.9; width: 100%; bottom: 0; background-color: #EEEEEE; z-index: 9;">
         <div style="margin: 18px auto 0; width: 20%;">
-            <shiro:hasAnyPermission name="admin,updateSupplier">
+            <shiro:hasAnyPermission name="admin,supplier:update">
                 <button class="btn btn-warning" style="width: 40%;" onclick="javascript: location.href = '${pageContext.request.contextPath}/supplier/getSupplierById?action=edit&id=${supplier.id}';">
                     编辑
                 </button>

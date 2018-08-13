@@ -98,19 +98,19 @@ jQuery(function($) {
         dataUrl: search_path,
         render: render,
         buttons: "<div class='col-sm-3 col-xs-12'>" +
-        "    <shiro:hasAnyPermission name='admin,deleteSupplier'>" +
-        "        <button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
-        "    <button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
-        "        <i class='ace-icon fa fa-bolt'></i> 刷新" +
-        "    </button>" +
-        "    <shiro:hasAnyPermission name='admin,insertSupplier'>" +
-        "        <button class='btn btn-success btn-sm btn-white btn-round' onclick='javascript: location.href = \"" + to_add_supplier_path + "\";' id='insert' style='height: 34px;'>" +
-        "            <i class='ace-icon fa fa-plus'></i> 新增" +
-        "        </button>" +
-        "    </shiro:hasAnyPermission>" +
+        (
+            "<button class='btn btn-danger btn-sm btn-white btn-round' id='allDelete' style='height: 34px;'>" +
+            "    <i class='ace-icon fa fa-trash-o'></i> 删除选中项" +
+            "</button>"
+        ).display(has_supplier_delete) +
+        "<button class='btn btn-warning btn-sm btn-white btn-round' id='refursh' style='height: 34px;'>" +
+        "    <i class='ace-icon fa fa-refresh'></i> 刷新" +
+        "</button>" +
+        (
+            "<button class='btn btn-success btn-sm btn-white btn-round' id='insert' style='height: 34px; margin-left: 5px;'>" +
+            "    <i class='ace-icon fa fa-plus'></i> 新增" +
+            "</button>"
+        ).display(has_supplier_insert) +
         "</div>",
         extraCallback: generatorSearchTab
     });
@@ -359,6 +359,13 @@ jQuery(function($) {
         });
     });
 
+    //新增供应商信息
+    $("#insert").click(function() {
+        var height = $(window).height() - 100;
+        var width = $(window).width() - 400;
+        layer_show("新增供应商信息", to_add_supplier_path, width, height, 2);
+    });
+
 
     /*绑定信用级别排序事件*/
     sort.click(function() {
@@ -497,12 +504,12 @@ jQuery(function($) {
                     "<td>" +
                     "<div class='hidden-sm hidden-xs action-buttons'>" +
                     "<a class='blue' href= '" + get_supplier_by_id_path + "?id="+ item.id +"' target='view_window' title='查看详情'> <i class='ace-icon fa fa-search-plus bigger-130'></i> </a>" +
-                    "<shiro:hasAnyPermission name='admin,updateSupplier'>" +
-                        "<a class='green' href= '" + get_supplier_by_id_two_path + "?id="+ item.id +"&action=edit' target='view_window' title='编辑'> <i class='ace-icon fa fa-pencil bigger-130'></i> </a>" +
-                    "</shiro:hasAnyPermission>" +
-                    "<shiro:hasAnyPermission name='admin,deleteSupplier'>" +
-                        "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-130'></i> </a>" +
-                    "</shiro:hasAnyPermission>" +
+                    (
+                        "<a class='green' href= '" + get_supplier_by_id_path + "?id="+ item.id +"&action=edit' target='view_window' title='编辑'> <i class='ace-icon fa fa-pencil bigger-130'></i> </a>"
+                    ).display(has_supplier_update) +
+                    (
+                        "<a class='red deleteDetails' href='javascript: void(0);' title='删除' data-id='"+ item.id +"'> <i class='ace-icon fa fa-trash-o bigger-130'></i> </a>"
+                    ).display(has_supplier_delete) +
                     "</div>" +
                     "<div class='hidden-md hidden-lg'>" +
                         "<div class='inline pos-rel'>" +
@@ -511,11 +518,19 @@ jQuery(function($) {
                                 "<li> <a href='" + get_supplier_by_id_path + "?id="+ item.id +"' class='tooltip-info showDetails' data-rel='tooltip' title='查看详情' data-id='"+ item.id +"'> " +
                                     "<span class='blue'> <i class='ace-icon fa fa-search-plus bigger-120'></i> </span> </a> </li>" +
 
-                                "<li> <shiro:hasAnyPermission name='admin,updateSupplier'> <a href='" + get_supplier_by_id_path + "?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
-                                    "<span class='green'> <i class='ace-icon fa fa-pencil-square-o bigger-120'></i> </span> </a> </shiro:hasAnyPermission> </li>" +
+                                "<li>" +
+                                    (
+                                        "<a href='" + get_supplier_by_id_path + "?id="+ item.id +"&action=edit' class='tooltip-success editDetails' data-rel='tooltip' title='编辑' data-id='"+ item.id +"'>" +
+                                                    "<span class='green'> <i class='ace-icon fa fa-pencil-square-o bigger-120'></i> </span> </a>"
+                                    ).display(has_supplier_update) +
+                                "</li>" +
 
-                                "<li> <shiro:hasAnyPermission name='admin,deleteSupplier'> <a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
-                                    "<span class='red'> <i class='ace-icon fa fa-trash-o bigger-120'></i> </span> </a> </shiro:hasAnyPermission> </li>" +
+                                "<li> " +
+                                    (
+                                        "<a href='javascript: void(0);' class='tooltip-error deleteDetails' data-rel='tooltip' title='删除' data-id='"+ item.id +"'>" +
+                                                    "<span class='red'> <i class='ace-icon fa fa-trash-o bigger-120'></i> </span> </a> "
+                                    ).display(has_supplier_delete) +
+                                "</li>" +
                             "</ul>" +
                         "</div>" +
                     "</div>" +
