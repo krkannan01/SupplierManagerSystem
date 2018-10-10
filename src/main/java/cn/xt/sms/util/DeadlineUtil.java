@@ -1,5 +1,9 @@
 package cn.xt.sms.util;
 
+//import cn.xt.sms.websocket.WebSocket;
+
+import cn.xt.sms.websocket.WebSocket;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +25,13 @@ public class DeadlineUtil {
     /*返回该值是否过期*/
     public static boolean expire(String key) {
         Long time = states.get(key);
+//        Long time = (Long) WebSocket.onlineUserMap.get(key);
         if (time != null) {
             //如果没有到过期时间
             if (time > System.currentTimeMillis()) {
                 return false;
             } else {
+//                WebSocket.onlineUserMap.remove(key);
                 states.remove(key);
             }
         }

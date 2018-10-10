@@ -7,7 +7,7 @@ window.onload = function() {
 function loading() {
     var columns = [
         {
-            title : '菜单名称',
+            title : '分组名称',
             field : 'name',
             formatter : function(row, index) {
                 if(row.icon == null || row == "") {
@@ -32,22 +32,19 @@ function loading() {
     $.initTreeTable('id', 'parentId', columns, url, false, handleHeight);
 }
 
-/*菜单管理-新增*/
+/*分组管理-新增*/
 function add(id) {
-    $.modalConfirm("", function(isOk) {
-
-    });
-    var url = prefix + '/add/' + menuId;
-    layer_showAuto("新增菜单", url);
+    var url = prefix + '/toInsertPage/' + id;
+    layer_showAuto("新增分组", url);
 }
 
-/*菜单管理-修改*/
-function edit(menuId) {
-    var url = prefix + '/edit/' + menuId;
-    layer_showAuto("修改菜单", url);
+/*分组管理-修改*/
+function edit(id) {
+    var url = prefix + '/toUpdatePage/' + id;
+    layer_showAuto("修改分组", url);
 }
 
-/*菜单管理-删除*/
+/*分组管理-删除*/
 function remove(id) {
     layer.confirm("确定要删除分组吗，这样将会删除分组下的商品？",{icon: 3, title:'提示'},function(index){
         $.ajax({

@@ -18,5 +18,8 @@
 <script src="${pageContext.request.contextPath}/ry-statics/ajax/libs/bootstrap-table/extensions/export/bootstrap-table-export.js"></script>
 <script src="${pageContext.request.contextPath}/ry-statics/ajax/libs/bootstrap-table/extensions/export/tableExport.js"></script>
 <script src="${pageContext.request.contextPath}/ry-statics/ajax/libs/layer/layer.min.js"></script>
-<script src="${pageContext.request.contextPath}/statics/js/common.js?v=1.1.3"></script>
+<script src="${pageContext.request.contextPath}/statics/js/ry-common.js?v=1.1.3"></script>
 <script src="${pageContext.request.contextPath}/statics/js/ry-ui.js?v=1.1.3"></script>
+<script type="text/javascript">
+    var $ctx = "${pageContext.request.contextPath}";
+</script>

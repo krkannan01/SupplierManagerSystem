@@ -2,9 +2,12 @@ package cn.xt.sms.controller;
 
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
+import cn.xt.sms.condition.OperLogCondition;
+import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.OperLog;
 import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.response.SimpleResponse;
+import cn.xt.sms.response.TableDataResponse;
 import cn.xt.sms.service.IOperLogService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,48 +19,51 @@ import java.util.List;
 
 /**
  * 操作日志记录
- * 
  * @author ruoyi
  */
 @Controller
-@RequestMapping("/operlog")
-public class OperlogController
-{
-    private String prefix = "monitor/operlog";
+@RequestMapping("/operLog")
+public class OperlogController {
 
     @Autowired
     private IOperLogService operLogService;
 
-    @RequiresPermissions("monitor:operlog:view")
+    @RequiresPermissions("admin")
+    @GetMapping("/toPage")
+    public String toPage()
+    {
+        return "oper_log/wrap";
+    }
+
+    @RequiresPermissions("admin")
     @GetMapping()
     public String operlog()
     {
-        return prefix + "/operlog";
+        return "oper_log/list";
     }
 
-    @RequiresPermissions("monitor:operlog:list")
+    @RequiresPermissions("admin")
     @RestGetMapping("/list")
-    public DataResponse<OperLog> list(String keywords)
+    public TableDataResponse list(OperLogCondition condition)
     {
-
-        List<OperLog> list = operLogService.selectOperLogList(keywords);
-        return null;
+        return operLogService.selectOperLogList(condition);
     }
 
-    @RequiresPermissions("monitor:operlog:batchRemove")
+    @RequiresPermissions("admin")
     @RestPostMapping("/batchRemove")
-    public SimpleResponse batchRemove(@RequestParam("ids[]") Long[] ids)
+    public SimpleResponse batchRemove(@RequestParam("ids[]") Integer[] ids)
     {
         int rows = operLogService.batchDeleteOperLog(ids);
         return new SimpleResponse(rows);
     }
 
-    @RequiresPermissions("monitor:operlog:detail")
+    @RequiresPermissions("admin")
     @GetMapping("/detail/{operId}")
-    public String detail(@PathVariable("operId") Long deptId, Model model)
+    public String detail(@PathVariable("operId") Integer deptId, Model model)
     {
         OperLog operLog = operLogService.selectOperLogById(deptId);
         model.addAttribute("operLog", operLog);
-        return prefix + "/detail";
+        return "oper_log/detail";
     }
+
 }

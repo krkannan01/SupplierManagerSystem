@@ -1,5 +1,6 @@
 package cn.xt.sms.service.impl;
 
+import cn.xt.sms.annotation.Log;
 import cn.xt.sms.condition.SupplierDocumentCondition;
 import cn.xt.sms.dao.IDocumentTypeDao;
 import cn.xt.sms.dao.ISupplierDocumentDao;
@@ -43,6 +44,7 @@ public class SupplierDecoumentServiceImpl implements ISupplierDocumentService {
     }
 
     @Override
+    @Log(title = "文档类型管理", action = "文档类型-查看")
     public DataResponse<SupplierDocument> getSupplierDocumentList(Integer currentPage, Integer pageSize, SupplierDocumentCondition condition) {
         /*计算偏移量*/
         pageSize = pageSize == null ? 10:pageSize;

@@ -1,5 +1,6 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.Log;
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.ProductCondition;
@@ -79,6 +80,7 @@ public class ProductController {
     }
 
 
+    @Log(title = "商品信息管理", action = "添加")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insertProduct")
     public SimpleResponse insertProduct(HttpServletRequest request, Product product) {
@@ -87,6 +89,7 @@ public class ProductController {
     }
 
 
+    @Log(title = "商品信息管理", action = "删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/deleteProduct")
     public SimpleResponse deleteProduct(Integer id) {
@@ -95,6 +98,7 @@ public class ProductController {
     }
 
 
+    @Log(title = "商品信息管理", action = "批量删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/multiDeleteProduct")
     public SimpleResponse MultiDeleteProduct(String ids) {
@@ -116,6 +120,7 @@ public class ProductController {
     }
 
 
+    @Log(title = "商品信息管理", action = "修改")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/updateProduct")
     public SimpleResponse updateProduct(Product product) {
@@ -144,32 +149,7 @@ public class ProductController {
     }
 
 
-    /*excel文件导入*/
-    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
-    @RestPostMapping("/importExcel")
-    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
-        try {
-            //解析excel
-            //1.读取文件输入流
-            InputStream is = upload.getInputStream();
-            //2.创建Excel工作簿文件(包含.xsl和.xslx格式)
-            Workbook wb = WorkbookFactory.create(is);
-            //3.打开需要解析的Sheet工作表
-            Sheet sheet = wb.getSheetAt(0);
-            //4.遍历工作表对象（本质是个行的集合）,读取每一行
-            String message = productMiddleService.getProductFormExcel(request.getServletContext(), sheet);
-            //关流
-            is.close();
-
-            //解析成功
-            return new SimpleResponse(ResponseCode.SUCCESS, message);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new SimpleResponse(ResponseCode.SUCCESS, "解析失败");
-    }
-
+    @Log(title = "商品信息管理", action = "导出Excel")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/exportExcel")
     public String exportExcel(HttpServletResponse response, Integer start, Integer end, ProductCondition productCondition) {
@@ -206,6 +186,34 @@ public class ProductController {
             }
         }
         return null;
+    }
+
+
+    /*excel文件导入*/
+    @Log(title = "商品信息管理", action = "导入Excel")
+    @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
+    @RestPostMapping("/importExcel")
+    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
+        try {
+            //解析excel
+            //1.读取文件输入流
+            InputStream is = upload.getInputStream();
+            //2.创建Excel工作簿文件(包含.xsl和.xslx格式)
+            Workbook wb = WorkbookFactory.create(is);
+            //3.打开需要解析的Sheet工作表
+            Sheet sheet = wb.getSheetAt(0);
+            //4.遍历工作表对象（本质是个行的集合）,读取每一行
+            String message = productMiddleService.getProductFormExcel(request.getServletContext(), sheet);
+            //关流
+            is.close();
+
+            //解析成功
+            return new SimpleResponse(ResponseCode.SUCCESS, message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new SimpleResponse(ResponseCode.SUCCESS, "解析失败");
     }
 
 

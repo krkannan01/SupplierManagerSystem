@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="action"         column="action"        />
 		<result property="method"         column="method"        />
 		<result property="channel"        column="channel"       />
-		<result property="username"      column="username"    />
+		<result property="loginName"      column="login_name"    />
 		<result property="operUrl"        column="oper_url"     />
 		<result property="operIp"         column="oper_ip"      />
 		<result property="operParam"      column="oper_param"    />
@@ -20,27 +20,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<insert id="insertOperlog" parameterType="OperLog">
-		insert into table_oper_log(title, action, method, channel, username, oper_url, oper_ip, oper_param, status, error_msg)
-        values (#{title}, #{action}, #{method}, #{channel}, #{username}, #{operUrl}, #{operIp}, #{operParam}, #{status}, #{errorMsg})
+		insert into table_oper_log(title, action, method, channel, login_name, oper_url, oper_ip, oper_param, status, error_msg)
+        values (#{title}, #{action}, #{method}, #{channel}, #{loginName}, #{operUrl}, #{operIp}, #{operParam}, #{status}, #{errorMsg})
 	</insert>
 	
-	<select id="selectOperLogList" resultMap="OperLogResult">
-		select * from table_oper_log
+	<select id="selectOperLogList" resultMap="OperLogResult" parameterType="cn.xt.sms.condition.OperLogCondition">
+		select * from `table_oper_log`
 		<where>
-			<if test="keywords != null and keywords != ''">
-				AND username LIKE CONCAT('%', #{keywords}, '%')
+			<if test="searchValue != null and searchValue != ''">
+				AND `login_name` LIKE CONCAT('%', #{searchValue}, '%')
+			</if>
+		</where>
+		ORDER BY
+		<if test="orderByColumn != null and orderByColumn != ''">
+			${orderByColumn} ${isAsc},
+		</if>
+		`oper_time` DESC
+		LIMIT #{offset},#{pageSize}
+	</select>
+
+	<select id="selectOperLogCount" resultType="integer" parameterType="cn.xt.sms.condition.OperLogCondition">
+		select count(`oper_id`) from `table_oper_log`
+		<where>
+			<if test="searchValue != null and searchValue != ''">
+				AND `login_name` LIKE CONCAT('%', #{searchValue}, '%')
 			</if>
 		</where>
 	</select>
 	
-	<delete id="batchDeleteOperLog" parameterType="Integer">
+	<delete id="batchDeleteOperLog" parameterType="integer">
  		delete from table_oper_log where oper_id in
  		<foreach collection="array" item="operId" open="(" separator="," close=")">
  			#{operId}
         </foreach> 
  	</delete>
  	
- 	<select id="selectOperLogById" parameterType="Long" resultMap="OperLogResult">
+ 	<select id="selectOperLogById" parameterType="integer" resultMap="OperLogResult">
 		select  *
 		from table_oper_log
 		where oper_id = #{operId}

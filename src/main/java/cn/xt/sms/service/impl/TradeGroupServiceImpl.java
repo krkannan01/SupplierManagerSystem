@@ -1,5 +1,6 @@
 package cn.xt.sms.service.impl;
 
+import cn.xt.sms.annotation.GetCache;
 import cn.xt.sms.dao.ITradeGroupDao;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.service.ISupplierService;
@@ -38,6 +39,7 @@ public class TradeGroupServiceImpl implements ITradeGroupService {
 
     @Override
     @Transactional
+    @GetCache(key="supplier_id_by_trade_group_id")
     public Integer delete(Integer id) {
         List<Integer> ids = supplierService.getIdByTradeGroupId(id);
         for (Integer supplierId: ids) {

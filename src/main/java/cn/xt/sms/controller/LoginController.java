@@ -1,11 +1,13 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.constant.CommonConstants;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.ILoginService;
 import cn.xt.sms.service.IUserService;
 import cn.xt.sms.util.CheckCodeUtil;
 import cn.xt.sms.util.DeadlineUtil;
 import cn.xt.sms.util.MD5Util;
+import cn.xt.sms.util.SystemLogUtils;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -57,7 +59,8 @@ public class LoginController {
     /*生成图片验证码*/
     @RequestMapping("/getImage")
     public void getImage(HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
+                         HttpServletResponse response) throws IOException
+    {
         // 禁止缓存
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "No-cache");
@@ -76,7 +79,8 @@ public class LoginController {
 
     /*查询cookie登陆*/
     @RequestMapping("/autoLogin")
-    public String autoLogin(HttpServletRequest request, HttpServletResponse response) {
+    public String autoLogin(HttpServletRequest request, HttpServletResponse response)
+    {
         String username_password = null;
         if(request.getCookies() !=null) {               // 如果Cookie不为空
             for(Cookie cookie : request.getCookies()) {  // 遍历Cookie
@@ -89,13 +93,18 @@ public class LoginController {
             String[] info = username_password.split("::");
             if (info.length == 3) {
                 if (Boolean.valueOf(info[2])) {
-                    User user = loginCommon(request, response, new HashMap<String, String>(), info[0].replaceAll(":;", ":"), info[1].replaceAll(":;", ":"));
+                    Map<String, String> map = new HashMap();
+                    String username = info[0].replaceAll(":;", ":");
+                    String encryptPassword = info[1].replaceAll(":;", ":");
+                    User user = loginCommon(request, response, map, username, encryptPassword);
+                    // 记录访问日志
+                    SystemLogUtils.log(username, map.get("state"), "[自动登录] " + map.get("info"));
                     if (user != null) {
                         return "index";
                     }
                 }
             } else {
-                log.error("Cookie info exception ...");
+                log.error("Cookie 信息异常 ...");
             }
         }
         return "login";
@@ -107,8 +116,9 @@ public class LoginController {
     public Map login(@RequestParam("username") String username,@RequestParam("password") String password,
                         @RequestParam("check-code") String checkCode,
                         @RequestParam("remember-me") Boolean rememberMe,
-                        HttpServletRequest request, HttpServletResponse response) {
-        Map<String, String> map = new HashMap<String, String>();
+                        HttpServletRequest request, HttpServletResponse response)
+    {
+        Map<String, String> map = new HashMap();
         if (checkCode != null && checkCode.equalsIgnoreCase(request.getSession().getAttribute("checkCode").toString())) {
             String encryptPassword = MD5Util.EncoderByMd5(password);
             User user = loginCommon(request, response, map, username, encryptPassword);
@@ -119,20 +129,23 @@ public class LoginController {
                 response.addCookie(userCookie);
             }
         } else {
-            map.put("state", "error");
+            map.put("state", CommonConstants.LOGIN_FAIL);
             map.put("info", "验证码不正确");
         }
+        // 记录访问日志
+        SystemLogUtils.log(username, map.get("state"), map.get("info"));
         return map;
     }
 
-    private User loginCommon(HttpServletRequest request, HttpServletResponse response, Map<String, String> map, String username, String password) {
+    private User loginCommon(HttpServletRequest request, HttpServletResponse response, Map<String, String> map, String username, String encryptPassword)
+    {
         //获取当前用户对象，状态为“未认证”
         Subject subject = SecurityUtils.getSubject();
-        AuthenticationToken token = new UsernamePasswordToken(username, password);
+        AuthenticationToken token = new UsernamePasswordToken(username, encryptPassword);
         try{
             subject.login(token);
 
-            map.put("state", "success");
+            map.put("state", CommonConstants.LOGIN_SUCCESS);
             map.put("info", "通过验证");
 
             User user = (User) subject.getPrincipal();//获取user对象
@@ -151,7 +164,9 @@ public class LoginController {
                 @Override
                 public void run() {
                     /*如果用户信息已经过期*/
+                    log.info("巡查用户【" + username + "】在线状态");
                     if (DeadlineUtil.expire(username)) {
+                        log.info("用户【" + username + "】已下线");
                         timer.cancel();
                         /*修改最后在线时间*/
                         userService.updateOnline(username, 0);
@@ -163,17 +178,17 @@ public class LoginController {
                         }
                     }
                 }
-            }, 60000, 60000);
+            }, 6000, 6000);
 
             return user;
         }catch(IncorrectCredentialsException e1){
-            map.put("state", "error");
+            map.put("state", CommonConstants.LOGIN_FAIL);
             map.put("info", "密码错误");
         }catch(UnknownAccountException e2){
-            map.put("state", "error");
+            map.put("state", CommonConstants.LOGIN_FAIL);
             map.put("info", "用户名或密码不正确");
         }catch(Exception e3) {
-            map.put("state", "error");
+            map.put("state", CommonConstants.LOGIN_FAIL);
             map.put("info", "未知错误");
         }
         return null;
@@ -182,7 +197,8 @@ public class LoginController {
     /*维持在线的方法*/
     @RequestMapping(value = "/online", method = RequestMethod.POST)
     @ResponseBody
-    public void online(HttpServletResponse response, HttpSession session) {
+    public void online(HttpServletResponse response, HttpSession session)
+    {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         response.setContentType("text/html;charset=utf-8");
         //获取当前用户名
@@ -278,7 +294,7 @@ public class LoginController {
         return result;
     }
 
-    /*转到no-authority页面*/
+    /*跳转到未认证页面*/
     @RequestMapping("/toNoAuthority")
     public String toNoAuthority() {
         return "no-authority";

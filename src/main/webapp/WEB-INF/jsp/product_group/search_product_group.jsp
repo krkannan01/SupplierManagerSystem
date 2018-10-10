@@ -25,7 +25,7 @@
 <div class="wrapper wrapper-content">
     <div class="btn-group hidden-xs" id="tableToolbar" role="group">
         <div class="form-group">
-            <button type="button" class="btn btn-outline btn-default">
+            <button type="button" onclick="add(0)" class="btn btn-outline btn-default">
                 <i class="glyphicon glyphicon-plus"></i>
             </button>
         </div>
@@ -40,15 +40,15 @@
 
     function handleHeight() {
         /*初始化当前 iframe 高度*/
-        var fm_height = 600; //初始600
-        fm_height = $("body > .wrapper").get(0).offsetHeight + 20; //高度以 <div class="wrapper wrapper-content"> 的高度为准，加20避免出现滚动条
+        var fm_height = window.parent.document.getElementsByTagName("html")[0].offsetHeight * 0.9; //初始为父容器高度的 90%
+        // var fm_height_new = $("body > .wrapper").get(0).offsetHeight + 20; //高度以 <div class="wrapper wrapper-content"> 的高度为准，加20避免出现滚动条
+        // fm_height = Math.max(fm_height, fm_height_new);
         window.parent.document.getElementsByTagName("iframe")[0].setAttribute("height", fm_height); //设置高度
     }
 
-    var $ctx = "${pageContext.request.contextPath}";
-    var addFlag = true;
-    var editFlag = true;
-    var removeFlag = true;
+    var removeFlag = false; <shiro:hasAnyPermission name="admin,product_group:delete">removeFlag = true;</shiro:hasAnyPermission>
+    var addFlag = false; <shiro:hasAnyPermission name="admin,product_group:insert">addFlag = true;</shiro:hasAnyPermission>
+    var editFlag = false; <shiro:hasAnyPermission name="admin,product_group:update">editFlag = true;</shiro:hasAnyPermission>
 </script>
 <script src="${pageContext.request.contextPath}/statics/js/project/product_group/search_product_group.js"></script>
 </body>

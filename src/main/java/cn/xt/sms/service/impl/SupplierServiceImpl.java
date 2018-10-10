@@ -1,5 +1,6 @@
 package cn.xt.sms.service.impl;
 
+import cn.xt.sms.annotation.GetCache;
 import cn.xt.sms.dto.MapDTO;
 import cn.xt.sms.response.DataResponse;
 import cn.xt.sms.dao.ISupplierDao;
@@ -170,25 +171,28 @@ public class SupplierServiceImpl implements ISupplierService {
 
     @Override
     public List<MapDTO> getSupplierIdAndName() {
+//        List<MapDTO> list = null;
+//        try {
+//            list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
+//        } catch (ClassCastException e) {
+//            log.warn("获取到的缓存无法转换类型！");
+//        }
+//        if (list == null) {
+//            synchronized (CACHE_KEY) {
+//                try {
+//                    list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
+//                } catch (ClassCastException e) {
+//                    log.warn("获取到的缓存无法转换类型！");
+//                }
+//                if (list == null) {
+//                    list = supplierDao.getSupplierIdAndName();
+//                    redisService.setCache(CACHE_KEY, list, RedisServiceImpl.EXIPRE_SECOND);
+//                }
+//            }
+//        }
+//        return list;
         List<MapDTO> list = null;
-        try {
-            list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
-        } catch (ClassCastException e) {
-            log.warn("获取到的缓存无法转换类型！");
-        }
-        if (list == null) {
-            synchronized (CACHE_KEY) {
-                try {
-                    list = (List<MapDTO>) (List) redisService.getCacheList(CACHE_KEY);
-                } catch (ClassCastException e) {
-                    log.warn("获取到的缓存无法转换类型！");
-                }
-                if (list == null) {
-                    list = supplierDao.getSupplierIdAndName();
-                    redisService.setCache(CACHE_KEY, list, RedisServiceImpl.EXIPRE_SECOND);
-                }
-            }
-        }
+        list = supplierDao.getSupplierIdAndName();
         return list;
     }
 

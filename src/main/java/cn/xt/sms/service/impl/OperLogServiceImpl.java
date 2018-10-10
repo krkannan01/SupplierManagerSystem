@@ -1,7 +1,9 @@
 package cn.xt.sms.service.impl;
 
+import cn.xt.sms.condition.OperLogCondition;
 import cn.xt.sms.dao.IOperLogDao;
 import cn.xt.sms.entity.OperLog;
+import cn.xt.sms.response.TableDataResponse;
 import cn.xt.sms.service.IOperLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +15,11 @@ import java.util.List;
  * 
  * @author ruoyi
  */
-@Service("operLogService")
+@Service
 public class OperLogServiceImpl implements IOperLogService
 {
     @Autowired
-    private IOperLogDao IOperLogDao;
+    private IOperLogDao operLogDao;
 
     /**
      * 新增操作日志
@@ -27,19 +29,21 @@ public class OperLogServiceImpl implements IOperLogService
     @Override
     public void insertOperlog(OperLog operLog)
     {
-        IOperLogDao.insertOperlog(operLog);
+        operLogDao.insertOperlog(operLog);
     }
 
     /**
      * 查询系统操作日志集合
      * 
-     * @param operLog 操作日志对象
+     * @param condition 操作日志查询条件
      * @return 操作日志集合
      */
     @Override
-    public List<OperLog> selectOperLogList(String keywords)
+    public TableDataResponse selectOperLogList(OperLogCondition condition)
     {
-        return IOperLogDao.selectOperLogList(keywords);
+        Integer count = operLogDao.selectOperLogCount(condition);
+        List<OperLog> operLogList = operLogDao.selectOperLogList(condition);
+        return new TableDataResponse(operLogList, count);
     }
 
     /**
@@ -49,9 +53,9 @@ public class OperLogServiceImpl implements IOperLogService
      * @return
      */
     @Override
-    public int batchDeleteOperLog(Long[] ids)
+    public int batchDeleteOperLog(Integer[] ids)
     {
-        return IOperLogDao.batchDeleteOperLog(ids);
+        return operLogDao.batchDeleteOperLog(ids);
     }
 
     /**
@@ -61,8 +65,8 @@ public class OperLogServiceImpl implements IOperLogService
      * @return 操作日志对象
      */
     @Override
-    public OperLog selectOperLogById(Long operId)
+    public OperLog selectOperLogById(Integer operId)
     {
-        return IOperLogDao.selectOperLogById(operId);
+        return operLogDao.selectOperLogById(operId);
     }
 }

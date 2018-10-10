@@ -1,5 +1,6 @@
 package cn.xt.sms.service;
 
+import cn.xt.sms.annotation.GetCache;
 import cn.xt.sms.entity.TradeGroup;
 
 import java.util.List;

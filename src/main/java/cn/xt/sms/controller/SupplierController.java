@@ -1,8 +1,8 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.annotation.RestGetMapping;
-import cn.xt.sms.annotation.RestPostMapping;
+import cn.xt.sms.annotation.*;
 import cn.xt.sms.condition.SupplierCondition;
+import cn.xt.sms.constant.CacheConstants;
 import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.Supplier;
 import cn.xt.sms.enums.ResponseCode;
@@ -50,7 +50,8 @@ public class SupplierController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/search")
-    public DataResponse<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session) {
+    public DataResponse<Supplier> search(SupplierCondition supplierCondition, Integer currentPage, Integer pageSize, HttpSession session)
+    {
         session.setAttribute("currentPage", currentPage);
         session.setAttribute("pageSize", pageSize);
         return supplierService.getSupplierList(supplierCondition, currentPage, pageSize);
@@ -58,7 +59,8 @@ public class SupplierController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestPostMapping("/getSupplierCount")
-    public Integer searchSupplierCount(SupplierCondition supplierCondition) {
+    public Integer searchSupplierCount(SupplierCondition supplierCondition)
+    {
         return supplierService.getSupplierCount(supplierCondition);
     }
 
@@ -70,13 +72,17 @@ public class SupplierController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getSupplierIdAndName")
+    @GetCache(key = CacheConstants.SUPPLIER_NAME_AND_ID_CACHE_KEY)  //放入缓存
     public List<MapDTO> getSupplierIdAndName() {
         return supplierService.getSupplierIdAndName();
     }
 
+    @Log(title = "供应商管理", action = "添加")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insert")
-    public String insert(HttpServletRequest request, Supplier supplier) {
+    @EvictCache(key = CacheConstants.SUPPLIER_NAME_AND_ID_CACHE_KEY)  //销毁缓存
+    public String insert(HttpServletRequest request, Supplier supplier)
+    {
         return supplierService.insertSupplier(request.getServletContext(), supplier);
     }
 
@@ -86,20 +92,26 @@ public class SupplierController {
         return supplierService.getIdByFullName(fullName) != null;
     }
 
+    @Log(title = "供应商管理", action = "删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/delete")
+    @EvictCache(key = CacheConstants.SUPPLIER_NAME_AND_ID_CACHE_KEY)
     public String delete(Integer id) {
         return supplierService.deleteSupplier(id);
     }
 
+    @Log(title = "供应商管理", action = "批量删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/mutliDelete")
+    @EvictCache(key = CacheConstants.SUPPLIER_NAME_AND_ID_CACHE_KEY)
     public String mutliDelete(String ids) {
         return supplierMiddleService.mutliDeleteSupplier(ids);
     }
 
+    @Log(title = "供应商管理", action = "修改")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/update")
+    @EvictCache(key = CacheConstants.SUPPLIER_NAME_AND_ID_CACHE_KEY)
     public String update(Supplier supplier) {
         return supplierService.updateSupplier(supplier);
     }
@@ -108,13 +120,15 @@ public class SupplierController {
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/getTradeGroup")
     public List<TradeGroup> getTradeGroup(@RequestParam(required = false, defaultValue = "0") Integer parentId,
-                                          Integer categoryId) {
+                                          Integer categoryId)
+    {
         return tradeGroupService.getTradeGroup(parentId, categoryId);
     }
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/getSupplierById")
-    public String getSupplierById(Integer id, String action, HttpServletRequest request) {
+    public String getSupplierById(Integer id, String action, HttpServletRequest request)
+    {
         Supplier supplier = supplierService.getSupplierById(id);
         request.setAttribute("supplier", supplier);
         return action == null ? "supplier/details" : ("supplier/" + action);
@@ -122,7 +136,8 @@ public class SupplierController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/getSupplierById2")
-    public String getSupplierById2(Integer id, HttpServletRequest request) {
+    public String getSupplierById2(Integer id, HttpServletRequest request)
+    {
         Supplier supplier = supplierService.getSupplierById(id);
         request.setAttribute("supplier", supplier);
         return "supplier/detail_iframe";
@@ -130,14 +145,16 @@ public class SupplierController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @GetMapping("/toSupplierDetailProduct")
-    public String toSupplierDetailProduct(Integer id, HttpServletRequest request) {
+    public String toSupplierDetailProduct(Integer id, HttpServletRequest request)
+    {
         request.setAttribute("id", id);
         return "supplier/detail_iframe_product";
     }
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @GetMapping("/toSupplierDetailDocument")
-    public String toSupplierDetailDocument(Integer id, HttpServletRequest request) {
+    public String toSupplierDetailDocument(Integer id, HttpServletRequest request)
+    {
         request.setAttribute("id", id);
         return "supplier/detail_iframe_document";
     }
@@ -145,7 +162,8 @@ public class SupplierController {
     /*转到serach_supplier页面*/
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/toSearchSupplier")
-    public String toSearchSupplier(String uccCode, HttpServletRequest request, HttpSession session) {
+    public String toSearchSupplier(String uccCode, HttpServletRequest request, HttpSession session)
+    {
         if (uccCode != null && uccCode != "") {
             request.setAttribute("uccCode", uccCode);
         }
@@ -162,9 +180,11 @@ public class SupplierController {
     }
 
     /*excel文件导入*/
+    @Log(title = "供应商管理", action = "导入Excel")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/importExcel")
-    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload) {
+    public SimpleResponse importExcel(HttpServletRequest request, MultipartFile upload)
+    {
         try {
             //解析excel
             //1.读取文件输入流
@@ -187,9 +207,11 @@ public class SupplierController {
         return new SimpleResponse(ResponseCode.ERROR, "解析错误");
     }
 
+    @Log(title = "供应商管理", action = "导出Excel")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/exportExcel")
-    public String exportExcel(HttpServletResponse response, Integer start, Integer end, SupplierCondition supplierCondition) {
+    public String exportExcel(HttpServletResponse response, Integer start, Integer end, SupplierCondition supplierCondition)
+    {
         Workbook wb = new XSSFWorkbook();
 
         supplierMiddleService.setSupplierToExcel(wb, start, end, supplierCondition);

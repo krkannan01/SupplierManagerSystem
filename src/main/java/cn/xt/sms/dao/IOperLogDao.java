@@ -1,5 +1,6 @@
 package cn.xt.sms.dao;
 
+import cn.xt.sms.condition.OperLogCondition;
 import cn.xt.sms.entity.OperLog;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * 操作日志 数据层
  * 
  * @author ruoyi
+ * @modify xietao
  */
 public interface IOperLogDao
 {
@@ -22,10 +24,12 @@ public interface IOperLogDao
     /**
      * 查询系统操作日志集合
      * 
-     * @param operLog 操作日志对象
+     * @param condition 操作日志查询条件
      * @return 操作日志集合
      */
-    public List<OperLog> selectOperLogList(@Param("keywords") String keywords);
+    public List<OperLog> selectOperLogList(OperLogCondition condition);
+    /** 查询数量. */
+    public Integer selectOperLogCount(OperLogCondition condition);
     
     /**
      * 批量删除系统操作日志
@@ -33,7 +37,7 @@ public interface IOperLogDao
      * @param ids 需要删除的数据
      * @return 结果
      */
-    public int batchDeleteOperLog(Long[] ids);
+    public int batchDeleteOperLog(Integer[] ids);
     
     /**
      * 查询操作日志详细
@@ -41,5 +45,5 @@ public interface IOperLogDao
      * @param operId 操作ID
      * @return 操作日志对象
      */
-    public OperLog selectOperLogById(Long operId);
+    public OperLog selectOperLogById(Integer operId);
 }

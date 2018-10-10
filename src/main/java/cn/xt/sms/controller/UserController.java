@@ -1,5 +1,6 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.Log;
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.constant.CommonConstants;
@@ -70,6 +71,7 @@ public class UserController {
     }
 
     /*删除用户数据*/
+    @Log(title = "用户权限管理", action = "删除用户")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/delete")
     public String delete(Integer id) {
@@ -77,6 +79,7 @@ public class UserController {
     }
 
     /*多行删除用户数据*/
+    @Log(title = "用户权限管理", action = "批量删除用户")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/multiDelete")
     public String multiDelete(String ids) {
@@ -91,6 +94,7 @@ public class UserController {
     }
 
     /*修改用户权限信息*/
+    @Log(title = "用户权限管理", action = "修改用户权限")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/updateUserPrivilege")
     public String updateUserPrivilege(Integer id, String privilegeIds) {
@@ -105,6 +109,7 @@ public class UserController {
     }
 
     /*新增用户信息*/
+    @Log(title = "用户权限管理", action = "添加用户")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insertUser")
     public String insert(User user) {
@@ -140,6 +145,7 @@ public class UserController {
     }
 
     /*修改用户高级信息*/
+    @Log(title = "用户权限管理", action = "修改用户状态")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/updateCoreUser")
     public String updateCoreUser(User user) {

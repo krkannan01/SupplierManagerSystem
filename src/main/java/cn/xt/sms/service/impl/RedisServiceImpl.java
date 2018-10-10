@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Service
 @Log4j
-public class RedisServiceImpl implements IRedisService {
+public class RedisServiceImpl extends RedisBasicServiceImpl implements IRedisService {
 
     public static final int EXIPRE_SECOND = 3600;
 
@@ -45,12 +45,25 @@ public class RedisServiceImpl implements IRedisService {
     }
 
     @Override
-    public void setCache(String key, List value, int expire) {
+    public void setCache(String key, Object value, int expire) {
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             jedis.set(key, JSON.toJSONString(value));
             jedis.expire(key, expire);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (jedis != null) jedis.close();
+        }
+    }
+
+    @Override
+    public void delCache(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.del(key);
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {

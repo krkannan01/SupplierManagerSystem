@@ -1,9 +1,10 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html>
 <meta charset="utf-8">
-<head th:include="include :: header"></head>
-<link href="/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css" th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
-<link href="/ruoyi/css/RuoYi.css" th:href="@{/ruoyi/css/RuoYi.css}" rel="stylesheet"/>
+<jsp:include page="${pageContext.request.contextPath}/common/fregment-header.jsp"></jsp:include>
+<link href="${pageContext.request.contextPath}/ry-statics/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/statics/css/RuoYi.css" rel="stylesheet"/>
 <style>
 body{height:auto;font-family: "Microsoft YaHei";}
 button{font-family: "SimSun","Helvetica Neue",Helvetica,Arial;}
@@ -26,14 +27,14 @@ button{font-family: "SimSun","Helvetica Neue",Helvetica,Arial;}
 	<div id="tree" class="ztree treeselect"></div>
 	</div>
 	<div class="layui-layer-btn">
-		<a class="layui-layer-btn0" th:onclick="'javascript:loadMenu()'"><i class="fa fa-check"></i> 确定</a>
-		<a class="layui-layer-btn1" th:onclick="'javascript:layer_close()'"><i class="fa fa-close"></i> 关闭</a>
+		<a class="layui-layer-btn0" onclick="javascript:loadMenu()"><i class="fa fa-check"></i> 确定</a>
+		<a class="layui-layer-btn1" onclick="javascript:layer_close()"><i class="fa fa-close"></i> 关闭</a>
 	</div>
-	<div th:include="include::footer"></div>
-	<script src="/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js" th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
-	<script src="/ruoyi/system/menu/tree.js" th:src="@{/ruoyi/system/menu/tree.js}"></script>
-	<script th:inline="javascript">
-		var treeName = [[${treeName}]];
+	<jsp:include page="${pageContext.request.contentType}/common/fregment-footer.jsp"></jsp:include>
+	<script src="${pageContext.request.contextPath}/ry-statics/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js"></script>
+	<script src="${pageContext.request.contextPath}/statics/js/project/product_group/tree.js"></script>
+	<script type="text/javascript">
+		var treeName = parent.groupName;
 		$("#treeName").val(treeName);
 	</script>
 </body>

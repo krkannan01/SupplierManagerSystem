@@ -39,16 +39,16 @@ public class IOperLogDaoTest {
 
     @Test
     public void selectOperLogList() {
-        operLogDao.selectOperLogList("");
+        operLogDao.selectOperLogList(null);
     }
 
     @Test
     public void batchDeleteOperLog() {
-        operLogDao.batchDeleteOperLog(new Long[]{210L,211L});
+        operLogDao.batchDeleteOperLog(new Integer[]{210,211});
     }
 
     @Test
     public void selectOperLogById() {
-        operLogDao.selectOperLogById(212L);
+        operLogDao.selectOperLogById(212);
     }
 }

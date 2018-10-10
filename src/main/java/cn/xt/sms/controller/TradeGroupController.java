@@ -1,6 +1,10 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.EvictCache;
+import cn.xt.sms.annotation.GetCache;
+import cn.xt.sms.annotation.Log;
 import cn.xt.sms.annotation.RestPostMapping;
+import cn.xt.sms.constant.CacheConstants;
 import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.TradeGroup;
 import cn.xt.sms.enums.ResponseCode;
@@ -32,30 +36,38 @@ public class TradeGroupController {
     @Autowired
     private ITradeGroupService tradeGroupService;
 
+    @Log(title = "供应商分组管理", action = "添加")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"},logical = Logical.OR)
     @RestPostMapping("/insert")
-    public SimpleResponse insert(TradeGroup tradeGroup) {
+    public SimpleResponse insert(TradeGroup tradeGroup)
+    {
         Integer affectedRowNumber = tradeGroupService.insert(tradeGroup);
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "供应商分组管理", action = "修改")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("/update")
-    public SimpleResponse update(TradeGroup tradeGroup) {
+    public SimpleResponse update(TradeGroup tradeGroup)
+    {
         Integer affectedRowNumber = tradeGroupService.update(tradeGroup);
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "供应商分组管理", action = "删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/delete")
-    public SimpleResponse delete(Integer id) {
+    public SimpleResponse delete(Integer id)
+    {
         Integer affectedRowNumber = tradeGroupService.delete(id);
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "供应商分组管理", action = "批量删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/multiDelete")
-    public SimpleResponse multiDelete(String ids) {
+    public SimpleResponse multiDelete(String ids)
+    {
         List<Integer> list = BasicUtil.convertIntegers(ids);
         Integer affectedRowNumber = tradeGroupService.multiDelete(list);
         if (affectedRowNumber > 0 && affectedRowNumber == list.size())
@@ -68,7 +80,8 @@ public class TradeGroupController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RequestMapping("/toTradeGroup")
-    public String toTradeGroup(HttpSession session) {
+    public String toTradeGroup(HttpSession session)
+    {
         if (session.getAttribute("user") != null) {
             return "supplier_group/trade_group";
         }

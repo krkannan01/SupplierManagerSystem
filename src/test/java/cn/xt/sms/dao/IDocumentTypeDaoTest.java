@@ -6,15 +6,17 @@ import lombok.extern.log4j.Log4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @Auther: xietao
@@ -26,15 +28,25 @@ import static org.junit.Assert.*;
 @Transactional(transactionManager = "transactionManager")
 @Rollback(false)
 @Log4j
-public class IDocumentTypeDaoTest {
+public class IDocumentTypeDaoTest implements ApplicationContextAware {
 
     @Autowired
     private IDocumentTypeDao documentTypeDao;
 
+    private ApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext ac)
+            throws BeansException {
+        context = ac;
+    }
+
     @Test
     public void insertDocumentType() {
-        Integer affectedRowNumber = documentTypeDao.insertDocumentType(new DocumentType(null, "测试", ""));
-        Assert.assertNotNull(affectedRowNumber);
+//        Integer affectedRowNumber = documentTypeDao.insertDocumentType(new DocumentType(null, "测试", ""));
+//        Assert.assertNotNull(affectedRowNumber);
+        Arrays.stream(context.getBeanDefinitionNames()).forEach((String s) -> System.out.println(Render.renderInfo(s)));
+        System.out.println(Render.renderSuccess("end"));
     }
 
     @Test

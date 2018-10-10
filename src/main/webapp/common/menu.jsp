@@ -121,31 +121,6 @@
             </ul>
         </li>
 
-        <%--<li class="${active!=null and active.startsWith("System") ? "open":""}">
-            <a href="javascript: void(0);" class="dropdown-toggle">
-                <i class="menu-icon fa fa-cog"></i>
-							<span class="menu-text">
-								系统管理
-							</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-                <shiro:hasAnyPermission name="admin,user:search">
-                    <li class="${"System-UserPrivilege".equals(active) ? "active":""}">
-                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/user/toSearchUser';">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            用户权限管理
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
-                </shiro:hasAnyPermission>
-            </ul>
-        </li>--%>
-
         <li class="${active!=null and active.startsWith("User") ? "open":""}">
             <a href="javascript: void(0);" class="dropdown-toggle">
                 <i class="menu-icon fa fa-cog"></i>
@@ -170,6 +145,40 @@
                 </shiro:hasAnyPermission>
             </ul>
         </li>
+
+        <shiro:hasPermission name="admin">
+            <li class="${active!=null and active.startsWith("System") ? "open":""}">
+                <a href="javascript: void(0);" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-cog"></i>
+                                <span class="menu-text">
+                                    系统管理
+                                </span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="${"System-OperationLog".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/operLog/toPage';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            系统操作日志
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="${"System-LoginInfo".equals(active) ? "active":""}">
+                        <a href="javascript: void(0);" onclick="javascript: location.href = '${pageContext.request.contextPath}/loginInfo/toPage';">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            系统访问日志
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+        </shiro:hasPermission>
     </ul><!-- /.nav-list -->
 
     <!-- #section:basics/sidebar.layout.minimize -->

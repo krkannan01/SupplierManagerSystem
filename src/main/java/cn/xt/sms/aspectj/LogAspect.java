@@ -5,19 +5,19 @@ import cn.xt.sms.constant.UserConstants;
 import cn.xt.sms.entity.OperLog;
 import cn.xt.sms.entity.User;
 import cn.xt.sms.service.IOperLogService;
+import cn.xt.sms.util.Render;
 import cn.xt.sms.util.ServletUtils;
 import cn.xt.sms.util.StringUtils;
 import cn.xt.sms.util.security.ShiroUtils;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,24 +29,21 @@ import java.util.Map;
  * 
  * @author ruoyi
  */
+@Log4j
 @Aspect
 @Component
 public class LogAspect
 {
-    private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private IOperLogService operLogService;
 
     // 配置织入点
     @Pointcut("@annotation(cn.xt.sms.annotation.Log)")
-    public void logPointCut()
-    {
-    }
+    public void logPointCut() {}
 
     /**
-     * 前置通知 用于拦截操作
-     *
+     * 后置通知 用于拦截操作
      * @param joinPoint 切点
      */
     @AfterReturning(pointcut = "logPointCut()")
@@ -57,9 +54,6 @@ public class LogAspect
 
     /**
      * 拦截异常操作
-     *
-     * @param joinPoint
-     * @param e
      */
     @AfterThrowing(value = "logPointCut()", throwing = "e")
     public void doAfter(JoinPoint joinPoint, Exception e)
@@ -73,8 +67,7 @@ public class LogAspect
         {
             // 获得注解
             Log controllerLog = getAnnotationLog(joinPoint);
-            if (controllerLog == null)
-            {
+            if (controllerLog == null) {
                 return;
             }
 
@@ -90,7 +83,7 @@ public class LogAspect
             operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
             if (currentUser != null)
             {
-                operLog.setUsername(currentUser.getUsername());
+                operLog.setLoginName(currentUser.getUsername());
             }
 
             if (e != null)
@@ -106,22 +99,19 @@ public class LogAspect
             getControllerMethodDescription(controllerLog, operLog);
             // 保存数据库
             operLogService.insertOperlog(operLog);
+//            System.out.println(Render.renderInfo(operLog.toString()));
         }
         catch (Exception exp)
         {
             // 记录本地异常日志
             log.error("==前置通知异常==");
-            log.error("异常信息:{}", exp.getMessage());
+            log.error("异常信息:" + exp.getMessage());
             exp.printStackTrace();
         }
     }
 
     /**
      * 获取注解中对方法的描述信息 用于Controller层注解
-     *
-     * @param joinPoint 切点
-     * @return 方法描述
-     * @throws Exception
      */
     public static void getControllerMethodDescription(Log log, OperLog operLog) throws Exception
     {
@@ -141,9 +131,6 @@ public class LogAspect
 
     /**
      * 获取请求的参数，放到log中
-     *
-     * @param operLog
-     * @param request
      */
     private static void setRequestValue(OperLog operLog)
     {

@@ -1,5 +1,6 @@
 package cn.xt.sms.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ public class OperLog
     /** 来源渠道 */
     private String channel;
     /** 操作员名称 */
-    private String username;
+    private String loginName;
     /** 请求url */
     private String operUrl;
     /** 操作地址 */
@@ -36,6 +37,7 @@ public class OperLog
     /** 错误消息 */
     private String errorMsg;
     /** 操作时间 */
+    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
     private Date operTime;
 
 }

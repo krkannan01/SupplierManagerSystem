@@ -1,7 +1,7 @@
 package cn.xt.sms.controller;
 
-import cn.xt.sms.annotation.RestGetMapping;
-import cn.xt.sms.annotation.RestPostMapping;
+import cn.xt.sms.annotation.*;
+import cn.xt.sms.constant.CacheConstants;
 import cn.xt.sms.constant.PrivilegeConstants;
 import cn.xt.sms.entity.DocumentType;
 import cn.xt.sms.response.DataResponse;
@@ -36,15 +36,19 @@ public class DocumentTypeController {
         return "document_type/search_type";
     }
 
+    @Log(title = "文档类型管理", action = "添加")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":insert"}, logical = Logical.OR)
     @RestPostMapping("/insertDocumentType")
+    @EvictCache(key = CacheConstants.DOCUMENT_TYPE_CACHE_KEY)  //添加时收回缓存（销毁）
     public SimpleResponse insertDocumentType(DocumentType type) {
         Integer affectedRowNumber = documentTypeService.insertDocumentType(type);
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "文档类型管理", action = "删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"}, logical = Logical.OR)
     @RestPostMapping("/deleteDocumentType")
+    @EvictCache(key = CacheConstants.DOCUMENT_TYPE_CACHE_KEY)  //删除时收回缓存（销毁）
     public SimpleResponse deleteDocumentType(String ids) {
         Integer[] idArr = BasicUtil.List2Array(BasicUtil.convertIntegers(ids));
         Integer affectedRowNumber = documentTypeService.deleteDocumentType(idArr);
@@ -53,9 +57,11 @@ public class DocumentTypeController {
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"}, logical = Logical.OR)
     @RestGetMapping("/getDocumentTypeList")
+    @GetCache(key = CacheConstants.DOCUMENT_TYPE_CACHE_KEY)  //存取自缓存
     public DataResponse<DocumentType> getSupplierDocumentList() {
         return documentTypeService.getDocumentTypeList();
     }
+
 
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"}, logical = Logical.OR)
     @RestPostMapping("/updateUseFrequency")
@@ -65,8 +71,10 @@ public class DocumentTypeController {
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "文档类型管理", action = "修改")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"}, logical = Logical.OR)
     @RestPostMapping("/updateDocumentType")
+    @EvictCache(key = CacheConstants.DOCUMENT_TYPE_CACHE_KEY)  //更新时收回缓存（销毁）
     public SimpleResponse updateDocumentType(Integer id, DocumentType type) {
         Integer affectedRowNumber = documentTypeService.updateDocumentType(type);
         return new SimpleResponse(affectedRowNumber);

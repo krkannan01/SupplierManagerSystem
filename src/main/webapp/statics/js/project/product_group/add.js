@@ -1,30 +1,28 @@
-$("#form-menu-add").validate({
+const $prefix = $ctx + "/productGroup";
+
+$("#form-product-group-add").validate({
 	rules:{
-		menuName:{
+		name:{
 			required:true,
 			remote: {
-                url: ctx + "system/menu/checkMenuNameUnique",
-                type: "post",
+                url: $prefix + "/unique",
+                type: "get",
                 dataType: "json",
                 data: {
-                	"menuName" : function() {
-                        return $.trim($("#menuName").val());
+                    name: function() {
+                        return $.trim($("#name").val())
                     }
                 },
                 dataFilter: function(data, type) {
-                    if (data == "0") return true;
-                    else return false;
+                    return data == "true" ? false : true;
                 }
             }
-		},
-		orderNum:{
-			required:true,
-			digits:true
-		},
+		}
 	},
 	messages: {
-        "menuName": {
-            remote: "菜单已经存在"
+        "name": {
+            required: "分组名称不能为空",
+            remote: "分组已经存在"
         }
     },
 	submitHandler:function(form){
@@ -32,52 +30,31 @@ $("#form-menu-add").validate({
 	}
 });
 
-$(function() {
-	$("input[name='icon']").focus(function() {
-        $(".icon-drop").show();
-    });
-	$("#form-menu-add").click(function(event) {
-	    var obj = event.srcElement || event.target;
-	    if (!$(obj).is("input[name='icon']")) {
-	    	$(".icon-drop").hide();
-	    }
-	});
-	$(".icon-drop").find(".ico-list i").on("click", function() {
-		$('#icon').val($(this).attr('class'));
-    });
-	$('input').on('ifChecked', function(event){  
-		var menuType = $(event.target).val();
-		if (menuType == "M") {
-            $("#url").parents(".form-group").hide();
-            $("#perms").parents(".form-group").hide();
-            $("#icon").parents(".form-group").show();
-        } else if (menuType == "C") {
-        	$("#url").parents(".form-group").show();
-            $("#perms").parents(".form-group").show();
-            $("#icon").parents(".form-group").hide();
-        } else if (menuType == "F") {
-        	$("#url").parents(".form-group").hide();
-            $("#perms").parents(".form-group").show();
-            $("#icon").parents(".form-group").hide();
-        }
-	});  
-});
-
 function add() {
-	_ajax_save(ctx + "system/menu/save", $("#form-menu-add").serialize());
+    var config = {
+        url: $prefix + "/insertProductGroup",
+        type: "post",
+        dataType: "json",
+        data: $("#form-product-group-add").serialize(),
+        error : function(request) {
+            $.modalAlert("系统错误", "error");
+        },
+        success : function(data) {
+            if (data && data.code == 0) {
+                parent.layer.msg("新增成功,正在刷新数据请稍后……",{icon:1,time: 500,shade: [0.1,'#fff']},function(){
+                    $.parentReload();
+                });
+            } else {
+                $.modalAlert(data.msg, "error");
+            }
+        }
+    };
+    $.ajax(config);
 }
 
-/*菜单管理-新增-选择菜单树*/
-function selectMenuTree() {
-	var menuId = $("#treeId").val();
-	if(menuId > 0)
-	{
-		var url = ctx + "system/menu/selectMenuTree/" + menuId;
-        layer_show("选择菜单", url, '380', '380');
-	}
-	else
-	{
-        var url = ctx + "system/menu/selectMenuTree/1";
-        layer_show("选择菜单", url, '380', '380');
-    }
+/*分组管理-新增-选择分组树*/
+function selectGroupTree(groupName) {
+    var url = $prefix + "/toGroupTreePage";
+    window.groupName = groupName;
+    layer_show("选择分组", url, 380, 450, 2);
 }

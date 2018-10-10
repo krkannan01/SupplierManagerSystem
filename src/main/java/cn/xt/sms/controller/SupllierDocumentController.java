@@ -1,5 +1,6 @@
 package cn.xt.sms.controller;
 
+import cn.xt.sms.annotation.Log;
 import cn.xt.sms.annotation.RestGetMapping;
 import cn.xt.sms.annotation.RestPostMapping;
 import cn.xt.sms.condition.SupplierDocumentCondition;
@@ -39,6 +40,7 @@ public class SupllierDocumentController {
     @Autowired
     private ISupplierDocumentService supplierDocumentService;
 
+    @Log(title = "文档信息管理", action = "上传文件")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":update"},logical = Logical.OR)
     @RestPostMapping("insertDocument")
     public SimpleResponse insertSupplierDocument(SupplierDocument document, MultipartFile appendixFile) throws IOException {
@@ -51,6 +53,7 @@ public class SupllierDocumentController {
         return new SimpleResponse(affectedRowNumber);
     }
 
+    @Log(title = "文档信息管理", action = "删除")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":delete"},logical = Logical.OR)
     @RestPostMapping("/deleteDocument")
     public SimpleResponse deleteSupplierDocument(String ids) {
@@ -67,6 +70,7 @@ public class SupllierDocumentController {
         return supplierDocumentService.getSupplierDocumentList(currentPage, pageSize, condition);
     }
 
+    @Log(title = "文档信息管理", action = "下载文件")
     @RequiresPermissions(value = {"admin", privilege_prefix + ":search"},logical = Logical.OR)
     @RestGetMapping("/download")
     public void download(Integer id, HttpServletResponse response) throws IOException {
