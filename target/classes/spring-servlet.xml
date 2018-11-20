@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-3.2.xsd
 	http://www.springframework.org/schema/mvc
-	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<!--配置静态资源文件存放目录-->
 	<mvc:resources location="/statics/" mapping="/statics/**"/>
 	<mvc:resources location="/ry-statics/" mapping="/ry-statics/**"/>
 	<mvc:resources mapping="/common/**" location="/common/"/>
 	<!--配置扫描包-->
-	<context:component-scan base-package="cn.xt.sms.controller"/>
+	<!-- 扫描控制器类 -->
+	<context:component-scan base-package="cn.xt.sms.controller,cn.xt.sms.aspectj"/>
+	<!-- 操作日志切面配置 -->
+	<aop:aspectj-autoproxy />
+
+
 	<!--配置注解驱动， 配置日期数据转换类-->
 	 <mvc:annotation-driven conversion-service="myDateConverter">
 		 <!--配置json字符处理-->
