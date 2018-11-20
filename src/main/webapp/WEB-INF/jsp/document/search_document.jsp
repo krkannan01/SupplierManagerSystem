@@ -1,5 +1,4 @@
-<%@ page import="cn.xt.sms.constant.PrivilegeConstants" %>
-<%@ page import="cn.xt.sms.entity.Privilege" %><%--
+<%--
   @author xietao.x@qq.com
   Created by 2018/3/15
 --%>

@@ -1,4 +1,4 @@
-const document_download_path = $ctx + "/document/download?id="
+const document_download_path = $ctx + "/document/download?id=";
 
 jQuery(function($) {
 

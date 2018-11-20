@@ -471,7 +471,7 @@
 
 <!--[if IE]>
 <script src="${pageContext.request.contextPath}/statics/components/jquery.1x/dist/jquery.js"></script>
-<![endif]-->
+<![endif]-->·
 <script type="text/javascript">
     if('ontouchstart' in document.documentElement) document.write("<script src='${pageContext.request.contextPath}/statics/components/_mod/jquery.mobile.custom/jquery.mobile.custom.js'>"+"<"+"/script>");
 </script>
